@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topology>
+  <endpoint domain="1" node="2" port="1" name="Client1_Server_MsgSEP"/>
+  <endpoint domain="1" node="4" port="5" name="Server_Client1_MsgLEP"/>
+  <channel name="Client1_Server_MsgSnd" type="msg" buffer="FIFO">
+    <from endpoint="Client1_Server_MsgSEP"/>
+    <to endpoint="Server_Client1_MsgLEP"/>
+  </channel>
+  <endpoint domain="1" node="2" port="11" name="Client1_Server_PktSEP"/>
+  <endpoint domain="1" node="4" port="15" name="Server_Client1_PktLEP"/>
+  <channel name="Client1_Server_PktSnd" type="pkt" buffer="FIFO">
+    <from endpoint="Client1_Server_PktSEP"/>
+    <to endpoint="Server_Client1_PktLEP"/>
+  </channel>
+  <endpoint domain="1" node="2" port="21" name="Client1_Server_SclSEP"/>
+  <endpoint domain="1" node="4" port="25" name="Server_Client1_SclLEP"/>
+  <channel name="Client1_Server_SclSnd" type="scl" buffer="FIFO">
+    <from endpoint="Client1_Server_SclSEP"/>
+    <to endpoint="Server_Client1_SclLEP"/>
+  </channel>
+</topology>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="mcapi_trans_smt_abb" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/mcapi_trans_smt_abb" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="mcapi_trans_smt1f.xml -m 0x4" />
+				<Linker>
+					<Add option="-lmrapid_abb -lmxml1d -lpthread -lrt" />
+					<Add library="libmcapi_trans_sm_abb.a" />
+					<Add library="mrapi/libtransport_sm_mrapi_abb.a" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="rm -rf test1/mcapi_trans_smt_abb" />
+					<Add after="rm -rf test2/mcapi_trans_smt_abb" />
+					<Add after="cp bin/Debug/mcapi_trans_smt_abb bin/Debug/test1" />
+					<Add after="cp bin/Debug/mcapi_trans_smt_abb bin/Debug/test2" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/mcapi_trans_smt_abb" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-lmrapi_abb -lmxml1 -lpthread -lrt" />
+					<Add library="libmcapi_trans_sm_abb.a" />
+					<Add library="mrapi/libtransport_sm_mrapi_abb.a" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-fexceptions" />
+			<Add directory="../../../../mrapi/include" />
+			<Add directory="../../../../../mca-2.0.3" />
+			<Add directory="../../../../mrapi/src/mrapi_impl" />
+			<Add directory="../../../../common" />
+			<Add directory="../../../include" />
+			<Add directory="../mcapi_trans_sm" />
+			<Add directory="../../../../../mxml-2.7" />
+		</Compiler>
+		<Linker>
+			<Add directory="../mcapi_trans_sm" />
+			<Add directory="../../../../../../lib64" />
+		</Linker>
+		<Unit filename="Fragments/mcapi_trans_smt_declaration_abb.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mcapi_trans_smt_endpoint_abb.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mcapi_trans_smt_inc_abb.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mcapi_trans_smt_initialize_abb.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mcapi_trans_smt_msg_abb.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mcapi_trans_smt_pktchan_abb.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mcapi_trans_smt_queue_abb.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mcapi_trans_smt_request_abb.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mcapi_trans_smt_sclchan_abb.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mcapi_trans_smt_stress.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mcapi_trans_smt_threads_abb.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mcapi_trans_smt_type_abb.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="mcapi_trans_smt_abb.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

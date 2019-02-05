@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Fragments">
+      <UniqueIdentifier>{1f40c138-3787-4cbe-a835-ffa76c7095cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Fragments">
+      <UniqueIdentifier>{e75298ef-2632-4176-8745-8e3e968f537c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="mrapi_impl_spec_abb.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource_tree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mrapi_impl_spec_abb.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Fragments\mrapi_impl_spec_data_abb.h">
+      <Filter>Header Files\Fragments</Filter>
+    </ClInclude>
+    <ClInclude Include="Fragments\mrapi_impl_spec_inc_abb.h">
+      <Filter>Header Files\Fragments</Filter>
+    </ClInclude>
+    <ClInclude Include="Fragments\mrapi_impl_spec_proto_abb.h">
+      <Filter>Header Files\Fragments</Filter>
+    </ClInclude>
+    <ClInclude Include="Fragments\mrapi_sys_atomic.h">
+      <Filter>Header Files\Fragments</Filter>
+    </ClInclude>
+    <ClInclude Include="Fragments\mrapi_sys_inc_abb.h">
+      <Filter>Header Files\Fragments</Filter>
+    </ClInclude>
+    <ClInclude Include="Fragments\mrapi_sys_key.h">
+      <Filter>Header Files\Fragments</Filter>
+    </ClInclude>
+    <ClInclude Include="Fragments\mrapi_sys_os.h">
+      <Filter>Header Files\Fragments</Filter>
+    </ClInclude>
+    <ClInclude Include="Fragments\mrapi_sys_sem.h">
+      <Filter>Header Files\Fragments</Filter>
+    </ClInclude>
+    <ClInclude Include="Fragments\mrapi_sys_shmem.h">
+      <Filter>Header Files\Fragments</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fragments\mrapi_impl_spec_inc_abb.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_body2.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_sys_semaphore.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_body1.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_initialize_abb.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_finalize_abb.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_rwl.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_rmem.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_resources.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_mutex.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_shmem_abb.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_atomic.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_declaration_abb.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_signal_abb.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_sem_abb.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="mrapi_sys_abb.h">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+</Project>

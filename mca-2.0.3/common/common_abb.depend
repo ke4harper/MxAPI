@@ -1,0 +1,47 @@
+# depslib dependency file v1.0
+1332862695 source:/home/keharper/mca-2.0.3/common/mca_utils_abb.c
+	"Fragments/mca_utils_inc_abb.c"
+	"Fragments/mca_utils_impl.c"
+
+1332865219 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_inc_abb.c
+	<stdlib.h>
+	<pthread.h>
+	<windows.h>
+	<inttypes.h>
+	<stdio.h>
+	<unistd.h>
+	<string.h>
+	<stdarg.h>
+	"mca_config_abb.h"
+	<signal.h>
+	"mca_utils_abb.h"
+
+1331921971 /home/keharper/mca-2.0.3/mca_config_abb.h
+
+1332862695 /home/keharper/mca-2.0.3/common/mca_utils_abb.h
+	"Fragments/mca_utils_inc_abb.h"
+	"Fragments/mca_utils_proto.h"
+
+1332378042 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_inc_abb.h
+	<mca_impl_spec_abb.h>
+
+1334675906 /home/keharper/mca-2.0.3/mca_impl_spec_abb.h
+	<windows.h>
+	<tchar.h>
+	<pdh.h>
+	<pdhmsg.h>
+	"Fragments/mca_impl_spec_inc_abb.h"
+	"Fragments/mca_impl_spec_def.h"
+
+1334687031 /home/keharper/mca-2.0.3/Fragments/mca_impl_spec_def.h
+
+1334675906 /home/keharper/mca-2.0.3/Fragments/mca_impl_spec_inc_abb.h
+	<pthread.h>
+	<assert.h>
+	<stdarg.h>
+	"mca_config_abb.h"
+
+1334675658 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_proto.h
+
+1334692813 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_impl.c
+

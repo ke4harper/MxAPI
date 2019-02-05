@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="mrapi_abb" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/libmrapid_abb.so.1.0" prefix_auto="1" extension_auto="0" />
+				<Option object_output="obj/Debug/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<ExtraCommands>
+					<Add after="mv bin/Debug/libmrapid_abb.so.1.0 $(HOME)/lib64" />
+					<Add after="ln -sf $(HOME)/lib64/libmrapid_abb.so.1.0 $(HOME)/lib64/libmrapid_abb.so" />
+					<Add after="ln -sf $(HOME)/lib64/libmrapid_abb.so.1.0 $(HOME)/lib64/libmrapid_abb.so.1" />
+				</ExtraCommands>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/libmrapi_abb" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="mv bin/Release/libmrapi_abb.so.1.0 $(HOME)/lib64" />
+					<Add after="ln -sf $(HOME)/lib64/libmrapi_abb.so.1.0 $(HOME)/lib64/libmrapi_abb.so" />
+					<Add after="ln -sf $(HOME)/lib64/libmrapi_abb.so.1.0 $(HOME)/lib64/libmrapi_abb.so.1" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-fPIC" />
+			<Add directory="include" />
+			<Add directory="../../mca-2.0.3" />
+			<Add directory="src/mrapi_impl" />
+			<Add directory="../common" />
+			<Add directory="../../mxml-2.7" />
+		</Compiler>
+		<Linker>
+			<Add option="-Wl,--no-undefined -lrt" />
+			<Add library="src/mrapi_impl/libmrapi_impl_abb.a" />
+			<Add library="../common/libcommon_abb.a" />
+			<Add library="src/mrapi_impl/sysvr4/libsysvr4_abb.a" />
+		</Linker>
+		<Unit filename="../Fragments/mca_inc_abb.h" />
+		<Unit filename="../mca_abb.h" />
+		<Unit filename="include/Fragments/mrapi_inc1_abb.h" />
+		<Unit filename="include/Fragments/mrapi_inc2_abb.h" />
+		<Unit filename="include/mrapi_abb.h" />
+		<Unit filename="src/Fragments/mrapi_atomic.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Fragments/mrapi_initialize.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Fragments/mrapi_mutex.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Fragments/mrapi_resources.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Fragments/mrapi_rmem.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Fragments/mrapi_rwl.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Fragments/mrapi_sem.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Fragments/mrapi_shmem.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/Fragments/mrapi_vtime.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="src/mrapi_abb.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

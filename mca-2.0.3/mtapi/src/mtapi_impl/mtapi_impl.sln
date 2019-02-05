@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mtapi_impl", "mtapi_impl.vcxproj", "{A0286861-B707-4A1A-B71E-CE95859FD14F}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://de-s-0178517.de.abb.com:8090/tfs/ocs
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = mtapi_impl.vcxproj
+		SccLocalPath1 = .
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A0286861-B707-4A1A-B71E-CE95859FD14F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A0286861-B707-4A1A-B71E-CE95859FD14F}.Debug|Win32.Build.0 = Debug|Win32
+		{A0286861-B707-4A1A-B71E-CE95859FD14F}.Release|Win32.ActiveCfg = Release|Win32
+		{A0286861-B707-4A1A-B71E-CE95859FD14F}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

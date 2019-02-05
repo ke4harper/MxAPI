@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="mrapi_impl_abb" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="libmrapi_impl_abb" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="libmrapi_impl_abb" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-fPIC" />
+			<Add directory="../../../common" />
+			<Add directory="../../../../mca-2.0.3" />
+			<Add directory="../mrapi_impl" />
+			<Add directory="../../include" />
+			<Add directory="../../../../mxml-2.7" />
+		</Compiler>
+		<Unit filename="Fragments/mrapi_impl_spec_atomic.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_body1.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_body2.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_data_abb.h" />
+		<Unit filename="Fragments/mrapi_impl_spec_declaration_abb.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_finalize_abb.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_inc_abb.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_inc_abb.h" />
+		<Unit filename="Fragments/mrapi_impl_spec_initialize_abb.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_mutex.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_proto_abb.h" />
+		<Unit filename="Fragments/mrapi_impl_spec_resources.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_rmem.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_rwl.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_sem_abb.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_shmem_abb.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_signal_abb.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_impl_spec_sys_semaphore.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/mrapi_sys_atomic.h" />
+		<Unit filename="Fragments/mrapi_sys_inc_abb.h" />
+		<Unit filename="Fragments/mrapi_sys_key.h" />
+		<Unit filename="Fragments/mrapi_sys_sem.h" />
+		<Unit filename="Fragments/mrapi_sys_shmem.h" />
+		<Unit filename="mrapi_impl_spec_abb.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="mrapi_impl_spec_abb.h" />
+		<Unit filename="mrapi_sys_abb.h" />
+		<Unit filename="resource_tree.h" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

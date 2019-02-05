@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="sysvr4">
+		<Project filename="sysvr4.cbp" />
+		<Project filename="sysvr4_abb.cbp" />
+		<Project filename="sysvr4t.cbp">
+			<Depends filename="sysvr4.cbp" />
+		</Project>
+		<Project filename="sysvr4t_abb.cbp">
+			<Depends filename="sysvr4_abb.cbp" />
+		</Project>
+		<Project filename="sysvr4p.cbp">
+			<Depends filename="sysvr4t.cbp" />
+		</Project>
+		<Project filename="sysvr4p_abb.cbp" active="1">
+			<Depends filename="sysvr4t_abb.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>

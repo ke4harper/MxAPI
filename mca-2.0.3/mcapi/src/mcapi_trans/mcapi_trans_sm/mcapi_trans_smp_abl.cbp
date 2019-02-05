@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="mcapi_trans_smp_abl" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/mcapi_trans_smp_abl" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-lmrapid_abb -lmxml1d" />
+					<Add library="libmcapi_trans_sm_abl.a" />
+					<Add library="mrapi/libtransport_sm_mrapi_abb.a" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/mcapi_trans_smp_abl" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="../../../../mrapi/include" />
+			<Add directory="../../../../../mca-2.0.3" />
+			<Add directory="../../../../mrapi/src/mrapi_impl" />
+			<Add directory="../../../../common" />
+			<Add directory="../../../include" />
+			<Add directory="../mcapi_trans_sm" />
+			<Add directory="../../../../../mxml-2.7" />
+		</Compiler>
+		<Linker>
+			<Add directory="../../../../../../lib64" />
+			<Add directory="../mcapi_trans_sm" />
+		</Linker>
+		<Unit filename="mcapi_trans_smp1.xml" />
+		<Unit filename="mcapi_trans_smp1f.xml" />
+		<Unit filename="mcapi_trans_smp1s.xml" />
+		<Unit filename="mcapi_trans_smp2.xml" />
+		<Unit filename="mcapi_trans_smp21.xml" />
+		<Unit filename="mcapi_trans_smp3.xml" />
+		<Unit filename="mcapi_trans_smp_abl.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

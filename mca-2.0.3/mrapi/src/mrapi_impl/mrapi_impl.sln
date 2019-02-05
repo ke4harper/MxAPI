@@ -1,0 +1,82 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrapi_impl", "mrapi_impl.vcxproj", "{91B1ECC8-80FE-4350-9223-123CFBF6B998}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrapi_implt", "mrapi_implt.vcxproj", "{21C6A547-DFD8-48A1-88F2-546DDB9B54A9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{91B1ECC8-80FE-4350-9223-123CFBF6B998} = {91B1ECC8-80FE-4350-9223-123CFBF6B998}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrapi_impl_abb", "mrapi_impl_abb.vcxproj", "{156155B4-888A-45FB-B3BB-4B354E3F1FA2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrapi_implt_abb", "mrapi_implt_abb.vcxproj", "{0557B40A-4FED-4300-8237-319E92E8F7A6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{156155B4-888A-45FB-B3BB-4B354E3F1FA2} = {156155B4-888A-45FB-B3BB-4B354E3F1FA2}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrapi_implp", "mrapi_implp.vcxproj", "{0AE82946-F571-42E6-A857-3BF95809580E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{21C6A547-DFD8-48A1-88F2-546DDB9B54A9} = {21C6A547-DFD8-48A1-88F2-546DDB9B54A9}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mrapi_implp_abb", "mrapi_implp_abb.vcxproj", "{D92BFF63-A0E8-4FB5-B6EA-0F9C95EE9F52}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0557B40A-4FED-4300-8237-319E92E8F7A6} = {0557B40A-4FED-4300-8237-319E92E8F7A6}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1EB6507A-C6BF-43A2-B683-C02F3E0FB6C2}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 7
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://de-s-0178517.de.abb.com:8090/tfs/ocs
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = mrapi_impl.vcxproj
+		SccLocalPath1 = .
+		SccProjectUniqueName2 = mrapi_implt.vcxproj
+		SccLocalPath2 = .
+		SccProjectUniqueName3 = mrapi_impl_abb.vcxproj
+		SccLocalPath3 = .
+		SccProjectUniqueName4 = mrapi_implt_abb.vcxproj
+		SccLocalPath4 = .
+		SccProjectUniqueName5 = mrapi_implp.vcxproj
+		SccLocalPath5 = .
+		SccProjectUniqueName6 = mrapi_implp_abb.vcxproj
+		SccLocalPath6 = .
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{91B1ECC8-80FE-4350-9223-123CFBF6B998}.Debug|Win32.ActiveCfg = Debug|Win32
+		{91B1ECC8-80FE-4350-9223-123CFBF6B998}.Debug|Win32.Build.0 = Debug|Win32
+		{91B1ECC8-80FE-4350-9223-123CFBF6B998}.Release|Win32.ActiveCfg = Release|Win32
+		{91B1ECC8-80FE-4350-9223-123CFBF6B998}.Release|Win32.Build.0 = Release|Win32
+		{21C6A547-DFD8-48A1-88F2-546DDB9B54A9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{21C6A547-DFD8-48A1-88F2-546DDB9B54A9}.Debug|Win32.Build.0 = Debug|Win32
+		{21C6A547-DFD8-48A1-88F2-546DDB9B54A9}.Release|Win32.ActiveCfg = Release|Win32
+		{21C6A547-DFD8-48A1-88F2-546DDB9B54A9}.Release|Win32.Build.0 = Release|Win32
+		{156155B4-888A-45FB-B3BB-4B354E3F1FA2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{156155B4-888A-45FB-B3BB-4B354E3F1FA2}.Debug|Win32.Build.0 = Debug|Win32
+		{156155B4-888A-45FB-B3BB-4B354E3F1FA2}.Release|Win32.ActiveCfg = Release|Win32
+		{156155B4-888A-45FB-B3BB-4B354E3F1FA2}.Release|Win32.Build.0 = Release|Win32
+		{0557B40A-4FED-4300-8237-319E92E8F7A6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0557B40A-4FED-4300-8237-319E92E8F7A6}.Debug|Win32.Build.0 = Debug|Win32
+		{0557B40A-4FED-4300-8237-319E92E8F7A6}.Release|Win32.ActiveCfg = Release|Win32
+		{0557B40A-4FED-4300-8237-319E92E8F7A6}.Release|Win32.Build.0 = Release|Win32
+		{0AE82946-F571-42E6-A857-3BF95809580E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0AE82946-F571-42E6-A857-3BF95809580E}.Debug|Win32.Build.0 = Debug|Win32
+		{0AE82946-F571-42E6-A857-3BF95809580E}.Release|Win32.ActiveCfg = Release|Win32
+		{0AE82946-F571-42E6-A857-3BF95809580E}.Release|Win32.Build.0 = Release|Win32
+		{D92BFF63-A0E8-4FB5-B6EA-0F9C95EE9F52}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D92BFF63-A0E8-4FB5-B6EA-0F9C95EE9F52}.Debug|Win32.Build.0 = Debug|Win32
+		{D92BFF63-A0E8-4FB5-B6EA-0F9C95EE9F52}.Release|Win32.ActiveCfg = Release|Win32
+		{D92BFF63-A0E8-4FB5-B6EA-0F9C95EE9F52}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

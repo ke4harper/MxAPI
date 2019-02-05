@@ -1,0 +1,118 @@
+# depslib dependency file v1.0
+1340832811 source:/home/keharper/workspace/mca-2.0.3/mcapi/src/mcapi_trans/mcapi_trans_sm/mrapi/transport_sm_mrapit.cpp
+	"stdafx.h"
+	<mrapi.h>
+	<mcapi.h>
+	<transport_sm.h>
+
+1336600241 /home/keharper/workspace/mca-2.0.3/mcapi/src/mcapi_trans/mcapi_trans_sm/mrapi/stdafx.h
+	"targetver.h"
+	<stdio.h>
+	<tchar.h>
+
+1336600241 /home/keharper/workspace/mca-2.0.3/mcapi/src/mcapi_trans/mcapi_trans_sm/mrapi/targetver.h
+	<SDKDDKVer.h>
+
+1336600243 /home/keharper/workspace/mca-2.0.3/mrapi/include/mrapi.h
+	"Fragments/mrapi_inc1.h"
+	"Fragments/mrapi_inc2.h"
+
+1336600243 /home/keharper/workspace/mca-2.0.3/mrapi/include/Fragments/mrapi_inc1.h
+	<assert.h>
+	<stddef.h>
+	<mca_config.h>
+	<inttypes.h>
+	"mca.h"
+
+1336600240 /home/keharper/workspace/mca-2.0.3/mca_config.h
+
+1336600240 /home/keharper/workspace/mca-2.0.3/mca.h
+	"Fragments/mca_inc.h"
+
+1336600239 /home/keharper/workspace/mca-2.0.3/Fragments/mca_inc.h
+	"mca_impl_spec.h"
+
+1336600240 /home/keharper/workspace/mca-2.0.3/mca_impl_spec.h
+	<stdint.h>
+	<windows.h>
+	<tchar.h>
+	<pdh.h>
+	<pdhmsg.h>
+	"Fragments/mca_impl_spec_inc.h"
+	"Fragments/mca_impl_spec_def.h"
+
+1336600239 /home/keharper/workspace/mca-2.0.3/Fragments/mca_impl_spec_inc.h
+	<pthread.h>
+	<assert.h>
+	<stdarg.h>
+	"mca_config.h"
+
+1336600239 /home/keharper/workspace/mca-2.0.3/Fragments/mca_impl_spec_def.h
+
+1336600243 /home/keharper/workspace/mca-2.0.3/mrapi/include/Fragments/mrapi_inc2.h
+	"mrapi_impl_spec.h"
+
+1336600245 /home/keharper/workspace/mca-2.0.3/mrapi/src/mrapi_impl/mrapi_impl_spec.h
+	"Fragments/mrapi_impl_spec_inc.h"
+	"Fragments/mrapi_impl_spec_data.h"
+	"Fragments/mrapi_impl_spec_proto.h"
+
+1336600244 /home/keharper/workspace/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_impl_spec_inc.h
+	<stdint.h>
+	<inttypes.h>
+	<signal.h>
+	<pthread.h>
+	<unistd.h>
+	<time.h>
+	<sys/shm.h>
+	<sys/sem.h>
+	<sys/ipc.h>
+	<pwd.h>
+	<pthread.h>
+	<unistd.h>
+	<signal.h>
+	<sys/types.h>
+	<ctype.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<windows.h>
+	<mrapi.h>
+	<mca_config.h>
+	<mca_utils.h>
+
+1336600238 /home/keharper/workspace/mca-2.0.3/common/mca_utils.h
+	"Fragments/mca_utils_inc.h"
+	"Fragments/mca_utils_proto.h"
+
+1336600238 /home/keharper/workspace/mca-2.0.3/common/Fragments/mca_utils_inc.h
+	<mca_impl_spec.h>
+
+1336600238 /home/keharper/workspace/mca-2.0.3/common/Fragments/mca_utils_proto.h
+
+1336600244 /home/keharper/workspace/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_impl_spec_data.h
+
+1336600244 /home/keharper/workspace/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_impl_spec_proto.h
+
+1336600240 /home/keharper/workspace/mca-2.0.3/mcapi/include/mcapi.h
+	<stddef.h>
+	"mca.h"
+	"mcapi_impl_spec.h"
+
+1336600241 /home/keharper/workspace/mca-2.0.3/mcapi/src/mcapi_trans/mcapi_trans_sm/mcapi_impl_spec.h
+	<stddef.h>
+	<stdint.h>
+	<mca.h>
+	<mca_impl_spec.h>
+
+1340811342 /home/keharper/workspace/mca-2.0.3/mcapi/src/mcapi_trans/mcapi_trans_sm/transport_sm.h
+	"mcapi_impl_spec.h"
+	<mca_config.h>
+	<mrapi.h>
+	<stdarg.h>
+	<stdio.h>
+	<pthread.h>
+	<sys/types.h>
+	<unistd.h>
+	<signal.h>
+

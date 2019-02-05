@@ -1,0 +1,111 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcapi_trans_sm", "mcapi_trans_sm.vcxproj", "{A3068AAB-74BA-4FDC-9F2E-622226B7D45F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcapi_trans_smt", "mcapi_trans_smt.vcxproj", "{63B4EEF1-1548-411C-9E43-3DB555D484A9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3068AAB-74BA-4FDC-9F2E-622226B7D45F} = {A3068AAB-74BA-4FDC-9F2E-622226B7D45F}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcapi_trans_sm_abb", "mcapi_trans_sm_abb.vcxproj", "{03D57EF1-7332-43ED-9B14-29328E287D08}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcapi_trans_smt_abb", "mcapi_trans_smt_abb.vcxproj", "{BF6946A6-A904-45FD-9112-2CF398B4C0D3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{03D57EF1-7332-43ED-9B14-29328E287D08} = {03D57EF1-7332-43ED-9B14-29328E287D08}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcapi_trans_smp", "mcapi_trans_smp.vcxproj", "{BAFD3163-7A49-4BCA-9D53-0C46B5B302ED}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3068AAB-74BA-4FDC-9F2E-622226B7D45F} = {A3068AAB-74BA-4FDC-9F2E-622226B7D45F}
+		{63B4EEF1-1548-411C-9E43-3DB555D484A9} = {63B4EEF1-1548-411C-9E43-3DB555D484A9}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcapi_trans_smp_abb", "mcapi_trans_smp_abb.vcxproj", "{DD149E12-AC93-437E-93FD-DCF728F6E59C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BF6946A6-A904-45FD-9112-2CF398B4C0D3} = {BF6946A6-A904-45FD-9112-2CF398B4C0D3}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcapi_trans_sm_abl", "mcapi_trans_sm_abl.vcxproj", "{987058E1-0A4C-4658-982B-1C6A1D26B8D8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcapi_trans_smt_abl", "mcapi_trans_smt_abl.vcxproj", "{541A6880-8735-402F-848A-8C2EF791C18D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{987058E1-0A4C-4658-982B-1C6A1D26B8D8} = {987058E1-0A4C-4658-982B-1C6A1D26B8D8}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mcapi_trans_smp_abl", "mcapi_trans_smp_abl.vcxproj", "{1EFDF626-1A70-41A6-BFF7-33D126B0E908}"
+	ProjectSection(ProjectDependencies) = postProject
+		{541A6880-8735-402F-848A-8C2EF791C18D} = {541A6880-8735-402F-848A-8C2EF791C18D}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 10
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://de-s-0178517.de.abb.com:8090/tfs/ocs
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = mcapi_trans_sm.vcxproj
+		SccLocalPath1 = .
+		SccProjectUniqueName2 = mcapi_trans_smt.vcxproj
+		SccLocalPath2 = .
+		SccProjectUniqueName3 = mcapi_trans_sm_abb.vcxproj
+		SccLocalPath3 = .
+		SccProjectUniqueName4 = mcapi_trans_smt_abb.vcxproj
+		SccLocalPath4 = .
+		SccProjectUniqueName5 = mcapi_trans_smp.vcxproj
+		SccLocalPath5 = .
+		SccProjectUniqueName6 = mcapi_trans_smp_abb.vcxproj
+		SccLocalPath6 = .
+		SccProjectUniqueName7 = mcapi_trans_sm_abl.vcxproj
+		SccLocalPath7 = .
+		SccProjectUniqueName8 = mcapi_trans_smt_abl.vcxproj
+		SccLocalPath8 = .
+		SccProjectUniqueName9 = mcapi_trans_smp_abl.vcxproj
+		SccLocalPath9 = .
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A3068AAB-74BA-4FDC-9F2E-622226B7D45F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A3068AAB-74BA-4FDC-9F2E-622226B7D45F}.Debug|Win32.Build.0 = Debug|Win32
+		{A3068AAB-74BA-4FDC-9F2E-622226B7D45F}.Release|Win32.ActiveCfg = Release|Win32
+		{A3068AAB-74BA-4FDC-9F2E-622226B7D45F}.Release|Win32.Build.0 = Release|Win32
+		{63B4EEF1-1548-411C-9E43-3DB555D484A9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{63B4EEF1-1548-411C-9E43-3DB555D484A9}.Debug|Win32.Build.0 = Debug|Win32
+		{63B4EEF1-1548-411C-9E43-3DB555D484A9}.Release|Win32.ActiveCfg = Release|Win32
+		{63B4EEF1-1548-411C-9E43-3DB555D484A9}.Release|Win32.Build.0 = Release|Win32
+		{03D57EF1-7332-43ED-9B14-29328E287D08}.Debug|Win32.ActiveCfg = Debug|Win32
+		{03D57EF1-7332-43ED-9B14-29328E287D08}.Debug|Win32.Build.0 = Debug|Win32
+		{03D57EF1-7332-43ED-9B14-29328E287D08}.Release|Win32.ActiveCfg = Release|Win32
+		{03D57EF1-7332-43ED-9B14-29328E287D08}.Release|Win32.Build.0 = Release|Win32
+		{BF6946A6-A904-45FD-9112-2CF398B4C0D3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BF6946A6-A904-45FD-9112-2CF398B4C0D3}.Debug|Win32.Build.0 = Debug|Win32
+		{BF6946A6-A904-45FD-9112-2CF398B4C0D3}.Release|Win32.ActiveCfg = Release|Win32
+		{BF6946A6-A904-45FD-9112-2CF398B4C0D3}.Release|Win32.Build.0 = Release|Win32
+		{BAFD3163-7A49-4BCA-9D53-0C46B5B302ED}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BAFD3163-7A49-4BCA-9D53-0C46B5B302ED}.Debug|Win32.Build.0 = Debug|Win32
+		{BAFD3163-7A49-4BCA-9D53-0C46B5B302ED}.Release|Win32.ActiveCfg = Release|Win32
+		{BAFD3163-7A49-4BCA-9D53-0C46B5B302ED}.Release|Win32.Build.0 = Release|Win32
+		{DD149E12-AC93-437E-93FD-DCF728F6E59C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DD149E12-AC93-437E-93FD-DCF728F6E59C}.Debug|Win32.Build.0 = Debug|Win32
+		{DD149E12-AC93-437E-93FD-DCF728F6E59C}.Release|Win32.ActiveCfg = Release|Win32
+		{DD149E12-AC93-437E-93FD-DCF728F6E59C}.Release|Win32.Build.0 = Release|Win32
+		{987058E1-0A4C-4658-982B-1C6A1D26B8D8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{987058E1-0A4C-4658-982B-1C6A1D26B8D8}.Debug|Win32.Build.0 = Debug|Win32
+		{987058E1-0A4C-4658-982B-1C6A1D26B8D8}.Release|Win32.ActiveCfg = Release|Win32
+		{987058E1-0A4C-4658-982B-1C6A1D26B8D8}.Release|Win32.Build.0 = Release|Win32
+		{541A6880-8735-402F-848A-8C2EF791C18D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{541A6880-8735-402F-848A-8C2EF791C18D}.Debug|Win32.Build.0 = Debug|Win32
+		{541A6880-8735-402F-848A-8C2EF791C18D}.Release|Win32.ActiveCfg = Release|Win32
+		{541A6880-8735-402F-848A-8C2EF791C18D}.Release|Win32.Build.0 = Release|Win32
+		{1EFDF626-1A70-41A6-BFF7-33D126B0E908}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1EFDF626-1A70-41A6-BFF7-33D126B0E908}.Debug|Win32.Build.0 = Debug|Win32
+		{1EFDF626-1A70-41A6-BFF7-33D126B0E908}.Release|Win32.ActiveCfg = Release|Win32
+		{1EFDF626-1A70-41A6-BFF7-33D126B0E908}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

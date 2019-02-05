@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="Fragments/transport_sm_mrapi_body.c" open="0" top="0" tabpos="0">
+		<Cursor position="1101" topLine="0" />
+	</File>
+	<File name="Fragments/transport_sm_mrapi_inc.c" open="0" top="0" tabpos="0">
+		<Cursor position="135" topLine="0" />
+	</File>
+	<File name="transport_sm_mrapi.c" open="0" top="0" tabpos="0">
+		<Cursor position="1649" topLine="5" />
+	</File>
+	<File name="../transport_sm.h" open="0" top="0" tabpos="0">
+		<Cursor position="4521" topLine="115" />
+	</File>
+</CodeBlocks_layout_file>

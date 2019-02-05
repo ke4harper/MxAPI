@@ -1,0 +1,110 @@
+# depslib dependency file v1.0
+1334088885 source:/home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/mrapi_implp_abb.cpp
+	"stdafx.h"
+	<windows.h>
+	<sys/wait.h>
+	<mrapi_sys_abb.h>
+
+1333655827 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/mrapi_sys_abb.h
+	"Fragments/mrapi_sys_inc_abb.h"
+	"Fragments/mrapi_sys_shmem.h"
+	"Fragments/mrapi_sys_sem.h"
+	"Fragments/mrapi_sys_key.h"
+	"Fragments/mrapi_sys_os.h"
+	"Fragments/mrapi_sys_atomic.h"
+
+1333655709 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_inc_abb.h
+	<inttypes.h>
+	<stdio.h>
+	<stdarg.h>
+	<unistd.h>
+	<pthread.h>
+	<tchar.h>
+	<mrapi_abb.h>
+
+1331927433 /home/keharper/mca-2.0.3/mrapi/include/mrapi_abb.h
+	"Fragments/mrapi_inc1_abb.h"
+	"Fragments/mrapi_inc2_abb.h"
+
+1331927433 /home/keharper/mca-2.0.3/mrapi/include/Fragments/mrapi_inc1_abb.h
+	<assert.h>
+	<stddef.h>
+	<mca_config_abb.h>
+	<inttypes.h>
+	"mca_abb.h"
+
+1331921971 /home/keharper/mca-2.0.3/mca_config_abb.h
+
+1331928349 /home/keharper/mca-2.0.3/mca_abb.h
+	"Fragments/mca_inc_abb.h"
+
+1331914661 /home/keharper/mca-2.0.3/Fragments/mca_inc_abb.h
+	"mca_impl_spec_abb.h"
+
+1332960491 /home/keharper/mca-2.0.3/mca_impl_spec_abb.h
+	<windows.h>
+	"Fragments/mca_impl_spec_inc_abb.h"
+	"Fragments/mca_impl_spec_def.h"
+
+1331920714 /home/keharper/mca-2.0.3/Fragments/mca_impl_spec_inc_abb.h
+	<pthread.h>
+	<stdarg.h>
+	"mca_config_abb.h"
+
+1331927433 /home/keharper/mca-2.0.3/mrapi/include/Fragments/mrapi_inc2_abb.h
+	"mrapi_impl_spec_abb.h"
+
+1331928349 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/mrapi_impl_spec_abb.h
+	"Fragments/mrapi_impl_spec_inc_abb.h"
+	"Fragments/mrapi_impl_spec_data_abb.h"
+	"Fragments/mrapi_impl_spec_proto_abb.h"
+
+1332960461 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_impl_spec_inc_abb.h
+	<stdint.h>
+	<inttypes.h>
+	<signal.h>
+	<pthread.h>
+	<unistd.h>
+	<time.h>
+	<sys/shm.h>
+	<sys/sem.h>
+	<sys/ipc.h>
+	<pwd.h>
+	<pthread.h>
+	<unistd.h>
+	<signal.h>
+	<sys/types.h>
+	<ctype.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<windows.h>
+	<mrapi_abb.h>
+	<mca_config_abb.h>
+	<mca_utils_abb.h>
+
+1332862695 /home/keharper/mca-2.0.3/common/mca_utils_abb.h
+	"Fragments/mca_utils_inc_abb.h"
+	"Fragments/mca_utils_proto.h"
+
+1332378042 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_inc_abb.h
+	<mca_impl_spec_abb.h>
+
+1334160286 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_impl_spec_data_abb.h
+
+1334022132 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_impl_spec_proto_abb.h
+
+1333727429 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_shmem.h
+
+1333655709 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_sem.h
+
+1332773587 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_key.h
+
+1331925153 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_atomic.h
+
+1332863254 /home/keharper/mca-2.0.3/Fragments/mca_impl_spec_def.h
+
+1332862899 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_proto.h
+
+1333655709 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_os.h
+

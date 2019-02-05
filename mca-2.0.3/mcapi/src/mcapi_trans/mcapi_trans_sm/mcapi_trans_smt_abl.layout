@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="Fragments/mcapi_trans_smt_inc_abl.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="114" topLine="0" />
+	</File>
+	<File name="Fragments/mcapi_trans_smt_threads_abl.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="1387" topLine="27" />
+	</File>
+	<File name="mcapi_trans_smt_abl.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="2386" topLine="69" />
+	</File>
+</CodeBlocks_layout_file>

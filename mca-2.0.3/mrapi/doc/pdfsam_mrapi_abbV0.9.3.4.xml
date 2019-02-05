@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pdfsam_saved_jobs version="2.2.1" savedate="21-Dec-2012" selection="org.pdfsam.plugin.merge.GUI.MergeMainGUI">
+  <plugin class="org.pdfsam.guiclient.gui.panels.JInfoPanel" name="About"/>
+  <plugin class="org.pdfsam.plugin.mix.GUI.MixMainGUI" name="Alternate Mix">
+    <destination value=""/>
+    <step value="1"/>
+    <secondstep value="1"/>
+    <reverse_first value="false"/>
+    <reverse_second value="true"/>
+    <overwrite value="true"/>
+    <compressed value="true"/>
+    <pdfversion value="5"/>
+  </plugin>
+  <plugin class="org.pdfsam.plugin.merge.GUI.MergeMainGUI" name="Merge/Extract">
+    <filelist>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_1.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_2.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_3.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_4.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_5.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_6.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_7.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_8.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_9.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_10.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_11.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_12.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_13.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_14.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_15.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_16.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_17.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_18.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_19.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_20.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_21.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_22.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_23.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_24.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_25.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_26.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_27.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_28.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_29.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_30.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_31.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_32.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_33.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_34.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_35.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_36.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_37.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_38.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_39.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_40.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_41.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_42.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_43.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_44.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_45.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_46.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_47.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_48.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_49.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_50.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_51.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_52.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_53.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_54.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_55.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_56.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_57.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_58.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_59.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_60.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_61.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_62.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_63.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_64.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_65.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_66.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_67.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_68.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_69.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_70.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_71.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_72.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_73.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_74.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_75.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_76.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_77.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_78.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_79.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_80.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_81.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_82.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_83.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_84.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_85.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_86.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_87.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_88.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_89.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_90.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_91.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_92.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_93.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_94.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_95.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_96.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_97.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_98.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_99.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_100.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_101.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_102.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_103.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_104.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_105.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_106.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_107.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_108.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_109.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.1.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.2.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.3.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.4.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.5.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.6.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.7.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.8.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.9.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.10.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.11.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.12.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.13.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.14.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.15.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.16.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.17.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.18.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.19.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.20.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.21.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_110.22.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_111.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_112.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_113.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_114.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_115.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_116.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_117.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_118.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_119.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_120.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_121.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_122.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_123.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_124.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_125.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_126.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_127.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_128.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_129.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_130.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_131.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_132.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_133.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_134.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_135.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_136.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_137.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_138.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_139.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_140.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_141.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_142.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_143.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_144.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\pdfsam_mrapiV0.9.3.4_145.pdf" pageselection="All"/>
+    </filelist>
+    <destination value="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mrapi\doc\mrapi_abbV0.9.3.4.pdf"/>
+    <overwrite value="true"/>
+    <merge_type value="false"/>
+    <compressed value="false"/>
+    <pdfversion value="5"/>
+  </plugin>
+  <plugin class="org.pdfsam.plugin.rotate.GUI.RotateMainGUI" name="Rotate">
+    <filelist/>
+    <rotation value="90"/>
+    <pages value="all"/>
+    <destination value=""/>
+    <overwrite value="true"/>
+    <compressed value="true"/>
+    <pdfversion value="5"/>
+    <prefix value="pdfsam_"/>
+  </plugin>
+  <plugin class="org.pdfsam.guiclient.gui.panels.JSettingsPanel" name="Settings"/>
+  <plugin class="org.pdfsam.plugin.split.GUI.SplitMainGUI" name="Split">
+    <source/>
+    <split_option/>
+    <npages value=""/>
+    <thispage value=""/>
+    <splitsize value=""/>
+    <bookmarkslevel/>
+    <destination value=""/>
+    <prefix value="pdfsam_"/>
+    <overwrite value="true"/>
+    <compressed value="true"/>
+    <pdfversion value="5"/>
+  </plugin>
+  <plugin class="org.pdfsam.plugin.vcomposer.GUI.VComposerMainGUI" name="Visual document composer">
+    <input-documents/>
+    <output-document/>
+    <destination value=""/>
+    <overwrite value="true"/>
+    <compressed value="true"/>
+    <pdfversion value="5"/>
+  </plugin>
+  <plugin class="org.pdfsam.plugin.vpagereorder.GUI.VPageReorderMainGUI" name="Visual reorder">
+    <source/>
+    <destination value=""/>
+    <overwrite value="true"/>
+    <compressed value="true"/>
+    <pdfversion value="5"/>
+  </plugin>
+</pdfsam_saved_jobs>

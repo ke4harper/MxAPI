@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--Messages between multiple address spaces, single one-way FIFO message -->
+<topology>
+  <endpoint domain="2" node="3" port="201" name="Client1_Server2_MsgSEP"/>
+  <endpoint domain="2" node="15" port="305" name="Server2_Client1_MsgLEP"/>
+  <channel name="Client1_Server2_MsgSnd" type="msg" buffer="FIFO">
+    <from endpoint="Client1_Server2_MsgSEP"/>
+    <to endpoint="Server2_Client1_MsgLEP"/>
+  </channel>
+  <endpoint domain="2" node="3" port="211" name="Client1_Server2_PktSEP"/>
+  <endpoint domain="2" node="15" port="315" name="Server2_Client1_PktLEP"/>
+  <channel name="Client1_Server2_PktSnd" type="pkt" buffer="FIFO">
+    <from endpoint="Client1_Server2_PktSEP"/>
+    <to endpoint="Server2_Client1_PktLEP"/>
+  </channel>
+  <endpoint domain="2" node="3" port="221" name="Client1_Server2_SclSEP"/>
+  <endpoint domain="2" node="15" port="325" name="Server2_Client1_SclLEP"/>
+  <channel name="Client1_Server2_SclSnd" type="scl" buffer="FIFO">
+    <from endpoint="Client1_Server2_SclSEP"/>
+    <to endpoint="Server2_Client1_SclLEP"/>
+  </channel>
+</topology>

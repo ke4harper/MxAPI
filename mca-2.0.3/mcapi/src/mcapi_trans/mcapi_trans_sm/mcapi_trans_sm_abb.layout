@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="Fragments/transport_sm_body.c" open="0" top="0" tabpos="0">
+		<Cursor position="29059" topLine="511" />
+	</File>
+	<File name="Fragments/transport_sm_inc_abb.c" open="0" top="0" tabpos="0">
+		<Cursor position="413" topLine="0" />
+	</File>
+	<File name="transport_sm_abb.c" open="0" top="0" tabpos="0">
+		<Cursor position="2118" topLine="17" />
+	</File>
+</CodeBlocks_layout_file>

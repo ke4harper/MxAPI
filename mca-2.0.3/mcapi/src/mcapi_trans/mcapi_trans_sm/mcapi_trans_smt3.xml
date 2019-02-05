@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topology>
+  <endpoint domain="1" node="2" port="1" name="Client1_Server_MsgSEP"/>
+  <endpoint domain="1" node="3" port="2" name="Client2_Server_MsgSEP"/>
+  <endpoint domain="1" node="2" port="3" name="Client1_Server_MsgLEP"/>
+  <endpoint domain="1" node="3" port="4" name="Client2_Server_MsgLEP"/>
+  <endpoint domain="1" node="4" port="5" name="Server_Client1_MsgLEP"/>
+  <endpoint domain="1" node="4" port="6" name="Server_Client2_MsgLEP"/>
+  <endpoint domain="1" node="4" port="7" name="Server_Client1_MsgSEP"/>
+  <endpoint domain="1" node="4" port="8" name="Server_Client2_MsgSEP"/>
+  <channel name="Client1_Server_MsgSnd" type="msg">
+    <from endpoint="Client1_Server_MsgSEP"/>
+    <to endpoint="Server_Client1_MsgLEP"/>
+  </channel>
+  <channel name="Client2_Server_MsgSnd" type="msg">
+    <from endpoint="Client2_Server_MsgSEP"/>
+    <to endpoint="Server_Client2_MsgLEP"/>
+  </channel>
+  <channel name="Server_Client1_MsgAck" type="msg">
+    <from endpoint="Server_Client1_MsgSEP"/>
+    <to endpoint="Client1_Server_MsgLEP"/>
+  </channel>
+  <channel name="Server_Client2_MsgAck" type="msg">
+    <from endpoint="Server_Client2_MsgSEP"/>
+    <to endpoint="Client2_Server_MsgLEP"/>
+  </channel>
+  <link name="Client1_Msg" type="fullduplex">
+    <send channel="Client1_Server_MsgSnd"/>
+    <ack channel="Server_Client1_MsgAck"/>
+  </link>
+  <link name="Client2_Msg" type="fullduplex">
+    <send channel="Client2_Server_MsgSnd"/>
+    <ack channel="Server_Client2_MsgAck"/>
+  </link>
+  <endpoint domain="1" node="2" port="11" name="Client1_Server_PktSEP"/>
+  <endpoint domain="1" node="3" port="12" name="Client2_Server_PktSEP"/>
+  <endpoint domain="1" node="2" port="13" name="Client1_Server_PktLEP"/>
+  <endpoint domain="1" node="3" port="14" name="Client2_Server_PktLEP"/>
+  <endpoint domain="1" node="4" port="15" name="Server_Client1_PktLEP"/>
+  <endpoint domain="1" node="4" port="16" name="Server_Client2_PktLEP"/>
+  <endpoint domain="1" node="4" port="17" name="Server_Client1_PktSEP"/>
+  <endpoint domain="1" node="4" port="18" name="Server_Client2_PktSEP"/>
+  <channel name="Client1_Server_PktSnd" type="pkt">
+    <from endpoint="Client1_Server_PktSEP"/>
+    <to endpoint="Server_Client1_PktLEP"/>
+  </channel>
+  <channel name="Client2_Server_PktSnd" type="pkt">
+    <from endpoint="Client2_Server_PktSEP"/>
+    <to endpoint="Server_Client2_PktLEP"/>
+  </channel>
+  <channel name="Server_Client1_PktAck" type="pkt">
+    <from endpoint="Server_Client1_PktSEP"/>
+    <to endpoint="Client1_Server_PktLEP"/>
+  </channel>
+  <channel name="Server_Client2_PktAck" type="pkt">
+    <from endpoint="Server_Client2_PktSEP"/>
+    <to endpoint="Client2_Server_PktLEP"/>
+  </channel>
+  <link name="Client1_Pkt" type="fullduplex">
+    <send channel="Client1_Server_PktSnd"/>
+    <ack channel="Server_Client1_PktAck"/>
+  </link>
+  <link name="Client2_Pkt" type="fullduplex">
+    <send channel="Client2_Server_PktSnd"/>
+    <ack channel="Server_Client2_PktAck"/>
+  </link>
+  <endpoint domain="1" node="2" port="21" name="Client1_Server_SclSEP"/>
+  <endpoint domain="1" node="3" port="22" name="Client2_Server_SclSEP"/>
+  <endpoint domain="1" node="2" port="23" name="Client1_Server_SclLEP"/>
+  <endpoint domain="1" node="3" port="24" name="Client2_Server_SclLEP"/>
+  <endpoint domain="1" node="4" port="25" name="Server_Client1_SclLEP"/>
+  <endpoint domain="1" node="4" port="26" name="Server_Client2_SclLEP"/>
+  <endpoint domain="1" node="4" port="27" name="Server_Client1_SclSEP"/>
+  <endpoint domain="1" node="4" port="28" name="Server_Client2_SclSEP"/>
+  <channel name="Client1_Server_SclSnd" type="scl">
+    <from endpoint="Client1_Server_SclSEP"/>
+    <to endpoint="Server_Client1_SclLEP"/>
+  </channel>
+  <channel name="Client2_Server_SclSnd" type="scl">
+    <from endpoint="Client2_Server_SclSEP"/>
+    <to endpoint="Server_Client2_SclLEP"/>
+  </channel>
+  <channel name="Server_Client1_SclAck" type="scl">
+    <from endpoint="Server_Client1_SclSEP"/>
+    <to endpoint="Client1_Server_SclLEP"/>
+  </channel>
+  <channel name="Server_Client2_SclAck" type="scl">
+    <from endpoint="Server_Client2_SclSEP"/>
+    <to endpoint="Client2_Server_SclLEP"/>
+  </channel>
+  <link name="Client1_Scl" type="fullduplex">
+    <send channel="Client1_Server_SclSnd"/>
+    <ack channel="Server_Client1_SclAck"/>
+  </link>
+  <link name="Client2_Scl" type="fullduplex">
+    <send channel="Client2_Server_SclSnd"/>
+    <ack channel="Server_Client2_SclAck"/>
+  </link>
+</topology>

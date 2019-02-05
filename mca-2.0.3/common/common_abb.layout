@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="../Fragments/mca_impl_spec_inc_abb.h" open="0" top="0" tabpos="3">
+		<Cursor position="118" topLine="0" />
+	</File>
+	<File name="Fragments/mca_utils_impl.c" open="0" top="0" tabpos="0">
+		<Cursor position="15541" topLine="465" />
+	</File>
+	<File name="Fragments/mca_utils_inc_abb.c" open="0" top="0" tabpos="2">
+		<Cursor position="364" topLine="0" />
+	</File>
+	<File name="mca_utils_abb.c" open="0" top="0" tabpos="1">
+		<Cursor position="1958" topLine="18" />
+	</File>
+	<File name="../mca_impl_spec_abb.h" open="0" top="0" tabpos="4">
+		<Cursor position="1602" topLine="20" />
+	</File>
+</CodeBlocks_layout_file>

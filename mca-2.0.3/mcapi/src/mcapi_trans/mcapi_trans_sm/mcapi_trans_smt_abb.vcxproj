@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BF6946A6-A904-45FD-9112-2CF398B4C0D3}</ProjectGuid>
+    <SccProjectName>SAK</SccProjectName>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccProvider>SAK</SccProvider>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>mcapi_trans_smt_abb</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IntDir>$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;..\..\..\include;..\..\..\..;..\..\..\..\common;..\..\..\..\common\win32;..\..\..\..\mrapi\include;..\..\..\..\mrapi\src\mrapi_impl;..\..\..\..\..\mxml-2.12</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(Configuration);mrapi\$(Configuration);..\..\..\..\common\$(Configuration);..\..\..\..\mrapi\$(Configuration);..\..\..\..\..\mxml-2.12\vcnet\$(Configuration)\$(Platform)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);common_abb.lib;mrapi_abb.lib;mcapi_trans_sm_abb.lib;transport_sm_mrapi_abb.lib;pdh.lib;mxml1.lib</AdditionalDependencies>
+      <Profile>true</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;..\..\..\include;..\..\..\..;..\..\..\..\common;..\..\..\..\common\win32;..\..\..\..\mrapi\include;..\..\..\..\mrapi\src\mrapi_impl;..\..\..\..\..\mxml-2.12</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(Configuration);mrapi\$(Configuration);..\..\..\..\common\$(Configuration);..\..\..\..\mrapi\$(Configuration);..\..\..\..\..\mxml-2.12\vcnet\</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies);common_abb.lib;mrapi_abb.lib;mcapi_trans_sm_abb.lib;transport_sm_mrapi_abb.lib;pdh.lib;mxml1.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fragments\mcapi_trans_smt_inc_abb.cpp" />
+    <None Include="Fragments\mcapi_trans_smt_stress.cpp" />
+    <None Include="Fragments\mcapi_trans_smt_type_abb.cpp" />
+    <None Include="Fragments\mcapi_trans_smt_threads_abb.cpp" />
+    <None Include="Fragments\mcapi_trans_smt_request_abb.cpp" />
+    <None Include="Fragments\mcapi_trans_smt_declaration_abb.cpp" />
+    <None Include="Fragments\mcapi_trans_smt_endpoint_abb.cpp" />
+    <None Include="Fragments\mcapi_trans_smt_msg_abb.cpp" />
+    <None Include="Fragments\mcapi_trans_smt_pktchan_abb.cpp" />
+    <None Include="Fragments\mcapi_trans_smt_sclchan_abb.cpp" />
+    <None Include="Fragments\mcapi_trans_smt_queue_abb.cpp" />
+    <None Include="Fragments\mcapi_trans_smt_initialize_abb.cpp" />
+    <ClCompile Include="mcapi_trans_smt_abb.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <None Include="mcapi_trans_smt.xml" />
+    <None Include="mcapi_trans_smt1.xml" />
+    <None Include="mcapi_trans_smt1f.xml" />
+    <None Include="mcapi_trans_smt1s.xml" />
+    <None Include="mcapi_trans_smt2.xml" />
+    <None Include="mcapi_trans_smt3.xml" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

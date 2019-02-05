@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="Fragments/sysvr4t_atomic.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="17892" topLine="455" />
+	</File>
+	<File name="Fragments/sysvr4t_inc_abb.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="Fragments/sysvr4t_sem.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="3003" topLine="87" />
+	</File>
+	<File name="Fragments/sysvr4t_threads_abb.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="14634" topLine="505" />
+	</File>
+	<File name="Fragments/sysvr4t_type.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="444" topLine="7" />
+	</File>
+	<File name="sysvr4t_abb.cpp" open="0" top="0" tabpos="2">
+		<Cursor position="329" topLine="0" />
+	</File>
+</CodeBlocks_layout_file>

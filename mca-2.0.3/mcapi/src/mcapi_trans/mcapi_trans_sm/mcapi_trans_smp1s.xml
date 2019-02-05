@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Messages in single address spaces, in presence of shared memory between processes -->
+<topology>
+  <endpoint domain="1" node="3" port="1" name="Client1_Server1_MsgSEP"/>
+  <endpoint domain="1" node="4" port="2" name="Client2_Server1_MsgSEP"/>
+  <endpoint domain="1" node="3" port="3" name="Client1_Server1_MsgLEP"/>
+  <endpoint domain="1" node="4" port="4" name="Client2_Server1_MsgLEP"/>
+  <endpoint domain="1" node="5" port="5" name="Server1_Client1_MsgLEP"/>
+  <endpoint domain="1" node="5" port="6" name="Server1_Client2_MsgLEP"/>
+  <endpoint domain="1" node="5" port="7" name="Server1_Client1_MsgSEP"/>
+  <endpoint domain="1" node="5" port="8" name="Server1_Client2_MsgSEP"/>
+  <channel name="Client1_Server1_MsgSnd" type="msg" buffer="STATE">
+    <from endpoint="Client1_Server1_MsgSEP"/>
+    <to endpoint="Server1_Client1_MsgLEP"/>
+  </channel>
+  <channel name="Client2_Server1_MsgSnd" type="msg" buffer="STATE">
+    <from endpoint="Client2_Server1_MsgSEP"/>
+    <to endpoint="Server1_Client2_MsgLEP"/>
+  </channel>
+  <channel name="Server1_Client1_MsgAck" type="msg" buffer="STATE">
+    <from endpoint="Server1_Client1_MsgSEP"/>
+    <to endpoint="Client1_Server1_MsgLEP"/>
+  </channel>
+  <channel name="Server1_Client2_MsgAck" type="msg" buffer="STATE">
+    <from endpoint="Server1_Client2_MsgSEP"/>
+    <to endpoint="Client2_Server1_MsgLEP"/>
+  </channel>
+  <link name="Client1_Server1_Msg" type="fullduplex">
+    <send channel="Client1_Server1_MsgSnd"/>
+    <ack channel="Server1_Client1_MsgAck"/>
+  </link>
+  <link name="Client2_Server1_Msg" type="fullduplex">
+    <send channel="Client2_Server1_MsgSnd"/>
+    <ack channel="Server1_Client2_MsgAck"/>
+  </link>
+  <endpoint domain="1" node="13" port="101" name="Client3_Server2_MsgSEP"/>
+  <endpoint domain="1" node="14" port="102" name="Client4_Server2_MsgSEP"/>
+  <endpoint domain="1" node="13" port="103" name="Client3_Server2_MsgLEP"/>
+  <endpoint domain="1" node="14" port="104" name="Client4_Server2_MsgLEP"/>
+  <endpoint domain="1" node="15" port="105" name="Server2_Client3_MsgLEP"/>
+  <endpoint domain="1" node="15" port="106" name="Server2_Client4_MsgLEP"/>
+  <endpoint domain="1" node="15" port="107" name="Server2_Client3_MsgSEP"/>
+  <endpoint domain="1" node="15" port="108" name="Server2_Client4_MsgSEP"/>
+  <channel name="Client3_Server2_MsgSnd" type="msg" buffer="STATE">
+    <from endpoint="Client3_Server2_MsgSEP"/>
+    <to endpoint="Server2_Client3_MsgLEP"/>
+  </channel>
+  <channel name="Client4_Server2_MsgSnd" type="msg" buffer="STATE">
+    <from endpoint="Client4_Server2_MsgSEP"/>
+    <to endpoint="Server2_Client4_MsgLEP"/>
+  </channel>
+  <channel name="Server2_Client3_MsgAck" type="msg" buffer="STATE">
+    <from endpoint="Server2_Client3_MsgSEP"/>
+    <to endpoint="Client3_Server2_MsgLEP"/>
+  </channel>
+  <channel name="Server2_Client4_MsgAck" type="msg" buffer="STATE">
+    <from endpoint="Server2_Client4_MsgSEP"/>
+    <to endpoint="Client4_Server2_MsgLEP"/>
+  </channel>
+  <link name="Client3_Server2_Msg" type="fullduplex">
+    <send channel="Client3_Server2_MsgSnd"/>
+    <ack channel="Server2_Client3_MsgAck"/>
+  </link>
+  <link name="Client4_Server2_Msg" type="fullduplex">
+    <send channel="Client4_Server2_MsgSnd"/>
+    <ack channel="Server2_Client4_MsgAck"/>
+  </link>
+  <endpoint domain="1" node="3" port="11" name="Client1_Server1_PktSEP"/>
+  <endpoint domain="1" node="4" port="12" name="Client2_Server1_PktSEP"/>
+  <endpoint domain="1" node="3" port="13" name="Client1_Server1_PktLEP"/>
+  <endpoint domain="1" node="4" port="14" name="Client2_Server1_PktLEP"/>
+  <endpoint domain="1" node="5" port="15" name="Server1_Client1_PktLEP"/>
+  <endpoint domain="1" node="5" port="16" name="Server1_Client2_PktLEP"/>
+  <endpoint domain="1" node="5" port="17" name="Server1_Client1_PktSEP"/>
+  <endpoint domain="1" node="5" port="18" name="Server1_Client2_PktSEP"/>
+  <channel name="Client1_Server1_PktSnd" type="pkt" buffer="STATE">
+    <from endpoint="Client1_Server1_PktSEP"/>
+    <to endpoint="Server1_Client1_PktLEP"/>
+  </channel>
+  <channel name="Client2_Server1_PktSnd" type="pkt" buffer="STATE">
+    <from endpoint="Client2_Server1_PktSEP"/>
+    <to endpoint="Server1_Client2_PktLEP"/>
+  </channel>
+  <channel name="Server1_Client1_PktAck" type="pkt" buffer="STATE">
+    <from endpoint="Server1_Client1_PktSEP"/>
+    <to endpoint="Client1_Server1_PktLEP"/>
+  </channel>
+  <channel name="Server1_Client2_PktAck" type="pkt" buffer="STATE">
+    <from endpoint="Server1_Client2_PktSEP"/>
+    <to endpoint="Client2_Server1_PktLEP"/>
+  </channel>
+  <link name="Client1_Server1_Pkt" type="fullduplex">
+    <send channel="Client1_Server1_PktSnd"/>
+    <ack channel="Server1_Client1_PktAck"/>
+  </link>
+  <link name="Client2_Server1_Pkt" type="fullduplex">
+    <send channel="Client2_Server1_PktSnd"/>
+    <ack channel="Server1_Client2_PktAck"/>
+  </link>
+  <endpoint domain="1" node="13" port="111" name="Client3_Server2_PktSEP"/>
+  <endpoint domain="1" node="14" port="112" name="Client4_Server2_PktSEP"/>
+  <endpoint domain="1" node="13" port="113" name="Client3_Server2_PktLEP"/>
+  <endpoint domain="1" node="14" port="114" name="Client4_Server2_PktLEP"/>
+  <endpoint domain="1" node="15" port="115" name="Server2_Client3_PktLEP"/>
+  <endpoint domain="1" node="15" port="116" name="Server2_Client4_PktLEP"/>
+  <endpoint domain="1" node="15" port="117" name="Server2_Client3_PktSEP"/>
+  <endpoint domain="1" node="15" port="118" name="Server2_Client4_PktSEP"/>
+  <channel name="Client3_Server2_PktSnd" type="pkt" buffer="STATE">
+    <from endpoint="Client3_Server2_PktSEP"/>
+    <to endpoint="Server2_Client3_PktLEP"/>
+  </channel>
+  <channel name="Client4_Server2_PktSnd" type="pkt" buffer="STATE">
+    <from endpoint="Client4_Server2_PktSEP"/>
+    <to endpoint="Server2_Client4_PktLEP"/>
+  </channel>
+  <channel name="Server2_Client3_PktAck" type="pkt" buffer="STATE">
+    <from endpoint="Server2_Client3_PktSEP"/>
+    <to endpoint="Client3_Server2_PktLEP"/>
+  </channel>
+  <channel name="Server2_Client4_PktAck" type="pkt" buffer="STATE">
+    <from endpoint="Server2_Client4_PktSEP"/>
+    <to endpoint="Client4_Server2_PktLEP"/>
+  </channel>
+  <link name="Client3_Server2_Pkt" type="fullduplex">
+    <send channel="Client3_Server2_PktSnd"/>
+    <ack channel="Server2_Client3_PktAck"/>
+  </link>
+  <link name="Client4_Server2_Pkt" type="fullduplex">
+    <send channel="Client4_Server2_PktSnd"/>
+    <ack channel="Server2_Client4_PktAck"/>
+  </link>
+  <endpoint domain="1" node="3" port="21" name="Client1_Server1_SclSEP"/>
+  <endpoint domain="1" node="4" port="22" name="Client2_Server1_SclSEP"/>
+  <endpoint domain="1" node="3" port="23" name="Client1_Server1_SclLEP"/>
+  <endpoint domain="1" node="4" port="24" name="Client2_Server1_SclLEP"/>
+  <endpoint domain="1" node="5" port="25" name="Server1_Client1_SclLEP"/>
+  <endpoint domain="1" node="5" port="26" name="Server1_Client2_SclLEP"/>
+  <endpoint domain="1" node="5" port="27" name="Server1_Client1_SclSEP"/>
+  <endpoint domain="1" node="5" port="28" name="Server1_Client2_SclSEP"/>
+  <channel name="Client1_Server1_SclSnd" type="scl" buffer="STATE">
+    <from endpoint="Client1_Server1_SclSEP"/>
+    <to endpoint="Server1_Client1_SclLEP"/>
+  </channel>
+  <channel name="Client2_Server1_SclSnd" type="scl" buffer="STATE">
+    <from endpoint="Client2_Server1_SclSEP"/>
+    <to endpoint="Server1_Client2_SclLEP"/>
+  </channel>
+  <channel name="Server1_Client1_SclAck" type="scl" buffer="STATE">
+    <from endpoint="Server1_Client1_SclSEP"/>
+    <to endpoint="Client1_Server1_SclLEP"/>
+  </channel>
+  <channel name="Server1_Client2_SclAck" type="scl" buffer="STATE">
+    <from endpoint="Server1_Client2_SclSEP"/>
+    <to endpoint="Client2_Server1_SclLEP"/>
+  </channel>
+  <link name="Client1_Server1_Scl" type="fullduplex">
+    <send channel="Client1_Server1_SclSnd"/>
+    <ack channel="Server1_Client1_SclAck"/>
+  </link>
+  <link name="Client2_Server1_Scl" type="fullduplex">
+    <send channel="Client2_Server1_SclSnd"/>
+    <ack channel="Server1_Client2_SclAck"/>
+  </link>
+  <endpoint domain="1" node="13" port="121" name="Client3_Server2_SclSEP"/>
+  <endpoint domain="1" node="14" port="122" name="Client4_Server2_SclSEP"/>
+  <endpoint domain="1" node="13" port="123" name="Client3_Server2_SclLEP"/>
+  <endpoint domain="1" node="14" port="124" name="Client4_Server2_SclLEP"/>
+  <endpoint domain="1" node="15" port="125" name="Server2_Client3_SclLEP"/>
+  <endpoint domain="1" node="15" port="126" name="Server2_Client4_SclLEP"/>
+  <endpoint domain="1" node="15" port="127" name="Server2_Client3_SclSEP"/>
+  <endpoint domain="1" node="15" port="128" name="Server2_Client4_SclSEP"/>
+  <channel name="Client3_Server2_SclSnd" type="scl" buffer="STATE">
+    <from endpoint="Client3_Server2_SclSEP"/>
+    <to endpoint="Server2_Client3_SclLEP"/>
+  </channel>
+  <channel name="Client4_Server2_SclSnd" type="scl" buffer="STATE">
+    <from endpoint="Client4_Server2_SclSEP"/>
+    <to endpoint="Server2_Client4_SclLEP"/>
+  </channel>
+  <channel name="Server2_Client3_SclAck" type="scl" buffer="STATE">
+    <from endpoint="Server2_Client3_SclSEP"/>
+    <to endpoint="Client3_Server2_SclLEP"/>
+  </channel>
+  <channel name="Server2_Client4_SclAck" type="scl" buffer="STATE">
+    <from endpoint="Server2_Client4_SclSEP"/>
+    <to endpoint="Client4_Server2_SclLEP"/>
+  </channel>
+  <link name="Client3_Server2_Scl" type="fullduplex">
+    <send channel="Client3_Server2_SclSnd"/>
+    <ack channel="Server2_Client3_SclAck"/>
+  </link>
+  <link name="Client4_Server2_Scl" type="fullduplex">
+    <send channel="Client4_Server2_SclSnd"/>
+    <ack channel="Server2_Client4_SclAck"/>
+  </link>
+</topology>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pdfsam_saved_jobs version="2.2.1" savedate="22-Dec-2012" selection="org.pdfsam.plugin.merge.GUI.MergeMainGUI">
+  <plugin class="org.pdfsam.guiclient.gui.panels.JInfoPanel" name="About"/>
+  <plugin class="org.pdfsam.plugin.mix.GUI.MixMainGUI" name="Alternate Mix">
+    <destination value=""/>
+    <step value="1"/>
+    <secondstep value="1"/>
+    <reverse_first value="false"/>
+    <reverse_second value="true"/>
+    <overwrite value="true"/>
+    <compressed value="true"/>
+    <pdfversion value="5"/>
+  </plugin>
+  <plugin class="org.pdfsam.plugin.merge.GUI.MergeMainGUI" name="Merge/Extract">
+    <filelist>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_1.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_2.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_3.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_4.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_5.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_6.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_7.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_8.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_9.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_10.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_11.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_12.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_13.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_14.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_15.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_16.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_17.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_18.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_19.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_20.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_21.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_22.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_23.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_24.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_25.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_26.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_27.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_28.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_29.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_30.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_31.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_32.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_33.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_34.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_35.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_36.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_37.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_38.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_39.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_39.1.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_39.2.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_39.3.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_39.4.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_39.5.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_39.6.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_40.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_41.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_42.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_43.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_44.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_45.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_46.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_47.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_48.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_49.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_50.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_51.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_52.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_53.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_54.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_55.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_56.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_57.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_58.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_59.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_60.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_61.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_62.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_63.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_64.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_65.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_66.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_67.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_68.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_69.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_70.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_71.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_72.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_73.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_74.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_75.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_76.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_77.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_78.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_79.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_80.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_81.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_82.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_83.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_84.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_85.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_86.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_87.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_88.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_89.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_90.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_91.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_92.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_93.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_94.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_95.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_96.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_97.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_98.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_99.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_100.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_101.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_102.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_103.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_104.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_105.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_106.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_107.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_108.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_109.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_110.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_111.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_112.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_113.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_114.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_115.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_116.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_117.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_118.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_119.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_120.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_121.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_122.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_123.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_124.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_125.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_126.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_127.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_128.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_129.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_130.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_131.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_132.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_133.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_134.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_135.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_136.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_137.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_138.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_139.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_140.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_141.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_142.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_143.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_144.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_145.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_146.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_147.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_148.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_149.pdf" pageselection="All"/>
+      <file name="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\pdfsam_mcapiV2000_100310_150.pdf" pageselection="All"/>
+    </filelist>
+    <destination value="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\mcapi_abbV2000_100310.pdf"/>
+    <overwrite value="true"/>
+    <merge_type value="false"/>
+    <compressed value="false"/>
+    <pdfversion value="7"/>
+  </plugin>
+  <plugin class="org.pdfsam.plugin.rotate.GUI.RotateMainGUI" name="Rotate">
+    <filelist/>
+    <rotation value="90"/>
+    <pages value="all"/>
+    <destination value=""/>
+    <overwrite value="true"/>
+    <compressed value="true"/>
+    <pdfversion value="5"/>
+    <prefix value="pdfsam_"/>
+  </plugin>
+  <plugin class="org.pdfsam.guiclient.gui.panels.JSettingsPanel" name="Settings"/>
+  <plugin class="org.pdfsam.plugin.split.GUI.SplitMainGUI" name="Split">
+    <source value="C:\Users\USERHAR1\Documents\TFS\Viper\Prototypes\mca-2.0.3\mcapi\doc\mcapiV2000_100310.pdf"/>
+    <split_option value="BURST"/>
+    <npages value=""/>
+    <thispage value=""/>
+    <splitsize value=""/>
+    <bookmarkslevel/>
+    <destination value=""/>
+    <prefix value="pdfsam_[BASENAME]_[CURRENTPAGE]"/>
+    <overwrite value="true"/>
+    <compressed value="false"/>
+    <pdfversion value="7"/>
+  </plugin>
+  <plugin class="org.pdfsam.plugin.vcomposer.GUI.VComposerMainGUI" name="Visual document composer">
+    <input-documents/>
+    <output-document/>
+    <destination value=""/>
+    <overwrite value="true"/>
+    <compressed value="true"/>
+    <pdfversion value="5"/>
+  </plugin>
+  <plugin class="org.pdfsam.plugin.vpagereorder.GUI.VPageReorderMainGUI" name="Visual reorder">
+    <source/>
+    <destination value=""/>
+    <overwrite value="true"/>
+    <compressed value="true"/>
+    <pdfversion value="5"/>
+  </plugin>
+</pdfsam_saved_jobs>

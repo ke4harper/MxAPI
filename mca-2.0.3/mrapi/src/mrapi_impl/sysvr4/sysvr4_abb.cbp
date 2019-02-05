@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="sysvr4_abb" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="libsysvr4_abb" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="libsysvr4_abb" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-fPIC" />
+			<Add directory="../../../include" />
+			<Add directory="../../../../../mca-2.0.3" />
+			<Add directory="../../mrapi_impl" />
+			<Add directory="../../../../common" />
+			<Add directory="../../../../../mxml-2.7" />
+		</Compiler>
+		<Unit filename="../Fragments/mrapi_sys_atomic.h" />
+		<Unit filename="../Fragments/mrapi_sys_inc_abb.h" />
+		<Unit filename="../Fragments/mrapi_sys_key.h" />
+		<Unit filename="../Fragments/mrapi_sys_os.h" />
+		<Unit filename="../Fragments/mrapi_sys_sem.h" />
+		<Unit filename="../Fragments/mrapi_sys_shmem.h" />
+		<Unit filename="../mrapi_sys_abb.h" />
+		<Unit filename="Fragments/sysvr4_atomic.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/sysvr4_inc_abb.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/sysvr4_key.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/sysvr4_os.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/sysvr4_sem.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="Fragments/sysvr4_shmem.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="sysvr4_abb.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

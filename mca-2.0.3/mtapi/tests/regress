@@ -1,0 +1,71 @@
+#!/usr/bin/env perl
+# -- -*-perl-*-a
+#
+
+use strict;
+
+
+use FindBin;
+use lib "$FindBin::RealBin/../scripts";
+use lib "$FindBin::RealBin/../share";
+#use Data::Dumper;
+use File::Basename;
+use rdriver;
+use File::Temp "tempfile";
+#use Math::BigInt lib => 'GMP';
+use Cwd;
+
+# these tests are all self checking
+my @tests;
+
+my $testdir = ".";
+opendir(DIR,"$testdir") or die "unable to open $testdir\n";
+
+my @test_list =  grep { $_ ne '.' and $_ ne '..' and ($_  =~ /(\S+)\.c$/) } readdir DIR;
+close DIR;
+
+create_tests();
+
+# looks for any .c files in this  directory and pushes them onto the tests list
+sub create_tests {  
+  sub make_test {
+    my $t = shift;
+    $t =~ s/\.c//;
+    next if ($t =~ /mtapi_test3/); # this test does not yet pass reliably
+    next if ($t =~ /mtapi_test2/); # this test does not yet pass reliably
+    return {
+	    cmd => "./$t &>$t.out",
+	    stdio => 1,
+	    checker => sub { check_results(); },
+            temps => ["$t.out"],
+	   };
+  }
+  
+  foreach my $t (@test_list) {
+    my %h;
+    push @tests,make_test($t);
+  }
+}
+
+# added checker routine here (if you want anything other than standard return code checking)
+sub check_results {
+}
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+#-------------------------------------------------------------
+# kick off the regression
+#-------------------------------------------------------------
+doTest(\@tests);
+

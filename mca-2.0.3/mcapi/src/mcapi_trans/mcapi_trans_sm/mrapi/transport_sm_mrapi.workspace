@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="transport_sm_mrapi">
+		<Project filename="transport_sm_mrapi.cbp" />
+		<Project filename="transport_sm_mrapi_abb.cbp" active="1" />
+		<Project filename="transport_sm_mrapit.cbp" />
+		<Project filename="transport_sm_mrapit_abb.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>

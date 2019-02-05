@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="mrapi_impl">
+		<Project filename="mrapi_impl.cbp" />
+		<Project filename="mrapi_impl_abb.cbp" />
+		<Project filename="mrapi_implt.cbp">
+			<Depends filename="mrapi_impl.cbp" />
+		</Project>
+		<Project filename="mrapi_implt_abb.cbp" active="1">
+			<Depends filename="mrapi_impl_abb.cbp" />
+		</Project>
+		<Project filename="mrapi_implp.cbp">
+			<Depends filename="mrapi_implt.cbp" />
+		</Project>
+		<Project filename="mrapi_implp_abb.cbp">
+			<Depends filename="mrapi_implt_abb.cbp" />
+		</Project>
+	</Workspace>
+</CodeBlocks_workspace_file>

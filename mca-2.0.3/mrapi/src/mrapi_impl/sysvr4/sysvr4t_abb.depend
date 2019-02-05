@@ -1,0 +1,138 @@
+# depslib dependency file v1.0
+1334675906 source:/home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/sysvr4/sysvr4t_abb.cpp
+	"Fragments/sysvr4t_inc_abb.cpp"
+	"Fragments/sysvr4t_type.cpp"
+	"Fragments/sysvr4t_threads_abb.cpp"
+	"Fragments/sysvr4t_key.cpp"
+	"Fragments/sysvr4t_sem.cpp"
+	"Fragments/sysvr4t_shmem.cpp"
+	"Fragments/sysvr4t_atomic.cpp"
+	"Fragments/sysvr4t_stress.cpp"
+
+1333655697 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/sysvr4/Fragments/sysvr4t_inc_abb.cpp
+	"stdafx.h"
+	<mrapi_sys_abb.h>
+
+1333655827 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/mrapi_sys_abb.h
+	"Fragments/mrapi_sys_inc_abb.h"
+	"Fragments/mrapi_sys_shmem.h"
+	"Fragments/mrapi_sys_sem.h"
+	"Fragments/mrapi_sys_key.h"
+	"Fragments/mrapi_sys_os.h"
+	"Fragments/mrapi_sys_atomic.h"
+
+1333655709 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_inc_abb.h
+	<inttypes.h>
+	<stdio.h>
+	<stdarg.h>
+	<unistd.h>
+	<pthread.h>
+	<tchar.h>
+	<mrapi_abb.h>
+
+1331927433 /home/keharper/mca-2.0.3/mrapi/include/mrapi_abb.h
+	"Fragments/mrapi_inc1_abb.h"
+	"Fragments/mrapi_inc2_abb.h"
+
+1331927433 /home/keharper/mca-2.0.3/mrapi/include/Fragments/mrapi_inc1_abb.h
+	<assert.h>
+	<stddef.h>
+	<mca_config_abb.h>
+	<inttypes.h>
+	"mca_abb.h"
+
+1331921971 /home/keharper/mca-2.0.3/mca_config_abb.h
+
+1331928349 /home/keharper/mca-2.0.3/mca_abb.h
+	"Fragments/mca_inc_abb.h"
+
+1331914661 /home/keharper/mca-2.0.3/Fragments/mca_inc_abb.h
+	"mca_impl_spec_abb.h"
+
+1334675906 /home/keharper/mca-2.0.3/mca_impl_spec_abb.h
+	<windows.h>
+	<tchar.h>
+	<pdh.h>
+	<pdhmsg.h>
+	"Fragments/mca_impl_spec_inc_abb.h"
+	"Fragments/mca_impl_spec_def.h"
+
+1334692894 /home/keharper/mca-2.0.3/Fragments/mca_impl_spec_inc_abb.h
+	<pthread.h>
+	<assert.h>
+	<stdarg.h>
+	"mca_config_abb.h"
+
+1331927433 /home/keharper/mca-2.0.3/mrapi/include/Fragments/mrapi_inc2_abb.h
+	"mrapi_impl_spec_abb.h"
+
+1331928349 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/mrapi_impl_spec_abb.h
+	"Fragments/mrapi_impl_spec_inc_abb.h"
+	"Fragments/mrapi_impl_spec_data_abb.h"
+	"Fragments/mrapi_impl_spec_proto_abb.h"
+
+1332960461 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_impl_spec_inc_abb.h
+	<stdint.h>
+	<inttypes.h>
+	<signal.h>
+	<pthread.h>
+	<unistd.h>
+	<time.h>
+	<sys/shm.h>
+	<sys/sem.h>
+	<sys/ipc.h>
+	<pwd.h>
+	<pthread.h>
+	<unistd.h>
+	<signal.h>
+	<sys/types.h>
+	<ctype.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<windows.h>
+	<mrapi_abb.h>
+	<mca_config_abb.h>
+	<mca_utils_abb.h>
+
+1332862695 /home/keharper/mca-2.0.3/common/mca_utils_abb.h
+	"Fragments/mca_utils_inc_abb.h"
+	"Fragments/mca_utils_proto.h"
+
+1332378042 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_inc_abb.h
+	<mca_impl_spec_abb.h>
+
+1334168019 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_impl_spec_data_abb.h
+
+1334022132 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_impl_spec_proto_abb.h
+
+1333727429 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_shmem.h
+
+1333655709 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_sem.h
+
+1332773587 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_key.h
+
+1331925153 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_atomic.h
+
+1334779020 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/sysvr4/Fragments/sysvr4t_threads_abb.cpp
+
+1332776485 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/sysvr4/Fragments/sysvr4t_key.cpp
+
+1333727168 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/sysvr4/Fragments/sysvr4t_sem.cpp
+
+1333727168 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/sysvr4/Fragments/sysvr4t_shmem.cpp
+
+1333727534 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/sysvr4/Fragments/sysvr4t_atomic.cpp
+
+1332789670 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/sysvr4/Fragments/sysvr4t_stress_abb.cpp
+
+1334779161 /home/keharper/mca-2.0.3/Fragments/mca_impl_spec_def.h
+
+1334675658 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_proto.h
+
+1334779020 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/sysvr4/Fragments/sysvr4t_stress.cpp
+
+1333655709 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_os.h
+
+1334757623 /home/keharper/mca-2.0.3/mrapi/src/mrapi_impl/sysvr4/Fragments/sysvr4t_type.cpp
+

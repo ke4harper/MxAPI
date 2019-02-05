@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="../../../include/mcapi_trans_abl.h" open="0" top="0" tabpos="0">
+		<Cursor position="8993" topLine="187" />
+	</File>
+	<File name="Fragments/transport_sm_config_abl.c" open="0" top="0" tabpos="0">
+		<Cursor position="7391" topLine="179" />
+	</File>
+	<File name="Fragments/transport_sm_inc_abl.c" open="0" top="0" tabpos="0">
+		<Cursor position="115" topLine="0" />
+	</File>
+	<File name="Fragments/transport_sm_initialize_abl.c" open="0" top="0" tabpos="0">
+		<Cursor position="2378" topLine="61" />
+	</File>
+	<File name="transport_sm_abl.h" open="0" top="0" tabpos="0">
+		<Cursor position="1845" topLine="30" />
+	</File>
+</CodeBlocks_layout_file>

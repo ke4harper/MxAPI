@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "transport_sm_mrapi", "transport_sm_mrapi.vcxproj", "{11E1BC65-3E3D-4B53-B87D-38DE77710E2F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "transport_sm_mrapit", "transport_sm_mrapit.vcxproj", "{E17D6AE0-B2D9-4436-8EF3-D21D02CAF078}"
+	ProjectSection(ProjectDependencies) = postProject
+		{11E1BC65-3E3D-4B53-B87D-38DE77710E2F} = {11E1BC65-3E3D-4B53-B87D-38DE77710E2F}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "transport_sm_mrapi_abb", "transport_sm_mrapi_abb.vcxproj", "{014691F1-CE1A-4254-A7B8-2454B45AB644}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "transport_sm_mrapit_abb", "transport_sm_mrapit_abb.vcxproj", "{8477A69E-38CD-42CC-A35B-49595758FC45}"
+	ProjectSection(ProjectDependencies) = postProject
+		{014691F1-CE1A-4254-A7B8-2454B45AB644} = {014691F1-CE1A-4254-A7B8-2454B45AB644}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://de-s-0178517.de.abb.com:8090/tfs/ocs
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = transport_sm_mrapi.vcxproj
+		SccLocalPath1 = .
+		SccProjectUniqueName2 = transport_sm_mrapit.vcxproj
+		SccLocalPath2 = .
+		SccProjectUniqueName3 = transport_sm_mrapi_abb.vcxproj
+		SccLocalPath3 = .
+		SccProjectUniqueName4 = transport_sm_mrapit_abb.vcxproj
+		SccLocalPath4 = .
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{11E1BC65-3E3D-4B53-B87D-38DE77710E2F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{11E1BC65-3E3D-4B53-B87D-38DE77710E2F}.Debug|Win32.Build.0 = Debug|Win32
+		{11E1BC65-3E3D-4B53-B87D-38DE77710E2F}.Release|Win32.ActiveCfg = Release|Win32
+		{11E1BC65-3E3D-4B53-B87D-38DE77710E2F}.Release|Win32.Build.0 = Release|Win32
+		{E17D6AE0-B2D9-4436-8EF3-D21D02CAF078}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E17D6AE0-B2D9-4436-8EF3-D21D02CAF078}.Debug|Win32.Build.0 = Debug|Win32
+		{E17D6AE0-B2D9-4436-8EF3-D21D02CAF078}.Release|Win32.ActiveCfg = Release|Win32
+		{E17D6AE0-B2D9-4436-8EF3-D21D02CAF078}.Release|Win32.Build.0 = Release|Win32
+		{014691F1-CE1A-4254-A7B8-2454B45AB644}.Debug|Win32.ActiveCfg = Debug|Win32
+		{014691F1-CE1A-4254-A7B8-2454B45AB644}.Debug|Win32.Build.0 = Debug|Win32
+		{014691F1-CE1A-4254-A7B8-2454B45AB644}.Release|Win32.ActiveCfg = Release|Win32
+		{014691F1-CE1A-4254-A7B8-2454B45AB644}.Release|Win32.Build.0 = Release|Win32
+		{8477A69E-38CD-42CC-A35B-49595758FC45}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8477A69E-38CD-42CC-A35B-49595758FC45}.Debug|Win32.Build.0 = Debug|Win32
+		{8477A69E-38CD-42CC-A35B-49595758FC45}.Release|Win32.ActiveCfg = Release|Win32
+		{8477A69E-38CD-42CC-A35B-49595758FC45}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

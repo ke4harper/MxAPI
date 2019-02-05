@@ -1,0 +1,47 @@
+# depslib dependency file v1.0
+1332862695 source:/home/keharper/mca-2.0.3/common/mca_utils.c
+	"Fragments/mca_utils_inc.c"
+	"Fragments/mca_utils_impl.c"
+
+1332864620 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_inc.c
+	<stdlib.h>
+	<pthread.h>
+	<windows.h>
+	<inttypes.h>
+	<stdio.h>
+	<unistd.h>
+	<string.h>
+	<stdarg.h>
+	"mca_config.h"
+	<signal.h>
+	"mca_utils.h"
+
+1332948145 /home/keharper/mca-2.0.3/mca_config.h
+
+1332862695 /home/keharper/mca-2.0.3/common/mca_utils.h
+	"Fragments/mca_utils_inc.h"
+	"Fragments/mca_utils_proto.h"
+
+1332378042 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_inc.h
+	<mca_impl_spec.h>
+
+1334675906 /home/keharper/mca-2.0.3/mca_impl_spec.h
+	<windows.h>
+	<tchar.h>
+	<pdh.h>
+	<pdhmsg.h>
+	"Fragments/mca_impl_spec_inc.h"
+	"Fragments/mca_impl_spec_def.h"
+
+1334755962 /home/keharper/mca-2.0.3/Fragments/mca_impl_spec_def.h
+
+1334692656 /home/keharper/mca-2.0.3/Fragments/mca_impl_spec_inc.h
+	<pthread.h>
+	<assert.h>
+	<stdarg.h>
+	"mca_config.h"
+
+1334675658 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_proto.h
+
+1334756598 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_impl.c
+
