@@ -62,6 +62,13 @@ The benefits are that the elements being versioned in source code control are sh
 
 ## API Conventions
 
+Naming conventions in software development bring a consistent framework that is shared by the participants and can have a dramatic impact on productivity. The Multicore Association reference implementation is in the C programming language. For that development environment, function and variable names must be unique within a scope. Unfortunately for C, the scope often times is global requiring names be made unique by lengthy family name prefixes. That makes them longer to type out and more difficult to identify in the body of the code.  
+
+An alternative is to use a naming convention that is terse and does not conflict with other names in the same scope. The goal is to have function names almost be part of the programming language, similar to what is possible with programming languages that have named scopes. For example, in C# the <b>lock()</b> operation can be performed on almost any object.  
+
+    Proposed Syntax:
+    <result> = <operation_name>_([<arg.]*), where <operation_name> is terse and the trailing underscore (_) identifies our namespace.
+    For example, lock_(<object_handle>)
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
