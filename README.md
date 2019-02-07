@@ -176,4 +176,4 @@ Each element in a doubly linked list has both a forward (next) and backward (pre
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
 <a name="Multicore">3</a>: Multicore Association, http://www.multicore-association.org/index.php  
 <a name="DesignRules">4</a>: StackOverflow Discussion, http://stackoverflow.com/questions/3609469/what-are-the-thread-limitations-when-working-on-linux-compared-to-processes-for  
-<a name="Sundell2008">4</a>: Sundell, H., Tsigas, P., Lock-free deques and doubly linked lists, Journal of Parallel and Distributed Computing , Vol. 68, pp. 1008-1020 (2008).  
+<a name="Sundell2008">5</a>: Sundell, H., Tsigas, P., "Lock-free deques and doubly linked lists", Journal of Parallel and Distributed Computing , Vol. 68, pp. 1008-1020 (2008).  
