@@ -121,14 +121,14 @@ The message topology is static for the life cycle of the device configuration. N
 
 The MCAPI runtime is enhanced to provide three functions:  
 
-PUBLIC  
-extern void mcapi_node_collect(  
-    MCAPI_IN mca_domain_t domain_id,  
-    MCAPI_IN mcapi_node_t node_num,  
-    MCAPI_IN mxml_node_t* root,  
-    MCAPI_OUT mcapi_config_t* config,  
-    MCAPI_IN mca_timeout_t timeout,  
-    MCAPI_OUT mcapi_status_t* mcapi_status);  
+    <p>PUBLIC  
+    extern void mcapi_node_collect(  
+        MCAPI_IN mca_domain_t domain_id,  
+        MCAPI_IN mcapi_node_t node_num,  
+        MCAPI_IN mxml_node_t* root,  
+        MCAPI_OUT mcapi_config_t* config,  
+        MCAPI_IN mca_timeout_t timeout,  
+        MCAPI_OUT mcapi_status_t* mcapi_status);</p>
 
 PUBLIC  
 extern void mcapi_node_connect(  
