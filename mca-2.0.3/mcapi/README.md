@@ -163,6 +163,20 @@ The MCAPI reference implementation provides a FIFO policy for message ordering. 
 
 The same receive queue and buffer resources can be used to implement state messages. The details of the lock-free algorithm are described below. Queue entries are used as multiple buffers indexed by an atomic counter. Requests are not needed as the sender is never blocked and receivers retry until there is no buffer collision, which will never occur because of the large number of queue entries.  
 
+## Unix Considerations
+
+All of the lock-free benefits from MCAPI refactoring are based on the assumption that atomic operations are possible across processes. This has been demonstrated and validated for MRAPI, but still needs to be proven for MCAPI. The MCAPI atomic operation APIs have a reserved argument that is intended to provide the necessary Unix support for spinning, as described in more detail below. For example,  
+
+    void mrapi_atomic_cas(
+        MRAPI_OUT void* sync,
+        MRAPI_IN void* dest,
+        MRAPI_IN void* exchange,
+        MRAPI_IN void* compare,
+        MRAPI_OUT void* previous,
+        MRAPI_IN size_t size,
+        MRAPI_OUT mrapi_status_t* status);
+
+
 
 
 <a name="Sundell2008">1</a>: Sundell, H., Tsigas, P., "Lock-free deques and doubly linked lists", Journal of Parallel and Distributed Computing , Vol. 68, pp. 1008-1020 (2008).  
