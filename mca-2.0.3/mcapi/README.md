@@ -176,6 +176,68 @@ All of the lock-free benefits from MCAPI refactoring are based on the assumption
         MRAPI_IN size_t size,
         MRAPI_OUT mrapi_status_t* status);
 
+The first argument is a reference to a set of shared memory application types only used for spinning on Unix:
+
+    /* atomic operation mode */
+    typedef enum {
+      MRAPI_ATOMIC_WRITE = 0,
+      MRAPI_ATOMIC_READ,
+      MRAPI_ATOMIC_NONE
+    } mrapi_atomic_mode_t;
+    
+    /* base message object;
+       messages include this as first member of their struct */
+    typedef struct {
+      mrapi_boolean_t valid; /* MRAPI_FALSE when MRAPI_ATOMIC_WRITE, MRAPI_TRUE otherwise */
+      unsigned txn; /* transaction ID */
+      uint16_t counter; /* non-blocking buffer synchronization */
+      uint16_t tindex; /* reference to mca_timestamp_t (FUTURE) */
+    } mrapi_msg_t;
+
+    /* atomic sync object */
+    typedef struct {
+      unsigned* pindex; /* buffer index reference */
+      unsigned last_counter; /* non-blocking buffer previous state */
+      mrapi_boolean_t hold; /* MRAPI_TRUE if valid msg flag should be retained
+                               across atomic calls; last call must release */
+      mrapi_boolean_t override; /* one-time override to allow specified mode */
+      mrapi_boolean_t active; /* MRAPI_TRUE if caller holds sync */
+    } mrapi_atomic_sync_t;
+
+    /* sync descriptor for non-Windows cross-process atomic operations */
+    typedef struct {
+      mrapi_atomic_mode_t mode;
+      mrapi_boolean_t xchg; /* read only when valid, write only when invalid;
+                               flip flag state on completion */
+      mca_timeout_t timeout;
+      pid_t src; /* local */
+      pid_t dest; /* remote; local proc == remote proc, not sync required */
+      unsigned elems; /* number of buffer elements */
+      size_t size; /* element size */
+      mrapi_atomic_sync_t sync;
+      mrapi_msg_t* buffer; /* messages */
+    } mrapi_atomic_barrier_t;
+
+These structures are managed and used internally by the following routines:
+
+    mrapi_boolean_t sys_atomic_barrier_init(
+      mrapi_atomic_barrier_t* axb,pid_t src,pid_t dest,mrapi_msg_t* buffer,
+      unsigned elems,size_t size,unsigned* pindex,mca_timeout_t timeout);
+    mrapi_boolean_t sys_atomic_exchange_init(
+      mrapi_atomic_barrier_t* axb,pid_t src,pid_t dest,mrapi_msg_t* buffer,
+      unsigned elems,size_t size,unsigned* pindex,mca_timeout_t timeout);
+
+    void atomic_barrier_mode(void* sync,mrapi_atomic_mode_t mode)
+    void try_atomic_barrier_acquire(void* sync);
+    void atomic_barrier_release(void* sync);
+
+The barrier initialization function <b>sys_atomic_barrier_init</b> supplies the source and destination process IDs, an array of multiple buffers with its extent and element size, a reference to a buffer index, and a timeout for how long the atomic operation should wait before failing. The corresponding MRAPI function is <b>mrapi_barrier_init</b>. The buffer has as the first member of each element the <b>mrapi_msg_t</b> structure. A MRAPI barrier on non-Windows platforms where the source and destination process IDs differ uses the counter in the element at the referenced index to indicate to readers and other writers of that element that a write is in progress so tasks in other processes with conflicting access spin until they can obtain ownership.  
+
+The exchange initialization function <b>sys_atomic_exchange_init</b> has the same parameters as the atomic barrier initialization, but provides slightly different semantics. The corresponding MRAPI function is <b>mrapi_exchange_init</b>. A MRAPI exchange barrier on non-Windows platforms where the source and destination process IDs differ uses the valid flag in the element at the referenced index to indicate to readers that a write is in progress, and to a writer that a read is in progress. The writer passes ownership to the reader when it completes and the reader passes ownership to the writer when it completes. This has little applicability other then specific concurrency test scenarios.  
+
+The <b>atomic_barrier_mode</b>, <b>try_atomic_barrier_acquire</b> and <b>atomic_barrier_release</b> operations are called internal to the concurrency runtime. The mode function sets the mode for atomic barrier, e.g. <b>MRAPI_ATOMIC_READ</b> for read access or <b>MRAPI_ATOMIC_WRITE</b> for write access. A sequence diagram for an example atomic barrier read is shown below, and the corresponding one for write afterwards. The exchange barrier sequences are similar but only used for specific concurrency tests.  
+
+The acquire operation is a NOOP if the source and destination process IDs are the same. Otherwise the index is used to select the current element in the buffer associated with the atomic operation. The acquire operation, based on the type of barrier and mode, spins waiting for the right conditions before returning. After the atomic operation is completed the release operation, based on the type of barrier and mode, spins waiting for the right conditions before returning.  
 
 
 
