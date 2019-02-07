@@ -62,9 +62,20 @@ Linux performs better than Windows in a single CPU RTP deployment, but Windows o
 
 *Platform and Memory Access Tradeoffs*
 
+#### Design Rules
+The I/O performance numbers indicate a single runtime implementation for both Windows and Linux does not provide optimal results. Here are some design rules<sup>[4](#DesignRules)</sup> from the Unix perspective that can guide the platform variants and deliver the best performance.
+1.	If you want to make debugging easier, use threads.
+2.	If you are on Windows, use threads (Processes are extremely heavyweight in Windows).
+3.		If stability is a huge concern, try to use processes (One SIGSEGV/PIPE is all it takes…).
+4.	If threads are not available, use processes (Not so common now, but it did happen).
+5.	If your threads share resources that can’t be used from multiple processes, use threads. (Or provide an IPC mechanism to allow communicating with the “owner” thread of the resource).
+6.	If you use resources that are only available on a one-per-process basis, obviously use processes.
+7.	If your processing contexts share absolutely nothing (such as a socket server that spawns and forgets connections as it accept(s) them), and CPU is a bottleneck, use processes and single-threaded runtimes (which are devoid of all kinds of intensive locking such as on the heap and other places).
+8.	One of the biggest differences between threads and processes is this: [On Linux] Threads use software constructs to protect data structures, processes use hardware (which is significantly faster).
 
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
 <a name="Multicore">3</a>: Multicore Association, http://www.multicore-association.org/index.php  
+<a name="DesignRules">4</a>: StackOverflow Discussion, http://stackoverflow.com/questions/3609469/what-are-the-thread-limitations-when-working-on-linux-compared-to-processes-for  
