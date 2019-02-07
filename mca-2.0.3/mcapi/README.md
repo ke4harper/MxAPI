@@ -127,7 +127,9 @@ A queue entry in the BUFFER_FREE state does not have a buffer associated with it
 
 *MCAPI Buffer Entry Transitions*
 
+State message data exchange uses the same buffer state definitions as FIFO queue but the transitions are managed slightly different as shown in the figure above. All changes to state are performed using atomic operations where the previous state is verified.  
 
+A buffer entry in the BUFFER_FREE state does not have a buffer associated with it. The entry transitions to the BUFFER_RESERVED state once a buffer is allocated for it. This guards the entry from use by other clients until the buffer is written, where the state transitions to BUFFER_ALLOCATED. For non-packet messages the buffer remains allocated and overwritten. Otherwise, the receiver controls the buffer entry state. For packet messages, the state transitions to BUFFER_RECEIVED when the receiver decides to read the buffer entry. If during the read the writer detects the state and replaces the buffer with a new one. On the other hand, if the read completes without a collision the state transitions back to BUFFER_RESERVED for reuse.  
 
 
 <a name="Sundell2008">1</a>: Sundell, H., Tsigas, P., "Lock-free deques and doubly linked lists", Journal of Parallel and Distributed Computing , Vol. 68, pp. 1008-1020 (2008).  
