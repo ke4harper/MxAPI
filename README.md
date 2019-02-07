@@ -89,6 +89,11 @@ Data consistency across address spaces and for non-atomic types requires explici
 
 There are two classes of communication: state and event. For lock-free state messaging, the Non-blocking Write protocol (NBW)<sup>[5](#Kopetz1993)</sup> is used. As shown in the figure above, this covers a scenario where it does not make sense to block the writer. Single writer, multiple concurrent reader configurations are possible. The design has the following properties:  
 
+1.	Safety property – if a read operation completes successfully, it must be guaranteed that it has read an uncorrupted version.
+2.	Timeliness property – the tasks containing the read operations must complete their executions before deadline, and
+3.	Non-blocking property – the writer cannot be blocked by readers.
+
+The algorithm is implemented with an atomic counter, initially set to zero. The approach is similar to optimistic record locking in databases. Each time the writer has a new value, it first increments the counter, writes the value into the next available buffer, and then increments the counter again. A reader grabs the value of the counter, reads the value in the associated buffer, and then checks to see if the value was corrupted while it was being read. If the value was overwritten during the process of reading (counter tests odd), the reader attempts to read again. The more buffers the less likely it is there will be a collision between reading and writing.  
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
