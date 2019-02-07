@@ -239,9 +239,13 @@ The <b>atomic_barrier_mode</b>, <b>try_atomic_barrier_acquire</b> and <b>atomic_
 
 The acquire operation is a NOOP if the source and destination process IDs are the same. Otherwise the index is used to select the current element in the buffer associated with the atomic operation. The acquire operation, based on the type of barrier and mode, spins waiting for the right conditions before returning. After the atomic operation is completed the release operation, based on the type of barrier and mode, spins waiting for the right conditions before returning.  
 
-![Barrier](img/Example Atomic Barrier Read.png)
+![BarrierRead](img/Example Atomic Barrier Read.png)
 
 *Example Atomic Barrier Read*
+
+![BarrierWrite](img/Example Atomic Barrier Write.png)
+
+*Example Atomic Barrier Write*
 
 
 
