@@ -41,6 +41,11 @@ MRAPI is the Multicore Resource Management API that handles memory management, b
 #### Portability Sensitivity
 Adding a portability layer to the runtime stack may have a performance impact. Anecdotally, stack frames can cause overhead in preparing and returning function arguments. On the other hand, compilers today are very efficient at using registers to speed many of the common operations.  
 
+![SingleCPU](img/Portability Sensitivity - Single CPU.png)
+
+*Portability Sensitivity - Single CPU*
+
+
 
 
 
