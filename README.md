@@ -83,6 +83,11 @@ The source code compiler used to build the embedded image for VxWorks generates 
 
 Data consistency across address spaces and for non-atomic types requires explicit programming instructions.
 
+![StateMessaging](img/Lock-Free State Messaging.png)
+
+*Lock-Free State Messaging*
+
+
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
 <a name="Multicore">3</a>: Multicore Association, http://www.multicore-association.org/index.php  
