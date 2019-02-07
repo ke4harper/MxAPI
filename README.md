@@ -80,7 +80,9 @@ One of the solution assumptions is that communication between tasks is “fricti
 
 *Atomic Operations Across Processes*
 
+On Windows it is possible to duplicate a shared memory handle and pass it to another process so it can access the same physical memory. When the two processes are attached any InterlockedXXX operations work to block one process’ access to a memory location while the other is engaged with the same location. The atomic CPU instructions act as very lightweight locks for guaranteeing data is not corrupted.  
 
+On Linux it is not possible to share the same physical memory between processes, so a spin wait technique is used instead. One process copies the data to be exchanged into shared memory, and the other process copies the data from shared memory to receive the exchange. A counter in the shared memory is incremented by the writer at the beginning of an update and again when the update is complete. The writer has ownership when the counter is odd, and the reader has ownership when the counter is even. Experiments show this technique does not consume substantial CPU resources and exchanges data reliably.  
 
 
 
