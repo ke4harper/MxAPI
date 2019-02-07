@@ -127,7 +127,7 @@ Message buffers, either NBW or NBB, can be composed to provide more complex mess
 
 *Multiple Producers, One Consumer*
 
-![OneToMany](img/1P-StartC.png)
+![OneToMany](img/1P-StarC.png)
 
 *One Producer, Multiple Consumers*
 
