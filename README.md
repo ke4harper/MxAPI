@@ -164,9 +164,13 @@ A flag is used in shared memory to indicate if a buffer slot is owned by the Pro
     READ message from read buffer
     TRANSFER read buffer flag ownership to writer
     BARRIER
-	    INCREMENT read buffer index
+    INCREMENT read buffer index
 
+BARRIER indicates a full memory barrier where all main memory reads and writes are guaranteed to be complete before continuing.  
 
+What is interesting is that if the Producer has more than one message to write, it will run unblocked until all the available (owned by Producer) buffers are filled. The same happens with the Consumer in that if there are multiple messages available (owned by Consumer) to read, it will run unblocked until the messages have been processed.   
+
+Experiments on Windows show that this spinning [SleepEx(0,0)] consumes all available CPU resources on the cores where the Producer and Consumer threads are running. On the other hand, Linux spinning [sched_yield()] consumes almost no CPU on the running cores. That makes spinning very attractive for Linux especially since we have no guarantee of atomic CPU instructions across shared memory between processes. Windows can still use the defined NBW, NBB designs because atomic operations across processes are possible for that platform.  
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
