@@ -11,7 +11,7 @@ The objective for the concurrency libraries and tools is to accelerate embedded 
 ### Logical Tasks
 Given that a task is a set of instructions that can run without being blocked; the interactions between tasks and their resources can be modeled as a graph. The nodes are tasks and resources, and the edges are communication between them. Figure 3 below shows a top level view of this graph. Depending on the interactions some tasks should be “closer” to each other (Message Neighborhood), meaning performance is improved by reducing the communication latencies.  
 
-![TAsks](img/MxAPI Tasks, Messages and Resources.png)
+![Tasks](img/MxAPI Tasks, Messages and Resources.png)
 
 *MxAPI Tasks, Messages and Resources*
 
@@ -29,6 +29,11 @@ The fundamental building block for communication is the one-way channel, either 
 ### Shared Memory
 Given a message abstraction that can survive hardware changes, what is the best messaging implementation technique possible today? Viper task communication can be based on available multicore hardware and SMP operating systems, with a modifiable software structure to support future variants. On shared memory architectures (multicore), the most efficient data exchange is through shared memory. Shared memory offers a high bandwidth, low latency alternative<sup>[2](#Smith2012)</sup>. Using shared memory requires making decisions about the end points, such as how message ownership is transferred from producer to consumer and whether it is necessary to copy received messages into private buffers.
 ### Concurrency Runtime
+
+![Runtime](img/MxAPI Concurrency Runtime.png)
+
+*MxAPI Concurrency Runtime*
+
 
 
 
