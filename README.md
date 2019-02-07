@@ -150,4 +150,4 @@ The lack of atomic CPU operations does not preclude lock-free data exchange. Spi
 <a name="Multicore">3</a>: Multicore Association, http://www.multicore-association.org/index.php  
 <a name="PowerPC">4</a>: PowerPC storage model and AIX programming, http://www.ibm.com/developerworks/systems/articles/powerpc.html (2005).  
 <a name="Kopetz1993">5</a>: Kopetz, Reisinger, "The Non-Blocking Write Protocol NBW: A solution to a Real-Time Synchronization Problem". In Real Time Systems Symposium, pp 131-137 (1993).  
-<a name="Unrau1998">5</a>: Unrau, Krieger, Efficient Sleep/Wake-up Protocols for User-Level IPC. In Inter. Conf. On Parallel Processing, pp. 560-569 (1998).
+<a name="Unrau1998">6</a>: Unrau, Krieger, Efficient Sleep/Wake-up Protocols for User-Level IPC. In Inter. Conf. On Parallel Processing, pp. 560-569 (1998).
