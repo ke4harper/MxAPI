@@ -70,6 +70,10 @@ An alternative is to use a naming convention that is terse and does not conflict
     <result> = <operation_name>_([<arg.]*), where <operation_name> is terse and the trailing underscore (_) identifies our namespace.
     For example, lock_(<object_handle>)
 
+The semantics of the operation can be managed without needing a type-specific operation name. Object handles in the reference implementation are generally indexes into fixed arrays. Typically the maximum index value is far less than the largest number able to be stored in the handle variable. The high order bits of the handle can be used as a mask to indicate which type of handle, and then the corresponding type-specific operation is called underneath. This allows type-specific interpretation of generic operation names.  
+
+
+
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
