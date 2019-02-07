@@ -170,6 +170,15 @@ The overall goal in refactoring MCAPI is to eliminate the single kernel lock wit
 
 Each element in a doubly linked list has both a forward (next) and backward (prev) reference to reduce the processing overhead needed to insert and remove elements at any location in the list. Lock-free techniques make use of CPU atomic operations but it is not possible to simultaneously update two memory locations reliably. Sundell and Tsigas<sup>[5](#Sundell2008)</sup> provide a set of algorithms that reliably update the next references and then “clean up” any errors in the prev references.
 
+The first version of this refactoring is shown in the figure above. In anticipation that the lock-free doubly linked list approach would be impossible using spinning on Linux, the request lists were moved from global shared memory to process memory and bindings previous made from queue messages to requests were reversed. This means an asynchronous request may only be completed by a task in the same process. Functionally the lock-free algorithms worked properly as validated by the unit tests but full confidence could not be confirmed until the kernel lock was removed.  
+
+#### Lock-Free Queues
+
+![MCAPILockFree](img/MCAPI Lock-free Queues.png)
+
+*MCAPI Lock-free Queues*
+
+
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
