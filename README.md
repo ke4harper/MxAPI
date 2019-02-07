@@ -66,7 +66,7 @@ Linux performs better than Windows in a single CPU RTP deployment, but Windows o
 The I/O performance numbers indicate a single runtime implementation for both Windows and Linux does not provide optimal results. Here are some design rules<sup>[4](#DesignRules)</sup> from the Unix perspective that can guide the platform variants and deliver the best performance.
 1.	If you want to make debugging easier, use threads.
 2.	If you are on Windows, use threads (Processes are extremely heavyweight in Windows).
-3.		If stability is a huge concern, try to use processes (One SIGSEGV/PIPE is all it takes…).
+3.	If stability is a huge concern, try to use processes (One SIGSEGV/PIPE is all it takes…).
 4.	If threads are not available, use processes (Not so common now, but it did happen).
 5.	If your threads share resources that can’t be used from multiple processes, use threads. (Or provide an IPC mechanism to allow communicating with the “owner” thread of the resource).
 6.	If you use resources that are only available on a one-per-process basis, obviously use processes.
