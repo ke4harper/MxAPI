@@ -156,6 +156,15 @@ The runtime can be additionally enhanced to support a task querying the configur
 
 *MCAPI Reference Design*
 
+The Multicore Association’s top priority is to guide and direct the API specifications leaving products and markets to the vendors. However, they provide reference implementations of the concurrency runtimes as a starting point and to validate the specifications. The MCAPI reference design uses traditional lock-based techniques for handling concurrency and appears to mainly address issues related to multiple threads on a single processor.  
+
+The reference design is shown in the figure above. The implementation uses global shared memory, guarded by a single kernel lock, enabling data exchange between tasks and processors on a single device. The producer endpoints (ep) insert messages into consumer ep FIFO receive queues, where each queue entry (m) is bound to a reusable message buffer. Request objects are used to track asynchronous send and receive operations, allowing a separate task to complete an operation started by the originator. Consumers can reserve queue elements that will be filled later by producers.  
+
+#### Lock-Free Requests (Version 1)
+
+![MCAPIVersion1](img/MCAPI Lock-free Requests, Version 1.png)
+
+*MCAPI Lock-free Requests, Version 1*
 
 
 
