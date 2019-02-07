@@ -99,7 +99,41 @@ The algorithm is implemented with an atomic counter, initially set to zero. The 
 
 *Lock-Free Event Messaging*
 
-The Non-Blocking Buffer (NBB)<sup>[1](#Kim2007)</sup> is used for lock-free event messaging. As shown in Figure 23 above there are now two atomic counters, one for the Producer and one for the Consumer. The underlying data structure is a ring buffer between them where event messages are passed without experiencing blocked states. The NBB is a circular FIFO queue where the two counters, update and acknowledge, ensure the Producer and Consumer always access different slots in the ring buffer. The size of the NBB needs to be able to accommodate message bursts.  
+The Non-Blocking Buffer (NBB)<sup>[1](#Kim2007)</sup> is used for lock-free event messaging. As shown in the figure above there are now two atomic counters, one for the Producer and one for the Consumer. The underlying data structure is a ring buffer between them where event messages are passed without experiencing blocked states. The NBB is a circular FIFO queue where the two counters, update and acknowledge, ensure the Producer and Consumer always access different slots in the ring buffer. The size of the NBB needs to be able to accommodate message bursts.  
+
+The two counters guard the two sections of the ring buffer: 1) the portion available to write, and 2) the portion available to read. Similar to NBW, each counter is incremented before an operation starts, and then again after the operation completes.  
+
+The <b>InsertItem</b> operation either succeeds or returns one of two errors:
+
+1.	BUFFER_FULL – there is no room for additional items, the caller should yield the processor and retry, perhaps after some delay, or
+2.	BUFFER_FULL_BUT_CONSUMER_READING – there is not room for additional items, but the caller should not yield the processor and retry immediately a limited number of times with no delay.  
+
+The ReadItem operation either succeeds or returns one of two errors:
+
+1.	BUFFER_EMPTY – there are not pending items to be read, the caller should yield the processor and retry, perhaps after some delay, or
+2.	BUFFER_EMPTY_BUT_PRODUCER_INSERTING – there are no pending items to read, but the caller should not yield the processor and retry immediately a limited number of times with no delay.  
+
+The same design properties from NBW can be tested here:
+
+1.	Safety property – guarantee of uncorrupted read holds true,
+2.	Timeliness property – read operations either complete successfully with no delay, fail with a limited number of immediate retries (not compromising the deadline), or fail with indication to attempt the read in the next cycle,
+3.	Non-blocking property – write operations either complete successfully with no delay, or fail with a limited number of immediate retries (not blocking further processing) if the reader is stalled for any reason.
+
+Another benefit of NBB: event messages do not need to necessarily be copied into the buffer as part of the <b>InsertItem</b> operation, nor do they need to be copied out of the buffer as part of the <b>ReadItem</b> operation. Given a large enough pool of messages, the writer can allocate one for its use in preparing the message and when complete insert the pointer into the buffer. The reader then takes ownership of that pointer and uses it in its processing, explicitly releasing ownership when it is done to recycle the pointer back to the writer. As long as both the writer and reader use the messages for limited periods of time, no explicit copy is needed and the data exchange latency does not grow if the size of the message gets bigger.  
+
+Message buffers, either NBW or NBB, can be composed to provide more complex messaging designs. For example, the figure below shows NBBs combined for a message concentrator with multiple producers feeding a single consumer (*P/1C).  One NBB is used for each producer and the consumer has a strategy, for example round robin, for determining which NBB is read next.  
+
+![ManyToOne](img/StarP-1C.png)
+
+*Multiple Producers, One Consumer*
+
+![OneToMany](img/1P-StartC.png)
+
+*One Producer, Multiple Consumers*
+
+
+
+
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
