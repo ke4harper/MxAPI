@@ -131,6 +131,14 @@ Message buffers, either NBW or NBB, can be composed to provide more complex mess
 
 *One Producer, Multiple Consumers*
 
+Additionally, the figure above shows a different design for one producer feeding multiple consumers (1P/*C). There are multiple strategies for how messages are distributed, including:  
+
+1.	Unicast – different, independent messages to each consumer,
+2.	Broadcast – the same message to each consumer,
+3.	Multicast – the same message to a subset of the consumers, and
+4.	Anycast – a message read by one consumer is no longer available to the other consumers.
+
+A combination of these designs could provide many-to-many (*P/*C) structures. The important thing to note is that they are all lock-free and do not incur substantial latency to communicate between Producer and Consumer, given the assumptions of shared memory and atomic CPU operations.  
 
 
 
