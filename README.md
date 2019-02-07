@@ -73,6 +73,15 @@ The I/O performance numbers indicate a single runtime implementation for both Wi
 7.	If your processing contexts share absolutely nothing (such as a socket server that spawns and forgets connections as it accept(s) them), and CPU is a bottleneck, use processes and single-threaded runtimes (which are devoid of all kinds of intensive locking such as on the heap and other places).
 8.	One of the biggest differences between threads and processes is this: [On Linux] Threads use software constructs to protect data structures, processes use hardware (which is significantly faster).
 
+#### Atomic Operations Across Processes
+One of the solution assumptions is that communication between tasks is “frictionless”, i.e. very low latency. The lock-free techniques use synchronization between tasks and for RTP deployments this must be available across processes. One task must not be able to corrupt the data used by another task. Our experiments demonstrate this capability. As shown in the figure below, the techniques are different for Windows and Linux.
+
+![ProcessAtomic](img/Atomic Operations Across Processes.png)
+
+*Atomic Operations Across Processes*
+
+
+
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
