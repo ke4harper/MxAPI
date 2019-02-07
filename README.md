@@ -178,6 +178,9 @@ The first version of this refactoring is shown in the figure above. In anticipat
 
 *MCAPI Lock-free Queues*
 
+With the request lists refactored, the next focus was on the message receive queues. The original implementation uses a circular array with external head and tail references. The kernel lock is completely reliable in guarding this data structure, but removing the lock creates problems from simultaneous message buffer allocations from multiple clients.  
+
+The head and tail references and queue bookkeeping are replaced by the lock-free algorithms<sup>[1](#Kim2007)</sup>. The FIFO receive queue is refactored to allow concurrent access across task and process boundaries. All object (e.g. message) state changes are performed with atomic operations, and the single kernel lock is finally removed.  
 
 
 
