@@ -239,6 +239,11 @@ The <b>atomic_barrier_mode</b>, <b>try_atomic_barrier_acquire</b> and <b>atomic_
 
 The acquire operation is a NOOP if the source and destination process IDs are the same. Otherwise the index is used to select the current element in the buffer associated with the atomic operation. The acquire operation, based on the type of barrier and mode, spins waiting for the right conditions before returning. After the atomic operation is completed the release operation, based on the type of barrier and mode, spins waiting for the right conditions before returning.  
 
+![Barrier](img/Example Atomic Barrier Read.png)
+
+*Example Atomic Barrier Read*
+
+
 
 
 <a name="Sundell2008">1</a>: Sundell, H., Tsigas, P., "Lock-free deques and doubly linked lists", Journal of Parallel and Distributed Computing , Vol. 68, pp. 1008-1020 (2008).  
