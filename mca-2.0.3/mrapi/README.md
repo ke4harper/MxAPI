@@ -30,7 +30,7 @@ Linux performs better than Windows in a single CPU RTP deployment, but Windows o
 *Platform and Memory Access Tradeoffs*
 
 ## Design Rules
-The I/O performance numbers indicate a single runtime implementation for both Windows and Linux does not provide optimal results. Here are some design rules<sup>[4](#DesignRules)</sup> from the Unix perspective that can guide the platform variants and deliver the best performance.
+The I/O performance numbers indicate a single runtime implementation for both Windows and Linux does not provide optimal results. Here are some design rules<sup>[1](#DesignRules)</sup> from the Unix perspective that can guide the platform variants and deliver the best performance.
 1.	If you want to make debugging easier, use threads.
 2.	If you are on Windows, use threads (Processes are extremely heavyweight in Windows).
 3.	If stability is a huge concern, try to use processes (One SIGSEGV/PIPE is all it takes…).
@@ -50,4 +50,6 @@ One of the solution assumptions is that communication between tasks is “fricti
 On Windows it is possible to duplicate a shared memory handle and pass it to another process so it can access the same physical memory. When the two processes are attached any InterlockedXXX operations work to block one process’ access to a memory location while the other is engaged with the same location. The atomic CPU instructions act as very lightweight locks for guaranteeing data is not corrupted.  
 
 On Linux it is not possible to share the same physical memory between processes, so a spin wait technique is used instead. One process copies the data to be exchanged into shared memory, and the other process copies the data from shared memory to receive the exchange. A counter in the shared memory is incremented by the writer at the beginning of an update and again when the update is complete. The writer has ownership when the counter is odd, and the reader has ownership when the counter is even. Experiments show this technique does not consume substantial CPU resources and exchanges data reliably.  
+
+<a name="DesignRules">1</a>: StackOverflow Discussion, http://stackoverflow.com/questions/3609469/what-are-the-thread-limitations-when-working-on-linux-compared-to-processes-for  
 
