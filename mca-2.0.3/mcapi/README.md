@@ -137,10 +137,11 @@ A buffer entry in the BUFFER_FREE state does not have a buffer associated with i
 
 *MCAPI Lock-Free Requests, Version 2*
 
+There were open issues that resulted from removing the single kernel lock, especially regarding event message reliability and consistency. All indications pointed to problems with the request list bookkeeping, as the scalar messaging (which does not use requests) worked successfully under stress and the other messaging did not. A new refactoring of the request lists was executed with better success.  
 
-
+The revelation was that request index management did not require lists. This is reinforced by a very interesting presentation<sup>[3](#Acton2012)</sup> regarding whether a doubly linked list can be successfully implemented as a lock-free algorithm. Instead, a request is either a member of the full set or not. This can be implemented as a bit set and managed using CPU atomic operations. Selection from the bit set for available request indexes are randomized to reduce the collision between concurrent clients. The changes are shown in Figure 16 above. 
 
 
 <a name="Sundell2008">1</a>: Sundell, H., Tsigas, P., "Lock-free deques and doubly linked lists", Journal of Parallel and Distributed Computing , Vol. 68, pp. 1008-1020 (2008).  
 <a name="Kim2007">2</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
-
+<a name="Acton2012">3</a>: Acton, M., "Diving Down the Concurrency Rabbit Hole", Insomniac Games (2012).
