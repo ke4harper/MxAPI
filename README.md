@@ -147,8 +147,8 @@ The lack of atomic CPU operations does not preclude lock-free data exchange. Spi
 A flag is used in shared memory to indicate if a buffer slot is owned by the Producer or Consumer. As shared memory is managed in pages (1024 bytes), the flag is located close to the buffer address to ensure that if the flag is updated, the data is as well. The typical sequences of operations for polling are:  
 
     Initialization:
-		    SET write buffer index to zero
-		    SET read buffer index to zero
+	    SET write buffer index to zero
+	    SET read buffer index to zero
     Writer:
     WHILE write buffer flag is owned by Consumer,
 	    YIELD processor
