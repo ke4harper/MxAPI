@@ -95,6 +95,11 @@ There are two classes of communication: state and event. For lock-free state mes
 
 The algorithm is implemented with an atomic counter, initially set to zero. The approach is similar to optimistic record locking in databases. Each time the writer has a new value, it first increments the counter, writes the value into the next available buffer, and then increments the counter again. A reader grabs the value of the counter, reads the value in the associated buffer, and then checks to see if the value was corrupted while it was being read. If the value was overwritten during the process of reading (counter tests odd), the reader attempts to read again. The more buffers the less likely it is there will be a collision between reading and writing.  
 
+![EventMessaging](img/Lock-Free Event Messaging.png)
+
+*Lock-Free Event Messaging*
+
+
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
 <a name="Multicore">3</a>: Multicore Association, http://www.multicore-association.org/index.php  
