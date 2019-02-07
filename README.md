@@ -38,6 +38,8 @@ The MxAPI concurrency runtimes are based on the specifications being developed a
 ## RESULTS
 ### MRAPI
 MRAPI is the Multicore Resource Management API that handles memory management, basic synchronization, resource registration, and resource partitioning. The reference implementation uses an operating system semaphore guarding a shared memory database to provide user mode synchronization and resource objects.  
+
+Determining whether a concurrency approach satisfies the architectural non-functional requirements means running tests to verify the I/O performance and validate deterministic and reliable communication.  
 #### Portability Sensitivity
 Adding a portability layer to the runtime stack may have a performance impact. Anecdotally, stack frames can cause overhead in preparing and returning function arguments. On the other hand, compilers today are very efficient at using registers to speed many of the common operations.  
 
@@ -79,6 +81,35 @@ One of the solution assumptions is that communication between tasks is “fricti
 ![ProcessAtomic](img/Atomic Operations Across Processes.png)
 
 *Atomic Operations Across Processes*
+
+On Windows it is possible to duplicate a shared memory handle and pass it to another process so it can access the same physical memory. When the two processes are attached any InterlockedXXX operations work to block one process’ access to a memory location while the other is engaged with the same location. The atomic CPU instructions act as very lightweight locks for guaranteeing data is not corrupted.  
+
+On Linux it is not possible to share the same physical memory between processes, so a spin wait technique is used instead. One process copies the data to be exchanged into shared memory, and the other process copies the data from shared memory to receive the exchange. A counter in the shared memory is incremented by the writer at the beginning of an update and again when the update is complete. The writer has ownership when the counter is odd, and the reader has ownership when the counter is even. Experiments show this technique does not consume substantial CPU resources and exchanges data reliably.  
+
+### MCAPI
+MCAPI is the Multicore Communications API that supports synchronization and data exchange between tasks running on different cores. It provides blocking and non-blocking operations for connection-less messages, and connection-oriented packet and scalar data exchange. The reference implementation is designed with a user-mode (MRAPI) reader-write lock guarding a shared memory database for FIFO data exchange.  
+
+Data exchange between tasks and processes using both state- and event-based communication is a key capability for any real-time software design. One approach is to depend on the RTOS runtime for IPC. The alternative is to design and implement a lightweight concurrency runtime that makes minimal use of the operating system and avoids the associated kernel overhead.  
+
+#### Unit Tests
+The MCAPI unit tests exercise the internal APIs that make up the runtime implementation. The external (according to Multicore Association specification) APIs are thin wrappers over the internal functions. Each function is called in turn with invalid and valid parameters. Using white box techniques, internal data structures are exposed to the unit tests and these are validated for expected pre- and post-conditions implemented as assertions. The unit tests form a safety net so if the implementation is revised or changed, test execution will rapidly reveal the regression.  
+
+Having these tests dramatically increases confidence for taking risk in major refactoring experiments. For example, first the lock-based MCAPI reference implementation was built and verified using an initial version of the unit tests. Then the locks were removed incrementally as the unit tests verified continuously that there were no regressions. Finally the unit tests were updated to reflect and confirm the internal white box changes made to enhance the lock-free implementation.  
+
+The categories of MCAPI unit tests are:
+1.	Runtime initialization and rundown
+2.	Requests
+3.	Endpoints
+4.	Queues
+5.	Messages
+6.	Packets
+7.	Scalars
+
+#### Message Topology
+
+![Topology](img/Example Message Topology.png)
+
+*Example Message Topology*
 
 
 
