@@ -121,6 +121,14 @@ Receive FIFO queue entries are marked in the original implementation with a bool
 
 A queue entry in the BUFFER_FREE state does not have a buffer associated with it. Once a queue entry is available to receive a message it transitions to the BUFFER_RESERVED state. This guards the entry from use by other clients until a free buffer can be linked to the entry, where the state transitions to BUFFER_ALLOCATED. When the message is at the head of the receive queue it is marked as BUFFER_RECEIVED to keep other listeners on the same endpoint from trying to read its buffer. The queue entry returns to the BUFFER_FREE state when the receive operation is complete.  
 
+### Buffer Entry Transitions
+
+![MCAPIBuffer](img/MCAPI Buffer Entry Transitions.png)
+
+*MCAPI Buffer Entry Transitions*
+
+
+
 
 <a name="Sundell2008">1</a>: Sundell, H., Tsigas, P., "Lock-free deques and doubly linked lists", Journal of Parallel and Distributed Computing , Vol. 68, pp. 1008-1020 (2008).  
 <a name="Kim2007">2</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
