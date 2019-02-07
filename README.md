@@ -140,7 +140,9 @@ Additionally, the figure above shows a different design for one producer feeding
 
 A combination of these designs could provide many-to-many (*P/*C) structures. The important thing to note is that they are all lock-free and do not incur substantial latency to communicate between Producer and Consumer, given the assumptions of shared memory and atomic CPU operations.  
 
+## Spinning
 
+The lack of atomic CPU operations does not preclude lock-free data exchange. Spinning<sup>[6](#Unrau1998)</sup> uses shared memory and appropriate polling of flags to determine when it is safe to read or write a shared memory location. This technique works when the polling does not consume substantial amounts of CPU resource.  
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
@@ -148,3 +150,4 @@ A combination of these designs could provide many-to-many (*P/*C) structures. Th
 <a name="Multicore">3</a>: Multicore Association, http://www.multicore-association.org/index.php  
 <a name="PowerPC">4</a>: PowerPC storage model and AIX programming, http://www.ibm.com/developerworks/systems/articles/powerpc.html (2005).  
 <a name="Kopetz1993">5</a>: Kopetz, Reisinger, "The Non-Blocking Write Protocol NBW: A solution to a Real-Time Synchronization Problem". In Real Time Systems Symposium, pp 131-137 (1993).  
+<a name="Unrau1998">5</a>: Unrau, Krieger, Efficient Sleep/Wake-up Protocols for User-Level IPC. In Inter. Conf. On Parallel Processing, pp. 560-569 (1998).
