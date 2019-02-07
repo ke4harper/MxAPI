@@ -157,6 +157,14 @@ The stress tests are run both with all tasks set for CPU affinity to one core, a
 
 The tasks run until a maximum number of transactions have been sent / received. At this point the runtime statistics, such as elapsed time and possibly CPU utilization, are collected and reported. Then the message configuration is used to release the channels and endpoints and the concurrency runtime is run down.  
 
+## State Message Policy
+
+The MCAPI reference implementation provides a FIFO policy for message ordering. The specification also defines that messages can be delivered in FIFO order for each priority level, although this is not implemented. But a vast majority of scenarios for multi-core communication have no requirement for ordering. In other words, we only communicate the current value of a variable reliably and without corruption. For this a state message policy is needed.  
+
+The same receive queue and buffer resources can be used to implement state messages. The details of the lock-free algorithm are described below. Queue entries are used as multiple buffers indexed by an atomic counter. Requests are not needed as the sender is never blocked and receivers retry until there is no buffer collision, which will never occur because of the large number of queue entries.  
+
+
+
 <a name="Sundell2008">1</a>: Sundell, H., Tsigas, P., "Lock-free deques and doubly linked lists", Journal of Parallel and Distributed Computing , Vol. 68, pp. 1008-1020 (2008).  
 <a name="Kim2007">2</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Acton2012">3</a>: Acton, M., "Diving Down the Concurrency Rabbit Hole", Insomniac Games (2012).
