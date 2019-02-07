@@ -86,4 +86,4 @@ Data consistency across address spaces and for non-atomic types requires explici
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
 <a name="Multicore">3</a>: Multicore Association, http://www.multicore-association.org/index.php  
-<a name="PowerPC">3</a>: PowerPC storage model and AIX programming, http://www.ibm.com/developerworks/systems/articles/powerpc.html (2005).  
+<a name="PowerPC">4</a>: PowerPC storage model and AIX programming, http://www.ibm.com/developerworks/systems/articles/powerpc.html (2005).  
