@@ -45,8 +45,12 @@ Adding a portability layer to the runtime stack may have a performance impact. A
 
 *Portability Sensitivity - Single CPU*
 
+The portability layer running on a single CPU does not have any significant impact on performance as shown by the 1x speedup calculations in the table above. In general, data exchange within a single isolated process is more efficient than when two processes have shared memory between them, with the exception of process-to-process compared to task-to-task memory access in the RTP deployment. What is interesting is that Private exchange (using global memory) between two tasks is slower when the process is also connected to another process via shared memory. This suggests the OS memory manager is adding some overhead even for access within the same address space. The exception is Linux Native where the compiler may be optimizing inline coding. Finally, the portability layer actually reduces latency on Linux within an isolated process. This may be due to pipelined processing in the CPU.  
+The portability layer running on multicore also does not have a significant impact on performance as shown by the 1x speedup calculations in the table below. Memory access within an isolated process does not perform much better (1.4x max.) than between two tasks in the presence of shared memory, and actually performs incrementally better between two processes on both Windows and Linux. Like single CPU, process-to-process memory access performs better than task-to-task in the RTP deployment.  
 
+![MultiCPU](img/Portability Sensitivity – Multicore.png)
 
+*Portability Sensitivity – Multicore*
 
 
 
