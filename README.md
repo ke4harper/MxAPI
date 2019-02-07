@@ -119,6 +119,33 @@ The test scenarios represent different message topologies, i.e. which tasks can 
 
 The message topology is static for the life cycle of the device configuration. Node assignment to a task or process is independent of topology, and can vary based on the technology stack and deployment configuration. Each task parses the XML message topology specification and interprets the contents based on its domain and node assignment.  
 
+The MCAPI runtime is enhanced to provide three functions:  
+
+PUBLIC  
+extern void mcapi_node_collect(  
+    MCAPI_IN mca_domain_t domain_id,  
+    MCAPI_IN mcapi_node_t node_num,  
+    MCAPI_IN mxml_node_t* root,  
+    MCAPI_OUT mcapi_config_t* config,  
+    MCAPI_IN mca_timeout_t timeout,  
+    MCAPI_OUT mcapi_status_t* mcapi_status);  
+
+PUBLIC  
+extern void mcapi_node_connect(  
+    MCAPI_IN mca_domain_t domain_id,  
+    MCAPI_IN mcapi_node_t node_num,  
+    MCAPI_OUT mcapi_config_t* config,  
+    MCAPI_IN mca_timeout_t timeout,  
+    MCAPI_OUT mcapi_status_t* mcapi_status);  
+
+PUBLIC  
+extern void mcapi_node_disconnect(  
+    MCAPI_IN mca_domain_t domain_id,  
+    MCAPI_IN mcapi_node_t node_num,  
+    MCAPI_OUT mcapi_config_t* config,  
+    MCAPI_IN mca_timeout_t timeout,  
+    MCAPI_OUT mcapi_status_t* mcapi_status);  
+
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
