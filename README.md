@@ -53,6 +53,16 @@ The portability layer running on multicore also does not have a significant impa
 
 *Portability Sensitivity – Multicore*
 
+#### One-Way Communication Performance
+The one-way communication channel is the building block for all other messaging structures, including full-duplex, one-to-many, etc. Prior studies of RTOS messaging performance was in the 10’s of thousands and the requirements were met by buffering many messages in the same transaction. Much higher transaction rates are possible using lock-free techniques, as shown in the table below. The throughputs are in the 100’s of thousands of transactions per second, and the channel propagation delays are less than 10 microseconds. Data exchange within isolated processes is more efficient by a significant amount so this must be balanced with the reliability that comes from real-time processes. Note also that as latency increases so does the throughput, making the number of requests bandwidth fairly constant.  
+
+Linux performs better than Windows in a single CPU RTP deployment, but Windows out-paces Linux on both Kernel and RTP multicore deployments. For both platforms it makes sense to go to multicore because of the speedups (as much as 3.3x on Windows) that are achieved. The exception is Linux RTP where the latency increases by more than a factor of 2, but the throughput increases as well. The bottom line based on Requests bandwidth is that on multicore, Windows performs better with a pool of threads and Linux performs better with a pool of processes.  
+
+![Tradeoffs](img/Platform and Memory Access Tradeoffs.png)
+
+*Platform and Memory Access Tradeoffs*
+
+
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
