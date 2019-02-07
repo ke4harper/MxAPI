@@ -37,8 +37,8 @@ Given a message abstraction that can survive hardware changes, what is the best 
 The MxAPI concurrency runtimes are based on the specifications being developed and published by the Multicore Association<sup>[3](#Multicore)</sup>. The figure above shows the high level runtime stack with design layers corresponding to the Multicore Association reference implementation, shown in solid blue, and the Viper enhancements to the specifications shown in lighter blue. Key extensions are support for the Microsoft Windows operating system in addition to embedded RTOS, and real-time processes as well as kernel (single address space) deployments. Other ideas are first class support for atomic operations that enable lock-free algorithms, even across address spaces using shared memory duplication, and virtual time to allow simulations to run slower or faster than real-time.  
 ## RESULTS
 [MRAPI](./mca-2.0.3/mrapi/README.md)  
-[MCAPI](./mca-2.0.3/mcapi/README.md)
-[MTAPI](./mca-2.0.3/mtapi/README.md)
+[MCAPI](./mca-2.0.3/mcapi/README.md)  
+[MTAPI](./mca-2.0.3/mtapi/README.md)  
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
