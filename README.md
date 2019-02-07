@@ -192,9 +192,9 @@ Debugging race conditions is non-trivial in high throughput, low latency designs
 
 *MCAPI Request Transitions*
 
+Requests in the original implementation are marked with several boolean flags that indicate if the request is valid, completed, or cancelled. These flags were replaced with the state transition diagram shown in the figure above. All changes to state are performed using atomic operations where the previous state is verified.  
 
-
-
+A request in the REQUEST_FREE state is available for any client to identify a pending asynchronous operation, e.g. opening a channel, sending a message, etc. Once the request is allocated its state changes to REQUEST_VALID. For all operations other than asynchronous send, completion of the request changes the state to REQUEST_COMPLETED. For the exceptional send case, the request is marked as REQUEST_RECEIVED until the buffer can be confirmed received, and then the request state changes to REQUEST_COMPLETED. The request is then transitioned back to the available pool by changing its state to REQUEST_FREE. Cancelling a pending receive request (send requests always complete) changes the state to REQUEST_CANCELLED, and then REQUEST_FREE to make the cancelled request ID available for future operations.  
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
