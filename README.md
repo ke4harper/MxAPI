@@ -144,6 +144,29 @@ A combination of these designs could provide many-to-many (*P/*C) structures. Th
 
 The lack of atomic CPU operations does not preclude lock-free data exchange. Spinning<sup>[6](#Unrau1998)</sup> uses shared memory and appropriate polling of flags to determine when it is safe to read or write a shared memory location. This technique works when the polling does not consume substantial amounts of CPU resource.  
 
+A flag is used in shared memory to indicate if a buffer slot is owned by the Producer or Consumer. As shared memory is managed in pages (1024 bytes), the flag is located close to the buffer address to ensure that if the flag is updated, the data is as well. The typical sequences of operations for polling are:  
+
+    Initialization:
+		    SET write buffer index to zero
+		    SET read buffer index to zero
+    Writer:
+    WHILE write buffer flag is owned by Consumer,
+	    YIELD processor
+    ENDWHILE
+    INSERT message into write buffer
+    TRANSFER write buffer flag ownership to reader
+    BARRIER
+    INCREMENT write buffer index
+    Reader:
+    WHILE read buffer flag is owned by Producer,
+	    YIELD processor
+    ENDWHILE
+    READ message from read buffer
+    TRANSFER read buffer flag ownership to writer
+    BARRIER
+	    INCREMENT read buffer index
+
+
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
