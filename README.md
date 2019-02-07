@@ -48,6 +48,17 @@ One of the hurdles becoming productive in a software implementation that is inte
 
 *Variant Management*
 
+A proposed alternative to this is to use code fragments. This concept is very new, but recent experiments have shown promise both in source code control management strategies and in debugging and making changes to the implementation.  
+
+The implementation is organized as a set of Areas, where each area is responsible for a capability or feature of the product. Each area contains Components that have specific roles and responsibilities. A component’s functionality is based on a collection of binaries which are built from file compilation units or source files.  
+
+![Fragments](img/Software Fragments Example.png)
+
+*Software Fragments Example*
+
+
+
+
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
