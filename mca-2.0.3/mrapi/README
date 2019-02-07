@@ -1,7 +1,3 @@
-# MRAPI
-
-## Reference implementation README
-
 This implementation is a prototype implementation of MRAPI.  A spec has not 
 yet been published by the Multicore Association.  We implemented the
 bare minimum set of functionality needed for our initial (shared memory)
