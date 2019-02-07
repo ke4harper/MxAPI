@@ -202,7 +202,7 @@ A request in the REQUEST_FREE state is available for any client to identify a pe
 
 *MCAPI Queue Entry Transitions*
 
-Receive FIFO queue entries are marked in the original implementation with a boolean flag indicating if the entry is valid or not. This flag was replaced with state transition diagram shown in Figure 14 above. All changes to state are performed using atomic operations where the previous state is verified.  
+Receive FIFO queue entries are marked in the original implementation with a boolean flag indicating if the entry is valid or not. This flag was replaced with state transition diagram shown in the figure above. All changes to state are performed using atomic operations where the previous state is verified.  
 
 A queue entry in the BUFFER_FREE state does not have a buffer associated with it. Once a queue entry is available to receive a message it transitions to the BUFFER_RESERVED state. This guards the entry from use by other clients until a free buffer can be linked to the entry, where the state transitions to BUFFER_ALLOCATED. When the message is at the head of the receive queue it is marked as BUFFER_RECEIVED to keep other listeners on the same endpoint from trying to read its buffer. The queue entry returns to the BUFFER_FREE state when the receive operation is complete.  
 
