@@ -56,7 +56,11 @@ The implementation is organized as a set of Areas, where each area is responsibl
 
 *Software Fragments Example*
 
+Typically source files have thousands of lines of code implementing many functions. The proposed technique is to break these files up into fragments that are composed into file compilation units using the compiler #include directive in a top level or index source file, as shown in the figure above.  
 
+The benefits are that the elements being versioned in source code control are shared by many variants or specific to a variant, and single stepping with the debugger only shows the code for the variant that was built, not all the variants with their conditional compiler directives. In this example the variants are separating the baseline Multicore Association reference implementation from ABB enhancements, but the same could be used to implement pools of threads for Windows compared to pools of processes for Linux.  
+
+## API Conventions
 
 
 
