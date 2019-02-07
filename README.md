@@ -146,6 +146,9 @@ The MCAPI runtime is enhanced to provide three functions:
         MCAPI_IN mca_timeout_t timeout,  
         MCAPI_OUT mcapi_status_t* mcapi_status);  
 
+where <i>root</i> is the parsed DOM (Document Object Model) for the XML message topology declaration and <i>config</i> is the corresponding in-memory representation. When a task calls the mcapi_node_collect function it parses all the endpoints, connections and links to an internal representation. When the mcapi_node_connect function is called it allocates all the necessary endpoints and connections associated with that task based on the configured domain and node IDs. When a task calls the mcapi_node_disconnect function the related connections and endpoints are run down and the resources are released.  
+
+The runtime can be additionally enhanced to support a task querying the configuration to discover the declared configuration and link types. Full duplex link pattern is only one of many possible, for example *P/1C, 1P/*C, *P/*C, etc. where P represents producer and C consumer. Based on the link types there can be standard operations, for example subscribe to a server task or broadcast to a set of listeners.  
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
