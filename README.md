@@ -119,6 +119,36 @@ The test scenarios represent different message topologies, i.e. which tasks can 
 
 The message topology is static for the life cycle of the device configuration. Node assignment to a task or process is independent of topology, and can vary based on the technology stack and deployment configuration. Each task parses the XML message topology specification and interprets the contents based on its domain and node assignment.  
 
+The MCAPI runtime is enhanced to provide three functions:  
+
+    PUBLIC  
+    extern void mcapi_node_collect(  
+        MCAPI_IN mca_domain_t domain_id,  
+        MCAPI_IN mcapi_node_t node_num,  
+        MCAPI_IN mxml_node_t* root,  
+        MCAPI_OUT mcapi_config_t* config,  
+        MCAPI_IN mca_timeout_t timeout,  
+        MCAPI_OUT mcapi_status_t* mcapi_status);
+
+    PUBLIC  
+    extern void mcapi_node_connect(  
+        MCAPI_IN mca_domain_t domain_id,  
+        MCAPI_IN mcapi_node_t node_num,  
+        MCAPI_OUT mcapi_config_t* config,  
+        MCAPI_IN mca_timeout_t timeout,  
+        MCAPI_OUT mcapi_status_t* mcapi_status);  
+
+    PUBLIC  
+    extern void mcapi_node_disconnect(  
+        MCAPI_IN mca_domain_t domain_id,  
+        MCAPI_IN mcapi_node_t node_num,  
+        MCAPI_OUT mcapi_config_t* config,  
+        MCAPI_IN mca_timeout_t timeout,  
+        MCAPI_OUT mcapi_status_t* mcapi_status);  
+
+where <i>root</i> is the parsed DOM (Document Object Model) for the XML message topology declaration and <i>config</i> is the corresponding in-memory representation. When a task calls the <b>mcapi_node_collect</b> function it parses all the endpoints, connections and links to an internal representation. When the <b>mcapi_node_connect</b> function is called it allocates all the necessary endpoints and connections associated with that task based on the configured domain and node IDs. When a task calls the <b>mcapi_node_disconnect</b> function the related connections and endpoints are run down and the resources are released.    
+
+The runtime can be additionally enhanced to support a task querying the configuration to discover the declared configuration and link types. Full duplex link pattern is only one of many possible, for example *P/1C, 1P/*C, *P/*C, etc. where P represents producer and C consumer. Based on the link types there can be standard operations, for example subscribe to a server task or broadcast to a set of listeners.  
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
