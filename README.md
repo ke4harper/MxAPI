@@ -182,6 +182,19 @@ With the request lists refactored, the next focus was on the message receive que
 
 The head and tail references and queue bookkeeping are replaced by the lock-free algorithms<sup>[1](#Kim2007)</sup>. The FIFO receive queue is refactored to allow concurrent access across task and process boundaries. All object (e.g. message) state changes are performed with atomic operations, and the single kernel lock is finally removed.  
 
+#### Finite State Transitions
+
+Debugging race conditions is non-trivial in high throughput, low latency designs. The main challenge is introduction of measurements or log output causes changes to the runtime dynamics. The concurrency defect is either hidden or shifted to other locations in the code. A robust technique that resolves this dilemma is to design finite state transitions for each object type and then assert that only those transitions are allowed.  
+
+##### Request Transitions
+
+![MCAPIRequest](img/MCAPI Request Transitions.png)
+
+*MCAPI Request Transitions*
+
+
+
+
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
