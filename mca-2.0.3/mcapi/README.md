@@ -141,6 +141,15 @@ There were open issues that resulted from removing the single kernel lock, espec
 
 The revelation was that request index management did not require lists. This is reinforced by a very interesting presentation<sup>[3](#Acton2012)</sup> regarding whether a doubly linked list can be successfully implemented as a lock-free algorithm. Instead, a request is either a member of the full set or not. This can be implemented as a bit set and managed using CPU atomic operations. Selection from the bit set for available request indexes are randomized to reduce the collision between concurrent clients. The changes are shown in the figure above. 
 
+## Stress Tests
+
+![Stress](img/MCAPI Stress Test.png)
+
+*MCAPI Stress Test*
+
+
+
+
 
 <a name="Sundell2008">1</a>: Sundell, H., Tsigas, P., "Lock-free deques and doubly linked lists", Journal of Parallel and Distributed Computing , Vol. 68, pp. 1008-1020 (2008).  
 <a name="Kim2007">2</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
