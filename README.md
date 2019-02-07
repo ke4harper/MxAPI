@@ -166,9 +166,14 @@ The reference design is shown in the figure above. The implementation uses globa
 
 *MCAPI Lock-free Requests, Version 1*
 
+The overall goal in refactoring MCAPI is to eliminate the single kernel lock without introducing any concurrency defects or data corruption. The first area of focus was the asynchronous message bookkeeping provided by the request double linked list. Two lists are maintained: 1) empty, containing the request IDs that are available for use, and 2) full, request IDs that are active or already marking reserved locations in a message queue. The kernel lock is completely reliable in guarding these data structure, but removing the lock creates problems from simultaneous request allocations from multiple clients and keeping the list linkages consistent.  
+
+Each element in a doubly linked list has both a forward (next) and backward (prev) reference to reduce the processing overhead needed to insert and remove elements at any location in the list. Lock-free techniques make use of CPU atomic operations but it is not possible to simultaneously update two memory locations reliably. Sundell and Tsigas<sup>[5](#Sundell2008)</sup> provide a set of algorithms that reliably update the next references and then “clean up” any errors in the prev references.
+
 
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
 <a name="Multicore">3</a>: Multicore Association, http://www.multicore-association.org/index.php  
 <a name="DesignRules">4</a>: StackOverflow Discussion, http://stackoverflow.com/questions/3609469/what-are-the-thread-limitations-when-working-on-linux-compared-to-processes-for  
+<a name="Sundell2008">4</a>: Sundell, H., Tsigas, P., Lock-free deques and doubly linked lists, Journal of Parallel and Distributed Computing , Vol. 68, pp. 1008-1020 (2008).  
