@@ -111,7 +111,13 @@ The categories of MCAPI unit tests are:
 
 *Example Message Topology*
 
+The test scenarios represent different message topologies, i.e. which tasks can communicate with each other and who initiates the transactions. The MCAPI specification provides the programmatic building blocks to configure the topology but this approach quickly becomes confusing and difficult to manage. As an alternative a declarative representation was adopted. The text box in the figure above shows a partial example where endpoints compose into channels that compose into links. This terminology draws from the telecommunications domain where:  
 
+- Link – point-to-point, broadcast, multipoint, point to multipoint communications,
+- Channel – used to convey an information signal from sender to receiver, and
+- Endpoint – interface exposed by a communication channel.
+
+The message topology is static for the life cycle of the device configuration. Node assignment to a task or process is independent of topology, and can vary based on the technology stack and deployment configuration. Each task parses the XML message topology specification and interprets the contents based on its domain and node assignment.  
 
 
 
