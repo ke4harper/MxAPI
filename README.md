@@ -99,6 +99,7 @@ The algorithm is implemented with an atomic counter, initially set to zero. The 
 
 *Lock-Free Event Messaging*
 
+The Non-Blocking Buffer (NBB)<sup>[1](#Kim2007)</sup> is used for lock-free event messaging. As shown in Figure 23 above there are now two atomic counters, one for the Producer and one for the Consumer. The underlying data structure is a ring buffer between them where event messages are passed without experiencing blocked states. The NBB is a circular FIFO queue where the two counters, update and acknowledge, ensure the Producer and Consumer always access different slots in the ring buffer. The size of the NBB needs to be able to accommodate message bursts.  
 
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
