@@ -121,30 +121,30 @@ The message topology is static for the life cycle of the device configuration. N
 
 The MCAPI runtime is enhanced to provide three functions:  
 
-    <p>PUBLIC  
+    PUBLIC  
     extern void mcapi_node_collect(  
         MCAPI_IN mca_domain_t domain_id,  
         MCAPI_IN mcapi_node_t node_num,  
         MCAPI_IN mxml_node_t* root,  
         MCAPI_OUT mcapi_config_t* config,  
         MCAPI_IN mca_timeout_t timeout,  
-        MCAPI_OUT mcapi_status_t* mcapi_status);</p>
+        MCAPI_OUT mcapi_status_t* mcapi_status);
 
-PUBLIC  
-extern void mcapi_node_connect(  
-    MCAPI_IN mca_domain_t domain_id,  
-    MCAPI_IN mcapi_node_t node_num,  
-    MCAPI_OUT mcapi_config_t* config,  
-    MCAPI_IN mca_timeout_t timeout,  
-    MCAPI_OUT mcapi_status_t* mcapi_status);  
+    PUBLIC  
+    extern void mcapi_node_connect(  
+        MCAPI_IN mca_domain_t domain_id,  
+        MCAPI_IN mcapi_node_t node_num,  
+        MCAPI_OUT mcapi_config_t* config,  
+        MCAPI_IN mca_timeout_t timeout,  
+        MCAPI_OUT mcapi_status_t* mcapi_status);  
 
-PUBLIC  
-extern void mcapi_node_disconnect(  
-    MCAPI_IN mca_domain_t domain_id,  
-    MCAPI_IN mcapi_node_t node_num,  
-    MCAPI_OUT mcapi_config_t* config,  
-    MCAPI_IN mca_timeout_t timeout,  
-    MCAPI_OUT mcapi_status_t* mcapi_status);  
+    PUBLIC  
+    extern void mcapi_node_disconnect(  
+        MCAPI_IN mca_domain_t domain_id,  
+        MCAPI_IN mcapi_node_t node_num,  
+        MCAPI_OUT mcapi_config_t* config,  
+        MCAPI_IN mca_timeout_t timeout,  
+        MCAPI_OUT mcapi_status_t* mcapi_status);  
 
 
 
