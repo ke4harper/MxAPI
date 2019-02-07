@@ -77,7 +77,7 @@ The semantics of the operation can be managed without needing a type-specific op
 A key concurrency requirement is data consistency, i.e. one task should not corrupt the data another task is using. A number of enabling conventions are already in place, especially for embedded operating systems
 
 1.	The smallest RAM access / mutation is a byte.
-Access to system main memory (RAM) depends on the underlying CPU hardware and the specified coherency protocol. For example, the PowerPC reads and writes to memory in bytes [12], where each byte access is atomic and multiple bytes can be read or written in any order. With multiple processor cores this means copying any data type larger than a byte must be explicitly protected where there is contention for the location between cores.
+Access to system main memory (RAM) depends on the underlying CPU hardware and the specified coherency protocol. For example, the PowerPC reads and writes to memory in bytes<sup>[4](#PowerPC)</sup>, where each byte access is atomic and multiple bytes can be read or written in any order. With multiple processor cores this means copying any data type larger than a byte must be explicitly protected where there is contention for the location between cores.
 2.	The RTOS tool chain can provide implicit atomic operations.
 The source code compiler used to build the embedded image for VxWorks generates atomic instructions for four byte memory writes by default, making explicit atomic sets and gets unnecessary. Copying data types larger than four bytes needs explicit synchronization to ensure atomic reliability. On the PowerPC atomic operations on the same memory location are executed in program order without need for an explicit memory barrier.
 
@@ -86,3 +86,4 @@ Data consistency across address spaces and for non-atomic types requires explici
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
 <a name="Multicore">3</a>: Multicore Association, http://www.multicore-association.org/index.php  
+<a name="PowerPC">3</a>: PowerPC storage model and AIX programming, http://www.ibm.com/developerworks/systems/articles/powerpc.html (2005).  
