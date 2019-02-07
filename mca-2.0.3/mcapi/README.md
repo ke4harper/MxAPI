@@ -247,6 +247,25 @@ The acquire operation is a NOOP if the source and destination process IDs are th
 
 *Example Atomic Barrier Write*
 
+## Performance
+
+The stress tests were used to exercise the MCAPI concurrency runtime for single one-way data exchange with five different dimensions:
+
+1.	Windows vs. Linux deployment on the same hardware,
+2.	Single CPU vs. Multicore resources,
+3.	Message type: message, packet, and scalar,
+4.	FIFO lock-based vs. lock-free vs. state message, and
+5.	Task vs. Process shared memory.
+
+For the multicore scenarios the tests were run with the tasks constrained to run on specific cores using CPU affinity vs. no affinity. The results are shown below. The memory bus is most probably saturated in these tests and adding more channels will degrade the performance of each channel.  
+
+![MessagePerformance](img/Message Exchange Performance.png)
+
+*Message Exchange Performance*
+
+
+
+
 <a name="Sundell2008">1</a>: Sundell, H., Tsigas, P., "Lock-free deques and doubly linked lists", Journal of Parallel and Distributed Computing , Vol. 68, pp. 1008-1020 (2008).  
 <a name="Kim2007">2</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Acton2012">3</a>: Acton, M., "Diving Down the Concurrency Rabbit Hole", Insomniac Games (2012).
