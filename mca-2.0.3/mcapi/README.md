@@ -263,6 +263,19 @@ For the multicore scenarios the tests were run with the tasks constrained to run
 
 *Message Exchange Performance*
 
+From the chart it is immediately apparent that Linux has better capacity for potential throughput. Second, on both Windows and Linux, lock-free FIFO performs better than the lock-based implementation, and state messages perform better than FIFO. On Windows lock-based FIFO performance degrades slightly migrating from single core to multicore, but on Linux the difference is quite dramatic. On the other hand, migrating from single core to multicore with the lock-free FIFO implementation increases performance on both Windows and Linux by at least 2x. Finally for state messages where only multicore scenarios are possible, on Windows task data exchange performs better than process data exchange, whereas on Linux the opposite is true.  
+
+The horizontal lines on the chart are indications of the requirements for the data exchange performance. The red line at the bottom is for reference, showing the previous fine-grained message throughput on RTOS using operating system runtimes. The yellow line is the requirement for small control diagrams and red line for fast control. It is apparent that lock-free data exchange is needed to meet these requirements and only state messages can perform at the level needed for fast control.  
+
+These tests use fine-grained transactions and represent the theoretical limit for throughput performance. Buffering multiple messages in a single transaction can provide an order of magnitude increase in throughput performance, where the latency for the buffered transaction is the same as for a single message transaction. This could be a way to satisfy the performance requirements as multiple channels are added.  
+
+Another way to visualize the MCAPI data exchange performance is shown in the figure below. The horizontal axis separates the dimensions listed above (Windows vs. Linux, etc.) and the vertical axis is performance measured in thousands of transactions per second.  
+
+![ExchangePerformance](img/MCAPI Data Exchange Speedup.png)
+
+*MCAPI Data Exchange Speedup*
+
+
 
 
 
