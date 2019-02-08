@@ -190,8 +190,6 @@ The follow best practices are recommended for embedded concurrent software devel
 * Start from a working baseline and validate small revisions where it is known exactly what changed.
 * Use finite state to synchronize objects between tasks. Always verify the previous state before allowing a transition to the new state.
 
-
-
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
 <a name="Multicore">3</a>: Multicore Association, http://www.multicore-association.org/index.php  
