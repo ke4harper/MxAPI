@@ -275,8 +275,13 @@ Another way to visualize the MCAPI data exchange performance is shown in the fig
 
 *MCAPI Data Exchange Speedup*
 
+The size of a bubble is based on speedup defined as:  
 
+    Speedup = (original latency) / (optimized latency),
 
+and each bubble is positioned at the optimized throughput measurement. Two different classes of measurements are shown on the chart, first the speedup comparing lock-based FIFO to lock-free FIFO and the second speedup comparing lock-free FIFO to lock-free state message on multicore. Larger size bubbles indicate a bigger payoff from making the change. The smallest bubbles represent between 1x and 2x speedup, and the largest bubbles are for as much as 25x. The left hand side bubbles are for Windows and the right side for Linux. Within each of those groups, the left hand side bubbles are for single core and the right side for multicore. The bubbles are labeled as to which message type: message, packet, or scalar. 
+
+The first observation is that Linux has more capacity for throughput than Windows. Second, multicore is where the big payoff is. Changing from lock-based FIFO to lock-free FIFO on single core only provides incremental improvement. The third observation is that changing from FIFO to state messages on multicore increases throughput, but as dramatically as getting rid of the locks. The last observation is that use of CPU affinity is not a good predictor of performance; the benefit depends on the operating system and type of data exchange.  
 
 
 <a name="Sundell2008">1</a>: Sundell, H., Tsigas, P., "Lock-free deques and doubly linked lists", Journal of Parallel and Distributed Computing , Vol. 68, pp. 1008-1020 (2008).  
