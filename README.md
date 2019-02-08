@@ -177,10 +177,10 @@ Experiments on Windows show that this spinning [SleepEx(0,0)] consumes all avail
 The following lessons were learned (or re-learned) while migrating MRAPI and MCAPI to lock-free operation:  
 
 * Concurrent software development is hard  
-    There are minimal supporting tools because instrumenting performance changes the runtime behavior. Logging to private memory and careful temporary introduction of minimal output messages (printf) can reveal sequences of interactions between tasks and confirm a software change corrects the defect.  
+    * There are minimal supporting tools because instrumenting performance changes the runtime behavior. Logging to private memory and careful temporary introduction of minimal output messages (printf) can reveal sequences of interactions between tasks and confirm a software change corrects the defect.  
 * It is non-trival to set up tests to stress concurrency features in a way that exposes defects. Key considerations are the simultaneous run-up and rundown of tasks across processes and making sure that writers and readers are evenly participating in the data exchange.  
 * CPU affinity for tasks is not always the best configuration, your mileage will vary  
-    CPU affinity helps if a task’s memory fits in the L2 cache and can run exclusively on that core without being blocked. CPU affinity can hurt if two tasks are running on different cores and the data they exchange fits into the L2 cache. Tests should be run to confirm whether CPU affinity enhances or degrades performance for a specific deployment.  
+    * CPU affinity helps if a task’s memory fits in the L2 cache and can run exclusively on that core without being blocked. CPU affinity can hurt if two tasks are running on different cores and the data they exchange fits into the L2 cache. Tests should be run to confirm whether CPU affinity enhances or degrades performance for a specific deployment.  
 
 The follow best practices are recommended for embedded concurrent software development:  
 
