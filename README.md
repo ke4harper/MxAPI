@@ -172,6 +172,26 @@ What is interesting is that if the Producer has more than one message to write, 
 
 Experiments on Windows show that this spinning [SleepEx(0,0)] consumes all available CPU resources on the cores where the Producer and Consumer threads are running. On the other hand, Linux spinning [sched_yield()] consumes almost no CPU on the running cores. That makes spinning very attractive for Linux especially since we have no guarantee of atomic CPU instructions across shared memory between processes. Windows can still use the defined NBW, NBB designs because atomic operations across processes are possible for that platform.  
 
+## Lessons Learned
+
+The following lessons were learned (or re-learned) while migrating MRAPI and MCAPI to lock-free operation:  
+
+* Concurrent software development is hard
+** There are minimal supporting tools because instrumenting performance changes the runtime behavior. Logging to private memory and careful temporary introduction of minimal output messages (printf) can reveal sequences of interactions between tasks and confirm a software change corrects the defect.
+* It is non-trival to set up tests to stress concurrency features in a way that exposes defects. Key considerations are the simultaneous run-up and rundown of tasks across processes and making sure that writers and readers are evenly participating in the data exchange.
+* CPU affinity for tasks is not always the best configuration, your mileage will vary
+** CPU affinity helps if a task’s memory fits in the L2 cache and can run exclusively on that core without being blocked. CPU affinity can hurt if two tasks are running on different cores and the data they exchange fits into the L2 cache. Tests should be run to confirm whether CPU affinity enhances or degrades performance for a specific deployment.
+
+The follow best practices are recommended for embedded concurrent software development:  
+
+* Use the Microsoft Windows technology stack for primary development, then verify the same implementation works on non-Windows platforms.
+* Implement unit module tests that assert single thread operations with pre- and post-conditions.
+* Use stress tests on single core and on multicore with and without CPU affinity to identify concurrency issues.
+* Start from a working baseline and validate small revisions where it is known exactly what changed.
+* Use finite state to synchronize objects between tasks. Always verify the previous state before allowing a transition to the new state.
+
+
+
 <a name="Kim2007">1</a>: Kim, et.al., "Efficient Adaptations of the Non-Blocking Buffer for Event Communication", Proceedings of ISORC, pp. 29-40 (2007).  
 <a name="Smith2012">2</a>: Smith, et. al, "Have you checked your IPC performance lately?" Submitted to USENIX ATC (2012).  
 <a name="Multicore">3</a>: Multicore Association, http://www.multicore-association.org/index.php  
