@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="libsysvr4" prefix_auto="1" extension_auto="1" />
+				<Option output="sysvr4" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
@@ -15,15 +15,20 @@
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-Wall" />
+					<Add option="-std=c11" />
+					<Add option="-m64" />
 					<Add option="-g" />
 					<Add directory="../../../include" />
 					<Add directory="../../../../../mca-2.0.3" />
 					<Add directory="../../mrapi_impl" />
 					<Add directory="../../../../common" />
 				</Compiler>
+				<Linker>
+					<Add option="-m64" />
+				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="libsysvr4" prefix_auto="1" extension_auto="1" />
+				<Option output="sysvr4" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Release/" />
 				<Option type="2" />

@@ -45,3 +45,54 @@
 
 1334756598 /home/keharper/mca-2.0.3/common/Fragments/mca_utils_impl.c
 
+1550350460 source:/home/harpere/mxapi/mca-2.0.3/common/mca_utils.c
+	"Fragments/mca_utils_inc.c"
+	"Fragments/mca_utils_impl.c"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/common/Fragments/mca_utils_inc.c
+	<stdlib.h>
+	<pthread.h>
+	<windows.h>
+	<inttypes.h>
+	<stdio.h>
+	<unistd.h>
+	<string.h>
+	<stdarg.h>
+	"mca_config.h"
+	<signal.h>
+	"mca_utils.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mca_config.h
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/common/mca_utils.h
+	"Fragments/mca_utils_inc.h"
+	"Fragments/mca_utils_proto.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/common/Fragments/mca_utils_inc.h
+	<mca_impl_spec.h>
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mca_impl_spec.h
+	<stdint.h>
+	<windows.h>
+	<tchar.h>
+	<pdh.h>
+	<pdhmsg.h>
+	"Fragments/mca_impl_spec_inc.h"
+	"Fragments/mca_impl_spec_def.h"
+
+1550355990 /home/harpere/mxapi/mca-2.0.3/Fragments/mca_impl_spec_inc.h
+	<signal.h>
+	<pthread.h>
+	<sys/types.h>
+	<bits/types/sigset_t.h>
+	<bits/sigaction.h>
+	<assert.h>
+	<stdarg.h>
+	"mca_config.h"
+
+1550356905 /home/harpere/mxapi/mca-2.0.3/Fragments/mca_impl_spec_def.h
+
+1550354334 /home/harpere/mxapi/mca-2.0.3/common/Fragments/mca_utils_proto.h
+
+1550356734 /home/harpere/mxapi/mca-2.0.3/common/Fragments/mca_utils_impl.c
+

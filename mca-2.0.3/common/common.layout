@@ -1,31 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
+	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="../Fragments/mca_impl_spec_def.h" open="0" top="0" tabpos="2">
-		<Cursor position="437" topLine="3" />
+	<File name="Fragments/mca_utils_inc.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../Fragments/mca_impl_spec_inc.h" open="0" top="0" tabpos="10">
-		<Cursor position="154" topLine="0" />
+	<File name="Fragments/mca_utils_proto.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="182" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="Fragments/mca_utils_impl.c" open="0" top="0" tabpos="1">
-		<Cursor position="11524" topLine="316" />
+	<File name="../mca_impl_spec.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="Fragments/mca_utils_inc.c" open="0" top="0" tabpos="11">
-		<Cursor position="252" topLine="0" />
+	<File name="Fragments/mca_utils_impl.c" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="15910" topLine="492" />
+		</Cursor>
 	</File>
-	<File name="Fragments/mca_utils_inc.h" open="0" top="0" tabpos="8">
-		<Cursor position="0" topLine="0" />
+	<File name="../Fragments/mca_impl_spec_def.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1067" topLine="23" />
+		</Cursor>
 	</File>
-	<File name="Fragments/mca_utils_proto.h" open="0" top="0" tabpos="3">
-		<Cursor position="637" topLine="0" />
+	<File name="Fragments/mca_utils_inc.c" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="mca_utils.c" open="0" top="0" tabpos="6">
-		<Cursor position="1948" topLine="18" />
+	<File name="mca_utils.c" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1806" topLine="27" />
+		</Cursor>
 	</File>
-	<File name="mca_utils.h" open="0" top="0" tabpos="7">
-		<Cursor position="1988" topLine="20" />
+	<File name="mca_utils.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../mca_impl_spec.h" open="0" top="0" tabpos="9">
-		<Cursor position="1598" topLine="20" />
+	<File name="../Fragments/mca_impl_spec_inc.h" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="81" topLine="0" />
+		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
