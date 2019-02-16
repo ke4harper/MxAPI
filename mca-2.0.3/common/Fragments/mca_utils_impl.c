@@ -56,7 +56,7 @@ static CRITICAL_SECTION cs_printf = { 0 };
   Returns: none
   ***************************************************************************/
 #if MCA_WITH_DEBUG
-inline void mca_dprintf(int level,const char *format, ...) {
+void mca_dprintf(int level,const char *format, ...) {
   if (level <= debug){
     va_list ap;
 #if (__unix__||__MINGW32__)
@@ -84,7 +84,7 @@ inline void mca_dprintf(int level,const char *format, ...) {
   }
 }
 #else
-inline void mca_dprintf(int level,const char *format, ...) {}
+void mca_dprintf(int level,const char *format, ...) {}
 #endif
 
 
@@ -506,6 +506,7 @@ void mca_begin_cpu(mca_cpu_t* cpu) {
     }
     SleepEx(10,0); /* give OS a chance to register counters */
     PdhCollectQueryData(cpu->query);
+    cpu->split_samples++;
 #else
     {
       FILE* file = NULL;
@@ -527,7 +528,6 @@ void mca_begin_cpu(mca_cpu_t* cpu) {
     }
     memcpy(cpu->start,cpu->split_start,(cpu->processors+1)*sizeof(mca_utilization_t));
 #endif  /* (__unix__) */
-    cpu->split_samples++;
   }
 }
 

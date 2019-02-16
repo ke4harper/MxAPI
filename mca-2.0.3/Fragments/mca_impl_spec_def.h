@@ -41,7 +41,7 @@ typedef struct {
 
 typedef struct {
   int magic;
-  uint32_t processors;
+  uint64_t processors;
   double split_sum[MCA_MAX_CPUS+1];
 #if !(__unix__)
   HQUERY query;
@@ -50,6 +50,6 @@ typedef struct {
 #else
   mca_utilization_t start[MCA_MAX_CPUS+1];
   mca_utilization_t split_start[MCA_MAX_CPUS+1];
-  uint32_t split_samples[MCA_MAX_CPUS+1];
+  uint64_t split_samples[MCA_MAX_CPUS+1];
 #endif  /* (__unix__) */
 } mca_cpu_t;
