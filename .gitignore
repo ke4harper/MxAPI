@@ -264,7 +264,10 @@ paket-files/
 __pycache__/
 *.pyc
 
-# Linux biuld artifacts to ignore
+# Windows build artifacts to ignore
+*.dll
+
+# Linux build artifacts to ignore
 *.a
 *.o
 *.so
