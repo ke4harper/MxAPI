@@ -38,8 +38,13 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c++98" />
+			<Add option="-std=c11" />
+			<Add option="-fPIC" />
+			<Add option="-m64" />
 			<Add option="-g" />
 			<Add option="-fexceptions" />
+			<Add option="-D_POSIX_C_SOURCE" />
 			<Add directory="../../../../mrapi/include" />
 			<Add directory="../../../../../mca-2.0.3" />
 			<Add directory="../../../../mrapi/src/mrapi_impl" />
@@ -48,6 +53,8 @@
 			<Add directory="../mcapi_trans_sm" />
 		</Compiler>
 		<Linker>
+			<Add option="-v" />
+			<Add option="-m64" />
 			<Add directory="../../../../../../lib64" />
 			<Add directory="../mcapi_trans_sm" />
 			<Add directory="mrapi" />

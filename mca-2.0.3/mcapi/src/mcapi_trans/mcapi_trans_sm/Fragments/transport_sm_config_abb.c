@@ -13,7 +13,7 @@
   ***************************************************************************/
   mcapi_boolean_t mcapi_trans_collect (mcapi_domain_t domain_id,
                                        mcapi_node_t node_id,
-                                       mxml_node_t* root,
+                                       const mxml_node_t* root,
                                        mcapi_config_t* config,
                                        mca_timeout_t timeout,
                                        mcapi_status_t* mcapi_status)

@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
+	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="Fragments/mcapi_trans_smt_inc.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="158" topLine="0" />
+	<File name="Fragments/mcapi_trans_smt_stress.cpp" open="1" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="Fragments/mcapi_trans_smt_threads.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="221" topLine="0" />
-	</File>
-	<File name="Fragments/mcapi_trans_smt_type.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="1819" topLine="69" />
-	</File>
-	<File name="mcapi_trans_smt.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="151" topLine="0" />
+	<File name="Fragments/mcapi_trans_smt_type.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2667" topLine="113" />
+		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

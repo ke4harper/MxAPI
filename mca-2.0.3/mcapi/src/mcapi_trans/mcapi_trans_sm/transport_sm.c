@@ -221,7 +221,7 @@ switch (status) {
 
     return mcapi_trans_whoami(&node,&n,domain,&d);
   }
-  
+
 #include "Fragments/transport_sm_request.c"
 #include "Fragments/transport_sm_initialize.c"
 #include "Fragments/transport_sm_attributes.c"
@@ -738,7 +738,7 @@ switch (status) {
   Returns: boolean indicating success or failure
 
   ***************************************************************************/
-  inline mcapi_boolean_t mcapi_trans_whoami (mcapi_node_t* node_id,uint32_t* n_index,
+  mcapi_boolean_t mcapi_trans_whoami (mcapi_node_t* node_id,uint32_t* n_index,
                                                       mcapi_domain_t* domain_id,uint32_t* d_index)
   {
     if (mcapi_db == NULL) { return MCAPI_FALSE;}

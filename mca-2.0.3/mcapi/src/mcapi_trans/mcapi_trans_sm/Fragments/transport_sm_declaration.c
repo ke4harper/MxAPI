@@ -87,7 +87,7 @@
 
   void check_close_channel_request_have_lock (mcapi_request_t *request);
 
-  inline mcapi_boolean_t mcapi_trans_whoami (mcapi_node_t* node_id,
+  mcapi_boolean_t mcapi_trans_whoami (mcapi_node_t* node_id,
                                                       uint32_t* n_index,
                                                       mcapi_domain_t* domain_id,
                                                       uint32_t* d_index);

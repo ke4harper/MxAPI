@@ -122,6 +122,11 @@ typedef union
 typedef struct
 {
     int bproc;
+#if (__unix__)
+    pthread_cond_t* cv;
+    pthread_mutex_t* sync;
+    int* run;
+#endif  // (__unix__)
     mcapi_uint_t mode;
     mxml_node_t* root;
 	mcapi_domain_t domain;

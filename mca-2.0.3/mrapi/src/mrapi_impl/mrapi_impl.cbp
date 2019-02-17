@@ -16,7 +16,6 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add option="-fPIC" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -36,6 +35,7 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-std=c++98" />
 			<Add option="-std=c11" />
 			<Add option="-fPIC" />
 			<Add option="-m64" />
@@ -46,6 +46,7 @@
 			<Add directory="../../include" />
 		</Compiler>
 		<Linker>
+			<Add option="-v" />
 			<Add option="-m64" />
 		</Linker>
 		<Unit filename="Fragments/mrapi_impl_spec_atomic.c">

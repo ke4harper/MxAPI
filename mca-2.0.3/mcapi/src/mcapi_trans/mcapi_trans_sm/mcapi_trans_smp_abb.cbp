@@ -13,10 +13,10 @@
 				<Option compiler="gcc" />
 				<Option parameters="mcapi_trans_smp21f.xml -m 0x4" />
 				<Linker>
-					<Add option="-lmrapid_abb -lmxml1d" />
+					<Add option="-lmrapid_abb" />
 					<Add library="libmcapi_trans_sm_abb.a" />
 					<Add library="mrapi/libtransport_sm_mrapi_abb.a" />
-					<Add directory="../../../../../../lib64" />
+					<Add library="../../../../../mxml-2.12/libmxml.so" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -29,28 +29,37 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-lmrapi_abb -lmxml1" />
+					<Add option="-lmrapi_abb" />
 					<Add library="libmcapi_trans_sm_abb.a" />
 					<Add library="mrapi/libtransport_sm_mrapi_abb.a" />
-					<Add directory="../../../../../../lib64" />
+					<Add library="../../../../../mxml-2.12/libmxml.so" />
+					<Add directory="../../../../../mxml-2.12" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c++98" />
+			<Add option="-std=c11" />
+			<Add option="-fPIC" />
+			<Add option="-m64" />
 			<Add option="-g" />
 			<Add option="-fexceptions" />
+			<Add option="-D_POSIX_C_SOURCE" />
 			<Add directory="../../../../mrapi/include" />
 			<Add directory="../../../../../mca-2.0.3" />
 			<Add directory="../../../../mrapi/src/mrapi_impl" />
 			<Add directory="../../../../common" />
 			<Add directory="../../../include" />
 			<Add directory="../mcapi_trans_sm" />
-			<Add directory="../../../../../mxml-2.7" />
+			<Add directory="../../../../../mxml-2.12" />
 		</Compiler>
 		<Linker>
-			<Add directory="../../../../../../lib64" />
+			<Add option="-v" />
+			<Add option="-m64" />
 			<Add directory="../mcapi_trans_sm" />
+			<Add directory="../../../../../../lib64" />
+			<Add directory="../../../../../mxml-2.12" />
 		</Linker>
 		<Unit filename="mcapi_trans_smp1.xml" />
 		<Unit filename="mcapi_trans_smp2.xml" />

@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="libmcapi_trans_sm_abl" prefix_auto="1" extension_auto="1" />
+				<Option output="mcapi_trans_sm_abl" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
@@ -19,7 +19,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="libmcapi_trans_sm_abl" prefix_auto="1" extension_auto="1" />
+				<Option output="mcapi_trans_sm_abl" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Release/" />
 				<Option type="2" />
@@ -35,6 +35,11 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-std=c++98" />
+			<Add option="-std=c11" />
+			<Add option="-fPIC" />
+			<Add option="-m64" />
+			<Add option="-D_POSIX_C_SOURCE" />
 			<Add directory="../../../include" />
 			<Add directory="../../../../../mca-2.0.3" />
 			<Add directory="../mcapi_trans_sm" />
@@ -43,6 +48,10 @@
 			<Add directory="../../../../mrapi/src/mrapi_impl" />
 			<Add directory="../../../../common" />
 		</Compiler>
+		<Linker>
+			<Add option="-v" />
+			<Add option="-m64" />
+		</Linker>
 		<Unit filename="../../../include/mcapi_trans_abl.h" />
 		<Unit filename="Fragments/transport_sm_attributes.c">
 			<Option compilerVar="CC" />

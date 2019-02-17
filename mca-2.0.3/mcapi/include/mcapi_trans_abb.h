@@ -8,14 +8,14 @@ met:
 
 (1) Redistributions of source code must retain the above copyright
 notice, this list of conditions and the following disclaimer.
- 
+
 (2) Redistributions in binary form must reproduce the above copyright
 notice, this list of conditions and the following disclaimer in the
-documentation and/or other materials provided with the distribution. 
+documentation and/or other materials provided with the distribution.
 
 (3) Neither the name of the Multicore Association nor the names of its
 contributors may be used to endorse or promote products derived from
-this software without specific prior written permission. 
+this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
 IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
@@ -90,9 +90,9 @@ typedef struct
 
 /* FUNCTION DECLARATIONS: The transport API */
 /* Error handling philosophy:
-   mca_status_t is handled at the top level shared code in mcapi.c whenever possible.  All 
-   functions in the mcapi_trans layer that need to return status, should return a boolean 
-   indicating success or failure.  All functions that need to pass back additional info 
+   mca_status_t is handled at the top level shared code in mcapi.c whenever possible.  All
+   functions in the mcapi_trans layer that need to return status, should return a boolean
+   indicating success or failure.  All functions that need to pass back additional info
    (such as filling in a handle) should pass that by reference in a parameter.
 */
 
@@ -117,7 +117,7 @@ extern mcapi_boolean_t mcapi_trans_endpoint_exists (mca_domain_t domain_id,uint3
 
 /* checks if the endpoint handle refers to a valid endpoint */
 extern mcapi_boolean_t mcapi_trans_valid_endpoint (mcapi_endpoint_t endpoint);
-extern mcapi_boolean_t mcapi_trans_valid_endpoints (mcapi_endpoint_t endpoint1, 
+extern mcapi_boolean_t mcapi_trans_valid_endpoints (mcapi_endpoint_t endpoint1,
                                              mcapi_endpoint_t endpoint2);
 
 /* checks if the channel is open for a given endpoint */
@@ -186,7 +186,7 @@ extern mcapi_boolean_t mcapi_trans_valid_request_handle (mcapi_request_t* reques
 extern mcapi_boolean_t mcapi_trans_valid_size_param (size_t* size);
 
 /* checks if the given endpoints have compatible attributes */
-extern mcapi_boolean_t mcapi_trans_compatible_endpoint_attributes  
+extern mcapi_boolean_t mcapi_trans_compatible_endpoint_attributes
         (mcapi_endpoint_t send_endpoint, mcapi_endpoint_t recv_endpoint);
 
 /* checks if the given channel handle is valid */
@@ -231,8 +231,8 @@ extern mcapi_boolean_t mcapi_trans_node_set_attribute(
 
 /****************** connect ********************************/
 extern mcapi_boolean_t mcapi_trans_collect(
-    mca_domain_t domain_id,
-    mcapi_node_t node_num,
+    mcapi_domain_t domain_id,
+    mcapi_node_t node_id,
     const mxml_node_t* root,
     mcapi_config_t* config,
     mca_timeout_t timeout,
@@ -240,7 +240,7 @@ extern mcapi_boolean_t mcapi_trans_collect(
 
 extern mcapi_boolean_t mcapi_trans_connect(
     mca_domain_t domain_id,
-    mcapi_node_t node_num,
+    mcapi_node_t node_id,
     mcapi_config_t* config,
     mca_timeout_t timeout,
     mcapi_status_t* mcapi_status);
@@ -259,18 +259,18 @@ extern mcapi_boolean_t mcapi_trans_finalize();
 
 /****************** endpoints ******************************/
 /* create endpoint <node_num,port_num> and return it's handle */
-extern mcapi_boolean_t mcapi_trans_endpoint_create(mcapi_endpoint_t *endpoint,   
+extern mcapi_boolean_t mcapi_trans_endpoint_create(mcapi_endpoint_t *endpoint,
                                             mcapi_uint_t port_num,
                                             mcapi_boolean_t anonymous);
 
-/* non-blocking get endpoint for the given <node_num,port_num> and set 
+/* non-blocking get endpoint for the given <node_num,port_num> and set
    endpoint parameter to it's handle */
-extern void mcapi_trans_endpoint_get_i(  mcapi_endpoint_t* endpoint, mca_domain_t domain_id,mcapi_uint_t node_num, 
+extern void mcapi_trans_endpoint_get_i(  mcapi_endpoint_t* endpoint, mca_domain_t domain_id,mcapi_uint_t node_num,
                                   mcapi_uint_t port_num,mcapi_request_t* request,
                                   mca_status_t* mcapi_status);
 
 /* blocking get endpoint for the given <node_num,port_num> and return it's handle */
-extern void mcapi_trans_endpoint_get(mcapi_endpoint_t *endpoint,mca_domain_t domain_id,mcapi_uint_t node_num, 
+extern void mcapi_trans_endpoint_get(mcapi_endpoint_t *endpoint,mca_domain_t domain_id,mcapi_uint_t node_num,
                               mcapi_uint_t port_num);
 
 /* delete the given endpoint */
@@ -296,21 +296,21 @@ extern void mcapi_trans_endpoint_set_attribute(
 
 
 /****************** msgs **********************************/
-extern void mcapi_trans_msg_send_i( mcapi_endpoint_t  send_endpoint, 
-                             mcapi_endpoint_t  receive_endpoint, 
-                             const char* buffer, size_t buffer_size, 
+extern void mcapi_trans_msg_send_i( mcapi_endpoint_t  send_endpoint,
+                             mcapi_endpoint_t  receive_endpoint,
+                             const char* buffer, size_t buffer_size,
                              mcapi_request_t* request,mca_status_t* mcapi_status);
 
-extern mcapi_boolean_t mcapi_trans_msg_send( mcapi_endpoint_t  send_endpoint, 
-                                      mcapi_endpoint_t  receive_endpoint, 
+extern mcapi_boolean_t mcapi_trans_msg_send( mcapi_endpoint_t  send_endpoint,
+                                      mcapi_endpoint_t  receive_endpoint,
                                       const char* buffer, size_t buffer_size);
 
-extern void mcapi_trans_msg_recv_i( mcapi_endpoint_t  receive_endpoint,  
-                             char* buffer, size_t buffer_size, 
+extern void mcapi_trans_msg_recv_i( mcapi_endpoint_t  receive_endpoint,
+                             char* buffer, size_t buffer_size,
                              mcapi_request_t* request,mca_status_t* mcapi_status);
 
-extern mcapi_boolean_t mcapi_trans_msg_recv( mcapi_endpoint_t  receive_endpoint,  
-                                      char* buffer, size_t buffer_size, 
+extern mcapi_boolean_t mcapi_trans_msg_recv( mcapi_endpoint_t  receive_endpoint,
+                                      char* buffer, size_t buffer_size,
                                       size_t* received_size);
 
 extern mcapi_uint_t mcapi_trans_msg_available( mcapi_endpoint_t receive_endoint);
@@ -318,34 +318,34 @@ extern mcapi_uint_t mcapi_trans_msg_available( mcapi_endpoint_t receive_endoint)
 /****************** channels general ****************************/
 
 /****************** pkt channels ****************************/
-extern void mcapi_trans_pktchan_connect_i( mcapi_endpoint_t  send_endpoint, 
-                                    mcapi_endpoint_t  receive_endpoint, 
+extern void mcapi_trans_pktchan_connect_i( mcapi_endpoint_t  send_endpoint,
+                                    mcapi_endpoint_t  receive_endpoint,
                                     mcapi_request_t* request,
                                     mca_status_t* mcapi_status);
 
-extern void mcapi_trans_pktchan_recv_open_i( mcapi_pktchan_recv_hndl_t* recv_handle, 
-                                      mcapi_endpoint_t receive_endpoint, 
-                                      mcapi_request_t* request,
-                                      mca_status_t* mcapi_status); 
-
-extern void mcapi_trans_pktchan_send_open_i( mcapi_pktchan_send_hndl_t* send_handle, 
-                                      mcapi_endpoint_t  send_endpoint, 
+extern void mcapi_trans_pktchan_recv_open_i( mcapi_pktchan_recv_hndl_t* recv_handle,
+                                      mcapi_endpoint_t receive_endpoint,
                                       mcapi_request_t* request,
                                       mca_status_t* mcapi_status);
 
-extern void  mcapi_trans_pktchan_send_i( mcapi_pktchan_send_hndl_t send_handle, 
-                                  const void* buffer, size_t size, 
+extern void mcapi_trans_pktchan_send_open_i( mcapi_pktchan_send_hndl_t* send_handle,
+                                      mcapi_endpoint_t  send_endpoint,
+                                      mcapi_request_t* request,
+                                      mca_status_t* mcapi_status);
+
+extern void  mcapi_trans_pktchan_send_i( mcapi_pktchan_send_hndl_t send_handle,
+                                  const void* buffer, size_t size,
                                   mcapi_request_t* request,
                                   mca_status_t* mcapi_status);
 
-extern mcapi_boolean_t  mcapi_trans_pktchan_send( mcapi_pktchan_send_hndl_t send_handle, 
+extern mcapi_boolean_t  mcapi_trans_pktchan_send( mcapi_pktchan_send_hndl_t send_handle,
                                            const void* buffer, size_t size);
 
-extern void mcapi_trans_pktchan_recv_i( mcapi_pktchan_recv_hndl_t receive_handle,  
+extern void mcapi_trans_pktchan_recv_i( mcapi_pktchan_recv_hndl_t receive_handle,
                                  void** buffer, mcapi_request_t* request,
                                  mca_status_t* mcapi_status);
 
-extern mcapi_boolean_t mcapi_trans_pktchan_recv( mcapi_pktchan_recv_hndl_t receive_handle, 
+extern mcapi_boolean_t mcapi_trans_pktchan_recv( mcapi_pktchan_recv_hndl_t receive_handle,
                                           void** buffer, size_t* received_size);
 
 extern mcapi_uint_t mcapi_trans_pktchan_available( mcapi_pktchan_recv_hndl_t receive_handle);
@@ -361,22 +361,22 @@ extern void mcapi_trans_pktchan_send_close_i( mcapi_pktchan_send_hndl_t send_han
                                        mca_status_t* mcapi_status);
 
 /****************** scalar channels ****************************/
-extern void mcapi_trans_sclchan_connect_i( mcapi_endpoint_t  send_endpoint, 
-                                    mcapi_endpoint_t  receive_endpoint, 
+extern void mcapi_trans_sclchan_connect_i( mcapi_endpoint_t  send_endpoint,
+                                    mcapi_endpoint_t  receive_endpoint,
                                     mcapi_request_t* request,
                                     mca_status_t* mcapi_status);
 
-extern void mcapi_trans_sclchan_recv_open_i( mcapi_sclchan_recv_hndl_t* recv_handle, 
-                                      mcapi_endpoint_t receive_endpoint, 
-                                      mcapi_request_t* request,
-                                      mca_status_t* mcapi_status); 
-
-extern void mcapi_trans_sclchan_send_open_i( mcapi_sclchan_send_hndl_t* send_handle, 
-                                      mcapi_endpoint_t  send_endpoint, 
+extern void mcapi_trans_sclchan_recv_open_i( mcapi_sclchan_recv_hndl_t* recv_handle,
+                                      mcapi_endpoint_t receive_endpoint,
                                       mcapi_request_t* request,
                                       mca_status_t* mcapi_status);
 
-extern mcapi_boolean_t mcapi_trans_sclchan_send( mcapi_sclchan_send_hndl_t send_handle,  
+extern void mcapi_trans_sclchan_send_open_i( mcapi_sclchan_send_hndl_t* send_handle,
+                                      mcapi_endpoint_t  send_endpoint,
+                                      mcapi_request_t* request,
+                                      mca_status_t* mcapi_status);
+
+extern mcapi_boolean_t mcapi_trans_sclchan_send( mcapi_sclchan_send_hndl_t send_handle,
                                           uint64_t dataword, uint32_t size);
 
 extern mcapi_boolean_t mcapi_trans_sclchan_recv( mcapi_sclchan_recv_hndl_t receive_handle,
@@ -403,7 +403,7 @@ extern unsigned mcapi_trans_wait_any(size_t number, mcapi_request_t** requests, 
                           mca_status_t* mcapi_status,
                           mca_timeout_t timeout);
 
-extern int mcapi_trans_wait_first( size_t number, mcapi_request_t** requests, 
+extern int mcapi_trans_wait_first( size_t number, mcapi_request_t** requests,
                             size_t* size);
 
 extern void mcapi_trans_cancel( mcapi_request_t* request,mca_status_t* mcapi_status);

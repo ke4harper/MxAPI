@@ -30,6 +30,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c++98" />
 			<Add option="-std=c11" />
 			<Add option="-fPIC" />
 			<Add option="-m64" />
@@ -41,6 +42,7 @@
 			<Add directory="../../../common" />
 		</Compiler>
 		<Linker>
+			<Add option="-v" />
 			<Add option="-m64" />
 			<Add option="-lpthread -lrt" />
 			<Add library="libmrapi_impl.a" />

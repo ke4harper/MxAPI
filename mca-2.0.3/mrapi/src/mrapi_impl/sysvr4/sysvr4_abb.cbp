@@ -35,6 +35,7 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-std=c++98" />
 			<Add option="-std=c11" />
 			<Add option="-fPIC" />
 			<Add option="-m64" />
@@ -46,6 +47,7 @@
 			<Add directory="../../../../../mxml-2.7" />
 		</Compiler>
 		<Linker>
+			<Add option="-v" />
 			<Add option="-m64" />
 		</Linker>
 		<Unit filename="../Fragments/mrapi_sys_atomic.h" />
