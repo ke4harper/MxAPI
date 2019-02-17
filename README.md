@@ -1,4 +1,4 @@
-# MxAPI (foo)
+# MxAPI
 
 Multicore Association APIs
 
