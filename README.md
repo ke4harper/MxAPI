@@ -41,16 +41,21 @@ IDE: Visual Studio 2017
 Note: Build mxml 2.12 with solution in vxnet. 
 ### Linux Target
 What IDE is used to build MxAPI on Linux? http://www.codeblocks.org/ 
-How do I install Code::Blocks on Ubuntu? Download the installation .tar.xz file from the website. Unpack the archive and then install the components. 
+How do I install Code::Blocks on Ubuntu? Download the installation .tar.xz file from the website. Unpack the archive and then install the components.
+
     $ tar -xf codeblocks_17.12-1_amd64_stable.tar.xz 
     $ sudo apt install ./libcodeblocks0_17.12-1_amd64.deb 
     $ sudo apt install ./codeblocks-common_17.12-1_all.deb 
     $ sudo apt install ./codeblocks_17.12-1_amd64.deb 
+    
 How do I build the mxml library? Use configure to generate the make files (configure needs to be executable) 
+
     $ ./configure 
     $ make all 
     $ sudo make install 
+    
 What are the compiler settings in Code::Blocks to build on Linux? Set independent of Debug or Release. 
+
     Compiler Flags: 
     Have g++ follow the 1998 ISO C++ language standard 
     Have gcc follow the 2011 ISO C language standard 
@@ -58,6 +63,7 @@ What are the compiler settings in Code::Blocks to build on Linux? Set independen
     Target x86_64 (64bit) 
     #defines:
     _POSIX_C_SOURCE
+    
 ### Detailed Descriptions
 [MRAPI](./mca-2.0.3/mrapi/README.md)  
 [MCAPI](./mca-2.0.3/mcapi/README.md)  
