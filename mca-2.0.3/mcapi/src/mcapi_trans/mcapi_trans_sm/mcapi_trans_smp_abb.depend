@@ -1,0 +1,164 @@
+# depslib dependency file v1.0
+1550350460 source:/home/harpere/mxapi/mca-2.0.3/mcapi/src/mcapi_trans/mcapi_trans_sm/mcapi_trans_smp_abb.cpp
+	"stdafx.h"
+	<windows.h>
+	<sys/wait.h>
+	<mrapi_abb.h>
+	<mrapi_sys_abb.h>
+	<mcapi_trans_abb.h>
+	<transport_sm_abb.h>
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mcapi/src/mcapi_trans/mcapi_trans_sm/stdafx.h
+	"targetver.h"
+	<stdio.h>
+	<tchar.h>
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mcapi/src/mcapi_trans/mcapi_trans_sm/targetver.h
+	<SDKDDKVer.h>
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/include/mrapi_abb.h
+	"Fragments/mrapi_inc1_abb.h"
+	"Fragments/mrapi_inc2_abb.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/include/Fragments/mrapi_inc1_abb.h
+	<assert.h>
+	<stddef.h>
+	<mca_config_abb.h>
+	<inttypes.h>
+	<windows.h>
+	"mca_abb.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mca_config_abb.h
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mca_abb.h
+	"Fragments/mca_inc_abb.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/Fragments/mca_inc_abb.h
+	"mca_impl_spec_abb.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mca_impl_spec_abb.h
+	<stdint.h>
+	<windows.h>
+	<tchar.h>
+	<pdh.h>
+	<pdhmsg.h>
+	"Fragments/mca_impl_spec_inc_abb.h"
+	"Fragments/mca_impl_spec_def_abb.h"
+
+1550362070 /home/harpere/mxapi/mca-2.0.3/Fragments/mca_impl_spec_inc_abb.h
+	<time.h>
+	<bits/types/clockid_t.h>
+	<signal.h>
+	<pthread.h>
+	<assert.h>
+	<stdarg.h>
+	"mca_config_abb.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/Fragments/mca_impl_spec_def_abb.h
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/include/Fragments/mrapi_inc2_abb.h
+	"mrapi_impl_spec_abb.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/src/mrapi_impl/mrapi_impl_spec_abb.h
+	"Fragments/mrapi_impl_spec_inc_abb.h"
+	"Fragments/mrapi_impl_spec_data_abb.h"
+	"Fragments/mrapi_impl_spec_proto_abb.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_impl_spec_inc_abb.h
+	<stdint.h>
+	<inttypes.h>
+	<signal.h>
+	<pthread.h>
+	<unistd.h>
+	<time.h>
+	<sys/shm.h>
+	<sys/sem.h>
+	<sys/ipc.h>
+	<pwd.h>
+	<pthread.h>
+	<unistd.h>
+	<signal.h>
+	<sys/types.h>
+	<ctype.h>
+	<stdlib.h>
+	<string.h>
+	<errno.h>
+	<mrapi_abb.h>
+	<mca_config_abb.h>
+	<mca_utils_abb.h>
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/common/mca_utils_abb.h
+	"Fragments/mca_utils_inc_abb.h"
+	"Fragments/mca_utils_proto.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/common/Fragments/mca_utils_inc_abb.h
+	<mca_impl_spec_abb.h>
+
+1550354334 /home/harpere/mxapi/mca-2.0.3/common/Fragments/mca_utils_proto.h
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_impl_spec_data_abb.h
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_impl_spec_proto_abb.h
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/src/mrapi_impl/mrapi_sys_abb.h
+	"Fragments/mrapi_sys_inc_abb.h"
+	"Fragments/mrapi_sys_shmem.h"
+	"Fragments/mrapi_sys_sem.h"
+	"Fragments/mrapi_sys_key.h"
+	"Fragments/mrapi_sys_os.h"
+	"Fragments/mrapi_sys_atomic.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_inc_abb.h
+	<inttypes.h>
+	<stdio.h>
+	<stdarg.h>
+	<unistd.h>
+	<pthread.h>
+	<tchar.h>
+	<mrapi_abb.h>
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_shmem.h
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_sem.h
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_key.h
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_os.h
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mrapi/src/mrapi_impl/Fragments/mrapi_sys_atomic.h
+
+1550363738 /home/harpere/mxapi/mca-2.0.3/mcapi/include/mcapi_trans_abb.h
+	<mcapi_impl_spec_abb.h>
+	<mcapi_abb.h>
+	"pmmcapi.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mcapi/src/mcapi_trans/mcapi_trans_sm/mcapi_impl_spec_abb.h
+	<stddef.h>
+	<stdint.h>
+	<mca_abb.h>
+	<mca_impl_spec_abb.h>
+	<mxml.h>
+
+1550350461 /home/harpere/mxapi/mxml-2.12/mxml.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ctype.h>
+	<errno.h>
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mcapi/include/mcapi_abb.h
+	<stddef.h>
+	"mca_abb.h"
+	"mcapi_impl_spec_abb.h"
+
+1550350460 /home/harpere/mxapi/mca-2.0.3/mcapi/src/mcapi_trans/mcapi_trans_sm/transport_sm_abb.h
+	"mcapi_impl_spec_abb.h"
+	<mca_config_abb.h>
+	<mrapi_abb.h>
+	<stdarg.h>
+	<stdio.h>
+	<pthread.h>
+	<sys/types.h>
+	<unistd.h>
+	<signal.h>
+
