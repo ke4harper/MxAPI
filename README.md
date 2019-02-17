@@ -37,11 +37,11 @@ Given a message abstraction that can survive hardware changes, what is the best 
 The MxAPI concurrency runtimes are based on the specifications being developed and published by the Multicore Association<sup>[3](#Multicore)</sup>. The figure above shows the high level runtime stack with design layers corresponding to the Multicore Association reference implementation, shown in solid blue, and the Viper enhancements to the specifications shown in lighter blue. Key extensions are support for the Microsoft Windows operating system in addition to embedded RTOS, and real-time processes as well as kernel (single address space) deployments. Other ideas are first class support for atomic operations that enable lock-free algorithms, even across address spaces using shared memory duplication, and virtual time to allow simulations to run slower or faster than real-time.  
 ## RESULTS
 ### Windows Target
-IDE: Visual Studio 2017
+What IDE is used to build MxAPI on Windows? Visual Studio 2017. https://visualstudio.microsoft.com/downloads/
 
 Note: Build mxml 2.12 with solution in vxnet. 
 ### Linux Target
-What IDE is used to build MxAPI on Linux? http://www.codeblocks.org/
+What IDE is used to build MxAPI on Linux? Code::Blocks 17.12-1. http://www.codeblocks.org/
 
 How do I install Code::Blocks on Ubuntu? Download the installation .tar.xz file from the website. Unpack the archive and then install the components.
 
