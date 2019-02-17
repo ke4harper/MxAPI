@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/libmrapid_abb.so.1.0" prefix_auto="1" extension_auto="0" />
+				<Option output="bin/Debug/mrapid_abb.so.1.0" prefix_auto="1" extension_auto="0" />
 				<Option object_output="obj/Debug/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -20,7 +20,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/libmrapi_abb" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/mrapi_abb" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -41,8 +41,11 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-g" />
+			<Add option="-std=c11" />
 			<Add option="-fPIC" />
+			<Add option="-m64" />
+			<Add option="-g" />
+			<Add option="-D_POSIX_C_SOURCE" />
 			<Add directory="include" />
 			<Add directory="../../mca-2.0.3" />
 			<Add directory="src/mrapi_impl" />
@@ -50,6 +53,7 @@
 			<Add directory="../../mxml-2.7" />
 		</Compiler>
 		<Linker>
+			<Add option="-m64" />
 			<Add option="-Wl,--no-undefined -lrt" />
 			<Add library="src/mrapi_impl/libmrapi_impl_abb.a" />
 			<Add library="../common/libcommon_abb.a" />

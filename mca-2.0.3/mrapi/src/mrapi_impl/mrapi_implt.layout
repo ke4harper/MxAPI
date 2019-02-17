@@ -1,31 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
+	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="Fragments/mrapi_implt_inc.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="79" topLine="0" />
+	<File name="Fragments/mrapi_implt_stress.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="Fragments/mrapi_implt_mutex.cpp" open="0" top="0" tabpos="1">
-		<Cursor position="0" topLine="0" />
+	<File name="mrapi_implt.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="Fragments/mrapi_implt_request.cpp" open="0" top="0" tabpos="2">
-		<Cursor position="0" topLine="0" />
+	<File name="Fragments/mrapi_implt_rwl.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="Fragments/mrapi_implt_rwl.cpp" open="0" top="0" tabpos="1">
-		<Cursor position="0" topLine="0" />
+	<File name="Fragments/mrapi_implt_sem.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="Fragments/mrapi_implt_sem.cpp" open="0" top="0" tabpos="3">
-		<Cursor position="0" topLine="0" />
+	<File name="Fragments/mrapi_implt_mutex.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="Fragments/mrapi_implt_stress.cpp" open="0" top="0" tabpos="2">
-		<Cursor position="1950" topLine="9" />
+	<File name="Fragments/mrapi_implt_request.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="Fragments/mrapi_implt_threads.cpp" open="0" top="0" tabpos="1">
-		<Cursor position="17186" topLine="547" />
-	</File>
-	<File name="Fragments/mrapi_implt_type.cpp" open="0" top="0" tabpos="0">
-		<Cursor position="107" topLine="0" />
-	</File>
-	<File name="mrapi_implt.cpp" open="0" top="0" tabpos="1">
-		<Cursor position="566" topLine="0" />
+	<File name="Fragments/mrapi_implt_threads.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
+	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="include/Fragments/mrapi_inc1.h" open="0" top="0" tabpos="0">
-		<Cursor position="62" topLine="0" />
-	</File>
-	<File name="include/Fragments/mrapi_inc2.h" open="0" top="0" tabpos="0">
-		<Cursor position="41" topLine="0" />
-	</File>
-	<File name="src/Fragments/mrapi_initialize.c" open="0" top="0" tabpos="0">
-		<Cursor position="1935" topLine="18" />
-	</File>
-	<File name="src/mrapi.c" open="0" top="0" tabpos="0">
-		<Cursor position="1715" topLine="22" />
-	</File>
 </CodeBlocks_layout_file>
