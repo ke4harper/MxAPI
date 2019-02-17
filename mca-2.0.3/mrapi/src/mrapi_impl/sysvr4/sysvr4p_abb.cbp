@@ -41,9 +41,16 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c11" />
+			<Add option="-fPIC" />
+			<Add option="-m64" />
 			<Add option="-fexceptions" />
+			<Add option="-D_POSIX_C_SOURCE" />
 			<Add directory="../../../../../mxml-2.7" />
 		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+		</Linker>
 		<Unit filename="Fragments/sysvr4p_inc_abb.cpp">
 			<Option compile="0" />
 			<Option link="0" />

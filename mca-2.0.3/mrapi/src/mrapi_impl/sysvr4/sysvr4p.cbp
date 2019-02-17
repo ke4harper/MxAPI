@@ -41,8 +41,15 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c11" />
+			<Add option="-fPIC" />
+			<Add option="-m64" />
 			<Add option="-fexceptions" />
+			<Add option="-D_POSIX_C_SOURCE" />
 		</Compiler>
+		<Linker>
+			<Add option="-m64" />
+		</Linker>
 		<Unit filename="sysvr4p.cpp" />
 		<Extensions>
 			<code_completion />

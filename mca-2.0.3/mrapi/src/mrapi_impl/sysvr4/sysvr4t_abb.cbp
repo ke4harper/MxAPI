@@ -35,7 +35,11 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c11" />
+			<Add option="-fPIC" />
+			<Add option="-m64" />
 			<Add option="-fexceptions" />
+			<Add option="-D_POSIX_C_SOURCE" />
 			<Add directory="../../mrapi_impl" />
 			<Add directory="../../../include" />
 			<Add directory="../../../../../mca-2.0.3" />
@@ -43,6 +47,7 @@
 			<Add directory="../../../../../mxml-2.7" />
 		</Compiler>
 		<Linker>
+			<Add option="-m64" />
 			<Add directory="../sysvr4" />
 			<Add directory="../../../../common" />
 		</Linker>
