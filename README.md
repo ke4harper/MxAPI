@@ -37,7 +37,27 @@ Given a message abstraction that can survive hardware changes, what is the best 
 The MxAPI concurrency runtimes are based on the specifications being developed and published by the Multicore Association<sup>[3](#Multicore)</sup>. The figure above shows the high level runtime stack with design layers corresponding to the Multicore Association reference implementation, shown in solid blue, and the Viper enhancements to the specifications shown in lighter blue. Key extensions are support for the Microsoft Windows operating system in addition to embedded RTOS, and real-time processes as well as kernel (single address space) deployments. Other ideas are first class support for atomic operations that enable lock-free algorithms, even across address spaces using shared memory duplication, and virtual time to allow simulations to run slower or faster than real-time.  
 ## RESULTS
 ### Windows Target
+IDE: Visual Studio 2017
+Note: Build mxml 2.12 with solution in vxnet.
 ### Linux Target
+What IDE is used to build MxAPI on Linux? http://www.codeblocks.org/
+How do I install Code::Blocks on Ubuntu? Download the installation .tar.xz file from the website. Unpack the archive and then install the components.
+$ tar -xf codeblocks_17.12-1_amd64_stable.tar.xz
+$ sudo apt install ./libcodeblocks0_17.12-1_amd64.deb
+$ sudo apt install ./codeblocks-common_17.12-1_all.deb
+$ sudo apt install ./codeblocks_17.12-1_amd64.deb
+How do I build the mxml library? Use configure to generate the make files (configure needs to be executable)
+$ ./configure
+$ make all
+$ sudo make install
+What are the compiler settings in Code::Blocks to build on Linux? Set independent of Debug or Release.
+Compiler Flags:
+Have g++ follow the 1998 ISO C++ language standard
+Have gcc follow the 2011 ISO C language standard
+Position Independent Code
+Target x86_64 (64bit)
+#defines:
+_POSIX_C_SOURCE
 ### Detailed Descriptions
 [MRAPI](./mca-2.0.3/mrapi/README.md)  
 [MCAPI](./mca-2.0.3/mcapi/README.md)  
