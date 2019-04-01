@@ -17,15 +17,17 @@
     <None Include="Fragments\mrapi_impl_spec_sys_semaphore.c" />
     <None Include="Fragments\mrapi_impl_spec_initialize_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_finalize_abb.c" />
-    <None Include="Fragments\mrapi_impl_spec_mutex.c" />
+    <None Include="Fragments\mrapi_impl_spec_mutex_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_resources.c" />
     <None Include="Fragments\mrapi_impl_spec_rmem.c" />
-    <None Include="Fragments\mrapi_impl_spec_rwl.c" />
     <None Include="Fragments\mrapi_impl_spec_shmem_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_atomic.c" />
     <None Include="Fragments\mrapi_impl_spec_declaration_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_signal_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_sem_abb.c" />
+    <None Include="Fragments\mrapi_impl_spec_rwl_abb.c">
+      <FileType>CppCode</FileType>
+    </None>
     <ClCompile Include="mrapi_impl_spec_abb.c" />
   </ItemGroup>
   <ItemGroup>

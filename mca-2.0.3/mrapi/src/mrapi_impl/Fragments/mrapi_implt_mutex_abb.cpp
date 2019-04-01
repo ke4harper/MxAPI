@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		mrapi_mutex_hndl_t mutex1 = 0;
 		mrapi_mutex_hndl_t mutex2 = 0;
 		mca_boolean_t attribute = MRAPI_FALSE;
+		mrapi_rsrc_locktype_attrs locktype;
 		mrapi_mutex_attributes_t attributes = { 0 };
 		mrapi_key_t lock_key = 0;
 
@@ -55,6 +56,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 		// Implementation layer mutex
 		assert(mrapi_impl_mutex_create(&mutex1, MRAPI_MUTEX_ID_ANY, &attributes, &status));
+		mrapi_impl_mutex_get_attribute(mutex1, MRAPI_LOCKTYPE, &locktype, sizeof(attributes.locktype), &status);
+		assert(MRAPI_RSRC_LOCKTYPE_MUTEX == locktype);
 		assert(mrapi_impl_mutex_create(&mutex1,key,&attributes,&status));
 		assert(mrapi_impl_decode_hndl(mutex1,&m_index));
 		assert(attributes.recursive == mrapi_db->sems[m_index].attributes.recursive);

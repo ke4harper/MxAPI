@@ -79,16 +79,10 @@
     <None Include="Fragments\mrapi_impl_spec_finalize_abb.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
-    <None Include="Fragments\mrapi_impl_spec_rwl.c">
-      <Filter>Source Files\Fragments</Filter>
-    </None>
     <None Include="Fragments\mrapi_impl_spec_rmem.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\mrapi_impl_spec_resources.c">
-      <Filter>Source Files\Fragments</Filter>
-    </None>
-    <None Include="Fragments\mrapi_impl_spec_mutex.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\mrapi_impl_spec_shmem_abb.c">
@@ -108,6 +102,12 @@
     </None>
     <None Include="mrapi_sys_abb.h">
       <Filter>Header Files</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_mutex_abb.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_rwl_abb.c">
+      <Filter>Source Files\Fragments</Filter>
     </None>
   </ItemGroup>
 </Project>

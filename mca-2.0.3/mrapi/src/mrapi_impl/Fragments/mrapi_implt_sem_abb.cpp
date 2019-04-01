@@ -36,6 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		mrapi_sem_hndl_t sem1 = 0;
 		mrapi_sem_hndl_t sem2 = 0;
 		mca_boolean_t attribute = MRAPI_FALSE;
+		mrapi_rsrc_locktype_attrs locktype;
 		mrapi_sem_attributes_t attributes = { 0 };
 
 		assert(mrapi_impl_whoami(&n_num,&n_index,&d_num,&d_index));
@@ -90,6 +91,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 		// Implementation layer semaphore
 		assert(mrapi_impl_sem_create(&sem1,key,&attributes,shared_lock_limit,&status));
+		mrapi_impl_sem_get_attribute(sem1, MRAPI_LOCKTYPE, &locktype, sizeof(attributes.locktype), &status);
+		assert(MRAPI_RSRC_LOCKTYPE_SEM == locktype);
 		assert(mrapi_impl_decode_hndl(sem1,&s_index));
 		assert(attributes.ext_error_checking == mrapi_db->sems[s_index].attributes.ext_error_checking);
 		assert(attributes.shared_across_domains == mrapi_db->sems[s_index].attributes.shared_across_domains);

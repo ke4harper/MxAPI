@@ -112,7 +112,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         mrapi_db->sems[s].attributes.ext_error_checking = MRAPI_FALSE;
         mrapi_db->sems[s].attributes.shared_across_domains = MRAPI_TRUE;
       }
-      rc = MRAPI_TRUE;
+	  /* set the readonly attributes */
+	  mrapi_db->sems[s].attributes.locktype = SEM;
+	  rc = MRAPI_TRUE;
     }
     /* unlock the database (use global lock for get/create sem|rwl|mutex)*/
     mrapi_assert(mrapi_impl_access_database_post(semid,0));
@@ -211,7 +213,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         *status = MRAPI_SUCCESS;
       }
       break;
-    default:
+	case (MRAPI_LOCKTYPE):
+		if (attr_size != sizeof(mrapi_db->sems[m].attributes.locktype)) {
+			*status = MRAPI_ERR_ATTR_SIZE;
+		}
+		else {
+			mrapi_rsrc_locktype_attrs locktype;
+			switch (mrapi_db->sems[m].attributes.locktype)
+			{
+			case RWL:
+				locktype = MRAPI_RSRC_LOCKTYPE_RWL;
+				break;
+			case SEM:
+				locktype = MRAPI_RSRC_LOCKTYPE_SEM;
+				break;
+			case MUTEX:
+				locktype = MRAPI_RSRC_LOCKTYPE_MUTEX;
+				break;
+			}
+			memcpy((lock_type*)attribute, &locktype, attr_size);
+			*status = MRAPI_SUCCESS;
+		}
+		break;
+	default:
       *status = MRAPI_ERR_ATTR_NUM;
     };
     /* unlock the database */
@@ -248,21 +272,29 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
                   key,shared_lock_limit);
     mrapi_assert(mrapi_impl_whoami(&node_id,&n,&d_id,&d));
     
-    /* make sure the semaphore doesn't already exist */
-    /* Even though we checked for this at the mrapi layer, we have to check again here because
-       the check and the create aren't atomic at the top layer. */
-    for (s = 0; s < MRAPI_MAX_SEMS; s++) {
-      /* make sure the semaphore doesn't already exist */
-      /* Even though we checked for this at the mrapi layer, we have to check again here because
-         the check and the create aren't atomic at the top layer. */
-      if (mrapi_db->sems[s].valid && mrapi_db->sems[s].key == key) {
-        if (t == RWL) { *mrapi_status = MRAPI_ERR_RWL_EXISTS; }
-        else if (t == SEM) { *mrapi_status = MRAPI_ERR_SEM_EXISTS; }
-        else if (t == MUTEX) { *mrapi_status = MRAPI_ERR_MUTEX_EXISTS; }
-       mrapi_dprintf(1,"Unable to create mutex/sem/rwl because this key already exists key=%d",key);
-        break;
-      }
-     }
+	if (MRAPI_SEM_ID_ANY == key)
+	{
+		/* No need to look up key if we want a new one */
+		s = MRAPI_MAX_SEMS;
+	}
+	else
+	{
+		/* make sure the semaphore doesn't already exist */
+		/* Even though we checked for this at the mrapi layer, we have to check again here because
+		   the check and the create aren't atomic at the top layer. */
+		for (s = 0; s < MRAPI_MAX_SEMS; s++) {
+			/* make sure the semaphore doesn't already exist */
+			/* Even though we checked for this at the mrapi layer, we have to check again here because
+			   the check and the create aren't atomic at the top layer. */
+			if (mrapi_db->sems[s].valid && mrapi_db->sems[s].key == key) {
+				if (t == RWL) { *mrapi_status = MRAPI_ERR_RWL_EXISTS; }
+				else if (t == SEM) { *mrapi_status = MRAPI_ERR_SEM_EXISTS; }
+				else if (t == MUTEX) { *mrapi_status = MRAPI_ERR_MUTEX_EXISTS; }
+				mrapi_dprintf(1, "Unable to create mutex/sem/rwl because this key already exists key=%d", key);
+				break;
+			}
+		}
+	}
 
     /* if we made it through the database without finding a semaphore with this key, then create the new semaphore */   
     if (s == MRAPI_MAX_SEMS) {
@@ -273,7 +305,12 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
                       shared_lock_limit,d,n,s,id,key);
         memset(&mrapi_db->sems[s],0,sizeof(mrapi_sem_t));
         mrapi_db->sems[s].id = id; /* not used */
-        mrapi_db->sems[s].key = key;
+		if (MRAPI_SEM_ID_ANY == key)
+		{
+			/* Use address of array entry for key */
+			key = (mrapi_sem_id_t)&mrapi_db->sems[s];
+		}
+		mrapi_db->sems[s].key = key;
         /* log this node as a user, this way we can decrease the ref count when this node calls finalize */
         mrapi_db->domains[d].nodes[n].sems[s]=1;
         sys_atomic_inc(NULL,&mrapi_db->sems[s].refs,NULL,sizeof(uint16_t)); /* bump the reference count */

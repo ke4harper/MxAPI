@@ -96,11 +96,8 @@
   <ItemGroup>
     <None Include="Fragments\mrapi_implt_inc_abb.cpp" />
     <None Include="Fragments\mrapi_implt_initialize_abb.cpp" />
-    <None Include="Fragments\mrapi_implt_mutex.cpp" />
     <None Include="Fragments\mrapi_implt_request.cpp" />
     <None Include="Fragments\mrapi_implt_rmem.cpp" />
-    <None Include="Fragments\mrapi_implt_rwl.cpp" />
-    <None Include="Fragments\mrapi_implt_sem.cpp" />
     <None Include="Fragments\mrapi_implt_stress.cpp" />
     <None Include="Fragments\mrapi_implt_shmem_abb.cpp" />
     <None Include="Fragments\mrapi_implt_atomic.cpp" />
@@ -108,6 +105,12 @@
     <None Include="Fragments\mrapi_implt_threads_abb.cpp" />
     <None Include="Fragments\mrapi_implt_db_abb.cpp" />
     <None Include="Fragments\mrapi_implt_type_abb.cpp" />
+    <None Include="Fragments\mrapi_implt_mutex_abb.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+    </None>
+    <None Include="Fragments\mrapi_implt_sem_abb.cpp" />
+    <None Include="Fragments\mrapi_implt_rwl_abb.cpp" />
     <ClCompile Include="mrapi_implt_abb.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

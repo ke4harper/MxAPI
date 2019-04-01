@@ -40,12 +40,6 @@
     <None Include="Fragments\mrapi_implt_initialize_abb.cpp">
       <Filter>Source Files\Fragments</Filter>
     </None>
-    <None Include="Fragments\mrapi_implt_sem.cpp">
-      <Filter>Source Files\Fragments</Filter>
-    </None>
-    <None Include="Fragments\mrapi_implt_rwl.cpp">
-      <Filter>Source Files\Fragments</Filter>
-    </None>
     <None Include="Fragments\mrapi_implt_rmem.cpp">
       <Filter>Source Files\Fragments</Filter>
     </None>
@@ -53,9 +47,6 @@
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\mrapi_implt_stress.cpp">
-      <Filter>Source Files\Fragments</Filter>
-    </None>
-    <None Include="Fragments\mrapi_implt_mutex.cpp">
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\mrapi_implt_shmem_abb.cpp">
@@ -74,6 +65,15 @@
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\mrapi_implt_type_abb.cpp">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_implt_mutex_abb.cpp">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_implt_sem_abb.cpp">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_implt_rwl_abb.cpp">
       <Filter>Source Files\Fragments</Filter>
     </None>
   </ItemGroup>
