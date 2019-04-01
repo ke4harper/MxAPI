@@ -34,7 +34,7 @@ Added timestamp structure
  * MCA implementation specific type definitions.
  */
 #define MCA_MAX_REQUESTS 1024
-#define MCA_MAX_CPUS 8
+#define MCA_MAX_CPUS 16
 typedef unsigned mca_request_t;
 
 /* real time measurement */
