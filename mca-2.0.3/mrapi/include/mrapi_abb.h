@@ -56,6 +56,14 @@ typedef mca_uint32_t mrapi_uint32_t;
 typedef mca_uint64_t mrapi_uint64_t;
 typedef mca_boolean_t mrapi_boolean_t;
 
+/* lock type for semaphores */
+typedef enum {
+	MRAPI_LOCK_UNKNOWN,
+	MRAPI_LOCK_RWL,
+	MRAPI_LOCK_SEM,
+	MRAPI_LOCK_MUTEX,
+} mrapi_lock_type;
+
 /* lock type for reader/writer locks */
 typedef enum {
   MRAPI_RWL_READER,
@@ -258,14 +266,7 @@ typedef enum {
   MRAPI_SHMEM_RESOURCE,
   MRAPI_SHMEM_ADDRESS,
   MRAPI_SHMEM_SIZE,
-  MRAPI_LOCKTYPE,
 } attributes;
-
-typedef enum {
-	MRAPI_RSRC_LOCKTYPE_RWL,
-	MRAPI_RSRC_LOCKTYPE_SEM,
-	MRAPI_RSRC_LOCKTYPE_MUTEX,
-} mrapi_rsrc_locktype_attrs;
 
 typedef enum {
   MRAPI_RSRC_MEM_BASEADDR,
@@ -294,6 +295,11 @@ PUBLIC
 char* mrapi_display_status(mrapi_status_t status,char* status_message,size_t size);
 PUBLIC
 void mrapi_set_debug_level(int d);
+PUBLIC
+mrapi_lock_type mrapi_lock_type_get(
+	MRAPI_IN uint32_t hndl,
+	MRAPI_OUT mrapi_status_t* status
+);
 
 /*-------------------------------------------------------------------
   MRAPI
