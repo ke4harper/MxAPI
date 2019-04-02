@@ -61,8 +61,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         mrapi_db->sems[r].attributes.ext_error_checking = MRAPI_FALSE;
         mrapi_db->sems[r].attributes.shared_across_domains = MRAPI_TRUE;
       }
-	  /* set the readonly attributes */
-	  mrapi_db->sems[r].attributes.locktype = RWL;
 	  rc = MRAPI_TRUE;
     }
     /* unlock the database (use global lock for get/create sem|rwl|mutex)*/

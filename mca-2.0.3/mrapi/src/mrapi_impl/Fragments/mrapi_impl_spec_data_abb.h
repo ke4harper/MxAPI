@@ -88,7 +88,6 @@ typedef struct {
   void* mem_addr;
   uint32_t mem_size;
   mrapi_resource_t resource;
-  lock_type locktype;
 } mrapi_impl_attributes_t;
 
 typedef mrapi_impl_attributes_t mrapi_mutex_attributes_t;
