@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Fragments\mrapi_impl_spec_inc_abb.c" />
-    <None Include="Fragments\mrapi_impl_spec_body1.c" />
+    <None Include="Fragments\mrapi_impl_spec_body1_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_body2.c" />
     <None Include="Fragments\mrapi_impl_spec_sys_semaphore.c" />
     <None Include="Fragments\mrapi_impl_spec_initialize_abb.c" />
@@ -25,9 +25,7 @@
     <None Include="Fragments\mrapi_impl_spec_declaration_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_signal_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_sem_abb.c" />
-    <None Include="Fragments\mrapi_impl_spec_rwl_abb.c">
-      <FileType>CppCode</FileType>
-    </None>
+    <None Include="Fragments\mrapi_impl_spec_rwl_abb.c" />
     <ClCompile Include="mrapi_impl_spec_abb.c" />
   </ItemGroup>
   <ItemGroup>

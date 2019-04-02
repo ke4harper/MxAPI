@@ -70,9 +70,6 @@
     <None Include="Fragments\mrapi_impl_spec_sys_semaphore.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
-    <None Include="Fragments\mrapi_impl_spec_body1.c">
-      <Filter>Source Files\Fragments</Filter>
-    </None>
     <None Include="Fragments\mrapi_impl_spec_initialize_abb.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
@@ -107,6 +104,9 @@
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\mrapi_impl_spec_rwl_abb.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_body1_abb.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
   </ItemGroup>
