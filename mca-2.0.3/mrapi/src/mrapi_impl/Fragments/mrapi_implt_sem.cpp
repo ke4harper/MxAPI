@@ -90,6 +90,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 		// Implementation layer semaphore
 		assert(mrapi_impl_sem_create(&sem1,key,&attributes,shared_lock_limit,&status));
+		assert(mrapi_impl_valid_sem_hndl(sem1, &status));
 		assert(mrapi_impl_decode_hndl(sem1,&s_index));
 		assert(attributes.ext_error_checking == mrapi_db->sems[s_index].attributes.ext_error_checking);
 		assert(attributes.shared_across_domains == mrapi_db->sems[s_index].attributes.shared_across_domains);

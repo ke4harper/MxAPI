@@ -213,28 +213,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         *status = MRAPI_SUCCESS;
       }
       break;
-	case (MRAPI_LOCKTYPE):
-		if (attr_size != sizeof(mrapi_db->sems[m].attributes.locktype)) {
-			*status = MRAPI_ERR_ATTR_SIZE;
-		}
-		else {
-			mrapi_rsrc_locktype_attrs locktype;
-			switch (mrapi_db->sems[m].attributes.locktype)
-			{
-			case RWL:
-				locktype = MRAPI_RSRC_LOCKTYPE_RWL;
-				break;
-			case SEM:
-				locktype = MRAPI_RSRC_LOCKTYPE_SEM;
-				break;
-			case MUTEX:
-				locktype = MRAPI_RSRC_LOCKTYPE_MUTEX;
-				break;
-			}
-			memcpy((lock_type*)attribute, &locktype, attr_size);
-			*status = MRAPI_SUCCESS;
-		}
-		break;
 	default:
       *status = MRAPI_ERR_ATTR_NUM;
     };

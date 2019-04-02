@@ -60,6 +60,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 		// Implementation layer shared memory
 		mrapi_impl_shmem_create(&shmem1,id,10,&attributes,&status);
+		assert(mrapi_impl_valid_shmem_hndl(shmem1));
 		assert(MRAPI_FALSE == status);	// status only set if shmem_create returns an error
 		assert(mrapi_impl_decode_hndl(shmem1,&m_index));
 		assert(id == mrapi_db->shmems[m_index].key);

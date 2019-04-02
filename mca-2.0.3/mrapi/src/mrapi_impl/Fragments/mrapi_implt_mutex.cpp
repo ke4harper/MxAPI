@@ -55,6 +55,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 		// Implementation layer mutex
 		assert(mrapi_impl_mutex_create(&mutex1, MRAPI_MUTEX_ID_ANY, &attributes, &status));
+		assert(mrapi_impl_valid_mutex_hndl(mutex1, &status));
 		assert(mrapi_impl_mutex_create(&mutex1,key,&attributes,&status));
 		assert(mrapi_impl_decode_hndl(mutex1,&m_index));
 		assert(attributes.recursive == mrapi_db->sems[m_index].attributes.recursive);

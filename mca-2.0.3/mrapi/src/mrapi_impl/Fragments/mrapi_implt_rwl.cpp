@@ -55,6 +55,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		// Implementation layer reader / writer lock
 		reader_lock_limit = 2;
 		assert(mrapi_impl_rwl_create(&rwl1,key,&attributes,reader_lock_limit,&status));
+		assert(mrapi_impl_valid_rwl_hndl(rwl1, &status));
 		assert(mrapi_impl_decode_hndl(rwl1,&r_index));
 		assert(attributes.ext_error_checking == mrapi_db->sems[r_index].attributes.ext_error_checking);
 		assert(attributes.shared_across_domains == mrapi_db->sems[r_index].attributes.shared_across_domains);

@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
            Function declarations (the MRAPI impl API)
 ******************************************************************/
 char* mrapi_impl_display_status (mrapi_status_t status,char* status_message, size_t size);
+mrapi_lock_type mrapi_impl_lock_type_get(uint32_t hndl, mrapi_status_t* status);
 
 mrapi_boolean_t mrapi_impl_initialize (mrapi_domain_t domain_id, 
                                        mrapi_node_t node_id,

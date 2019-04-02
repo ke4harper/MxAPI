@@ -34,7 +34,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		mrapi_rwl_hndl_t rwl2 = 0;
 		mca_boolean_t attribute = MRAPI_FALSE;
 		mrapi_rwl_attributes_t attributes = { 0 };
-		mrapi_rsrc_locktype_attrs locktype;
 		mrapi_uint32_t reader_lock_limit = 0;
 		mrapi_rwl_mode_t mode = MRAPI_RWL_READER;
 
@@ -56,8 +55,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		// Implementation layer reader / writer lock
 		reader_lock_limit = 2;
 		assert(mrapi_impl_rwl_create(&rwl1,key,&attributes,reader_lock_limit,&status));
-		mrapi_impl_rwl_get_attribute(rwl1, MRAPI_LOCKTYPE, &locktype, sizeof(attributes.locktype), &status);
-		assert(MRAPI_RSRC_LOCKTYPE_RWL == locktype);
+		assert(mrapi_impl_valid_rwl_hndl(rwl1, &status));
+		assert(MRAPI_LOCK_RWL == mrapi_impl_lock_type_get(rwl1, &status));
 		assert(mrapi_impl_decode_hndl(rwl1,&r_index));
 		assert(attributes.ext_error_checking == mrapi_db->sems[r_index].attributes.ext_error_checking);
 		assert(attributes.shared_across_domains == mrapi_db->sems[r_index].attributes.shared_across_domains);
