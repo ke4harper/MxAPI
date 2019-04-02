@@ -37,7 +37,7 @@ extern "C" {
   
 #include "Fragments/mrapi_impl_spec_inc_abb.c"
 #include "Fragments/mrapi_impl_spec_declaration_abb.c"
-#include "Fragments/mrapi_impl_spec_body1.c"
+#include "Fragments/mrapi_impl_spec_body1_abb.c"
 #include "Fragments/mrapi_impl_spec_finalize_abb.c"
 #include "Fragments/mrapi_impl_spec_body2.c"
 #include "Fragments/mrapi_impl_spec_signal_abb.c"
