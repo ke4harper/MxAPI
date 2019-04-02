@@ -589,7 +589,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     /* unlock the database */
-    mrapi_assert(mrapi_impl_access_database_post(sems_semid,0));
+    mrapi_assert(mrapi_impl_access_database_post(sems_semid,s));
     return rc;
   }
 
