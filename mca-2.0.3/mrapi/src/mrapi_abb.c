@@ -50,6 +50,14 @@ char* mrapi_display_status (mrapi_status_t status,char* status_message, size_t s
   return mrapi_impl_display_status(status,status_message,size);
 }
 
+PUBLIC
+mrapi_lock_type mrapi_lock_type_get(
+	MRAPI_IN uint32_t hndl,
+	MRAPI_OUT mrapi_status_t* status
+) {
+	return mrapi_impl_lock_type_get(hndl, status);
+}
+
 #include "Fragments/mrapi_initialize.c"
 #include "Fragments/mrapi_mutex.c"
 #include "Fragments/mrapi_sem.c"
