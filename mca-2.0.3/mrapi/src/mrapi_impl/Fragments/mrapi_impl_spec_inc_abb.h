@@ -59,7 +59,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /******************************************************************
            definitions and constants
  ******************************************************************/
-#define MRAPI_MAX_SEMS 128  /* we don't currently support different values for max mutex/sem/rwl */
+#define MRAPI_MAX_SEMS 4096  /* we don't currently support different values for max mutex/sem/rwl */
 #define MRAPI_MAX_SHMEMS 10
 #define MRAPI_MAX_RMEMS 10
 #define MRAPI_MAX_REQUESTS MCA_MAX_REQUESTS

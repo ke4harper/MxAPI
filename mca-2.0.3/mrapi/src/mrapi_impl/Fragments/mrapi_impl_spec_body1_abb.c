@@ -395,7 +395,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   {
     uint32_t valid = 0x80000000;
 
-    *type_index = (handle & 0x000000ff);
+    *type_index = (handle & 0x00ffffff);
 
     /* check that the valid bit is set */
     if ((handle & valid) == valid) {
