@@ -252,7 +252,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         /* Force memory synchronization */
         sys_atomic_sync(NULL);
       }
-    } while(mrapi_db->processes[pindex].state.data.valid);
+    } while((NULL != mrapi_db) && mrapi_db->processes[pindex].state.data.valid);
     hAtomicListener = NULL;
   }
 #endif  /* !(__unix) */
