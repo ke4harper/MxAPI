@@ -217,19 +217,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
          database semaphore, this allows us to access different locks in parallel */
       if (use_global_only ||
           !mrapi_impl_create_sys_semaphore(&sems_semid,MRAPI_MAX_SEMS+1/*num_locks*/,sems_key,MRAPI_FALSE)) {
-        sems_semid = semid;
+        sems_semid = sems_global = semid;
       }
       if (use_global_only ||
           !mrapi_impl_create_sys_semaphore(&shmems_semid,1/*num_locks*/,shmems_key,MRAPI_FALSE)) {
-        shmems_semid = semid;
+        shmems_semid = shmems_global = semid;
       }
       if (use_global_only ||
           !mrapi_impl_create_sys_semaphore(&rmems_semid,1/*num_locks*/,rmems_key,MRAPI_FALSE)) {
-        rmems_semid = semid;
+        rmems_semid = rmems_global = semid;
       }
       if (use_global_only ||
           !mrapi_impl_create_sys_semaphore(&requests_semid,1/*num_locks*/,requests_key,MRAPI_FALSE)) {
-        requests_semid = semid;
+        requests_semid = requests_global = semid;
       }
 
       //printf("**** semid:%x sems:%x shmems:%x rmems:%x requests:%x\n",

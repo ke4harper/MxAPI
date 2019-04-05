@@ -217,7 +217,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         mrapi_dprintf(1,"mrapi_impl_free_resources: freeing mrapi internal semaphore and shared memory\n");
 
         /* free the mrapi internal semaphores */
-        if (sems_semid != semid) {
+        if (sems_semid != sems_global) {
           rc = sys_sem_delete(sems_semid);
           sems_semid = -1;
           if (!rc) {
@@ -225,21 +225,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
 
-        if (shmems_semid != semid) {
+        if (shmems_semid != shmems_global) {
           rc = sys_sem_delete(shmems_semid);
           shmems_semid = -1;
           if (!rc) {
             fprintf(stderr,"mrapi_impl_free_resources: ERROR: sys_sem_delete (mrapi_db) failed\n");
           }
         }
-        if (rmems_semid != semid) {
+        if (rmems_semid != rmems_global) {
           rc = sys_sem_delete(rmems_semid);
           rmems_semid = -1;
           if (!rc) {
             fprintf(stderr,"mrapi_impl_free_resources: ERROR: sys_sem_delete (mrapi_db) failed\n");
           }
         }
-        if (requests_semid != semid) {
+        if (requests_semid != requests_global) {
           rc = sys_sem_delete(requests_semid);
           requests_semid = -1;
           if (!rc) {
@@ -275,7 +275,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         if (!rc) {
           fprintf(stderr,"mrapi_impl_free_resources: ERROR: sys_shmem_delete (mrapi_db) failed\n");
         }
-        //mrapi_db = NULL;
+        mrapi_db = NULL;
         shmemid = -1;
       }
 

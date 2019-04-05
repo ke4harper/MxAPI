@@ -57,14 +57,19 @@ static wchar_t wszAtomic[] = L"_mrapi_atomic_";
   TLS unsigned mrapi_pindex = (unsigned)-1;
   TLS mrapi_node_t mrapi_node_id;
   TLS mrapi_domain_t mrapi_domain_id;
-  // finer grained locks for these sections of the database
+  // finer grained locks for these sections of the database.
+  // Keep copies of global handles for comparison
+  TLS int requests_global;	// keep a copy
   TLS int requests_semid; // requests array
+  TLS int sems_global;	// keep a copy
   TLS int sems_semid;   // sems array
+  TLS int shmems_global;// keep a copy
   TLS int shmems_semid; // shmems array
+  TLS int rmems_global;// keep a copy
   TLS int rmems_semid;  // rmems array
 
   // tell the system whether or not to use the finer-grained locking
-#define use_global_only 0
+#define use_global_only 1
 
 /*-------------------------------------------------------------------
   the mrapi_impl private function declarations (not part of the API)
