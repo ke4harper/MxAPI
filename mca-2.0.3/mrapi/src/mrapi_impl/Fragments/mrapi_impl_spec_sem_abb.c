@@ -280,7 +280,6 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
         mrapi_dprintf(1,"mrapi_impl_sem_create: Adding new semaphore set with %d shared_lock_limit (dindex=%d,nindex=%d,semindex=%d id=%d, key=%d",
                       shared_lock_limit,d,n,s,id,key);
         memset(&mrapi_db->sems[s],0,sizeof(mrapi_sem_t));
-        mrapi_db->sems[s].id = id; /* not used */
 		if (MRAPI_SEM_ID_ANY == key)
 		{
 			/* Use address of array entry for key */
@@ -502,8 +501,8 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
     if (!mrapi_impl_decode_hndl(sem,&s)) {
       return MRAPI_FALSE;
     }
-    mrapi_dprintf(2,"mrapi_impl_acquire_lock_locked sem=%x,dindex=%d,nindex=%d,semindex=%d id=%d num_locks=%d",
-                  sem,d,n,s,mrapi_db->sems[s].id,num_locks);
+    mrapi_dprintf(2,"mrapi_impl_acquire_lock_locked sem=%x,dindex=%d,nindex=%d,semindex=%d spin=%d num_locks=%d",
+                  sem,d,n,s,mrapi_db->sems[s].spin,num_locks);
     mrapi_dprintf(2," (mrapi_db->sems[s].shared_lock_limit(%d) mrapi_db->sems[s].num_locks(%d) num_locks(%d))",
                   mrapi_db->sems[s].shared_lock_limit,mrapi_db->sems[s].num_locks, num_locks);
     
