@@ -246,7 +246,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       mrapi_tid = pthread_self();
 #endif  /* (__unix__||__MINGW32__) */
 
-      /* 3) add the process/node/domain to the database */
+	  /* seed random number generator */
+	  sys_os_srand((unsigned int)mrapi_tid);
+
+	  /* 3) add the process/node/domain to the database */
       if (rc) {
         /* first see if this domain already exists */
         for (d = 0; d < MRAPI_MAX_DOMAINS; d++) {
