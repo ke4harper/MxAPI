@@ -146,7 +146,7 @@ typedef struct {
   int32_t num_locks;
   mrapi_lock_t locks [MRAPI_MAX_SHARED_LOCKS];
   int32_t key; /* the shared key passed in on get/create */
-  int32_t id; /* (not used) the handle returned by the os or whoever creates it */
+  int32_t spin;
   int32_t shared_lock_limit;
   lock_type   type;
   mrapi_sem_attributes_t attributes;
