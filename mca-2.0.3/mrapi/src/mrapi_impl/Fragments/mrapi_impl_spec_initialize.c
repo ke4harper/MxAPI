@@ -147,7 +147,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       requests_key =  mca_Crc32_ComputeBuf( key,buff,sizeof(buff));
 #endif  /* !(__unix__||__MINGW32__) */
     } else {
-      (void)sys_file_key(NULL,'c',&key);
+      (void)sys_file_key(NULL,'z',&key);
       db_key = key + 10;
       sems_key = key + 20;
       shmems_key = key + 30;
