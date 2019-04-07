@@ -116,7 +116,7 @@ mrapi_boolean_t sys_sem_create(int key,int num_locks,int* semid) {
   sem_set_t* ss = NULL;
 #endif  /* !(__unix__) */
 
-  int max_semaphores_per_array = 250;
+  int max_semaphores_per_array = 65536;
   /* Wish I could just get this from an include somewhere...*/
   /* To find SEMMSL kernel parameter:
     $ ipcs -ls
