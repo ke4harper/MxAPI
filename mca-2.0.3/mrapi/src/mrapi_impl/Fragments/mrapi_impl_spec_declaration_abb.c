@@ -70,6 +70,8 @@ static wchar_t wszAtomic[] = L"_mrapi_atomic_";
 
   // tell the system whether or not to use the finer-grained locking
 #define use_global_only 1
+  // tell the system whether or not to use spinlocks instead of system semaphores
+#define use_spin_lock 1
 
 /*-------------------------------------------------------------------
   the mrapi_impl private function declarations (not part of the API)
