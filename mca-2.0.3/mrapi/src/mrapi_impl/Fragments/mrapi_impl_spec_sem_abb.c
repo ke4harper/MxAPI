@@ -303,7 +303,8 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
         }
         *sem = mrapi_impl_encode_hndl(s);
         mrapi_db->sems[s].handle = *sem;  
-        rc = MRAPI_TRUE;
+		*mrapi_status = MRAPI_SUCCESS;
+		rc = MRAPI_TRUE;
         break;
       } 
     } 
@@ -626,7 +627,8 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
             mrapi_db->sems[s].locks[l].locked = MRAPI_FALSE;
             num_removed++;
             if(--r <= 0) {
-              break;
+				*mrapi_status = MRAPI_SUCCESS;
+				break;
             }
           }
         }
