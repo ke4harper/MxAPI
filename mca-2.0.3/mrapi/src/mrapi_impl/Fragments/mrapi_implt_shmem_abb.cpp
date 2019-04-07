@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		assert(mrapi_impl_whoami(&n_num,&n_index,&d_num,&d_index));
         p_index = mrapi_db->domains[d_index].nodes[n_index].proc_num;
 
-        assert(sys_file_key(NULL,'g',&key));
+        assert(sys_file_key(NULL,'i',&key));
 
 		// Shared memory attributes
 		memset(&attributes,0,sizeof(mrapi_shmem_attributes_t));

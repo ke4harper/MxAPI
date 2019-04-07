@@ -96,7 +96,9 @@ void* client(void* args)
 #endif  // (__unix__)
 #endif  // NOTUSED
 
-    assert(mrapi_impl_initialize(mta->domain,mta->node,&status));
+	mca_set_debug_level(0);
+	
+	assert(mrapi_impl_initialize(mta->domain,mta->node,&status));
     assert(MRAPI_SUCCESS == status);
 	assert(mrapi_impl_initialized());
     assert(mrapi_impl_whoami(&node,&n_index,&domain,&d_index));

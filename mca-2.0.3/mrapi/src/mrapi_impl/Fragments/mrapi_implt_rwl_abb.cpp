@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 		assert(mrapi_impl_whoami(&n_num,&n_index,&d_num,&d_index));
 
-        assert(sys_file_key(NULL,'f',&key));
+        assert(sys_file_key(NULL,'h',&key));
 
 		// Mutex attributes
 		memset(&attributes,0,sizeof(attributes));

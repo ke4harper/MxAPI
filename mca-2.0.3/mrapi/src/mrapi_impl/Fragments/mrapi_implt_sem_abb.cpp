@@ -29,10 +29,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Semaphores
 	{
 		int key = 0;
-        int sys_id = 0;
+		mrapi_sem_id_t key1 = 0;
+		mrapi_sem_id_t key2 = 0;
+		int sys_id = 0;
 		int num_locks = 1;
-		uint16_t s_index = 0;
-		uint32_t shared_lock_limit = 1;
+		mrapi_uint8_t num_sems = 0;
+		uint16_t s_index1 = 0;
+		uint16_t s_index2 = 0;
+		uint32_t shared_lock_limit = 0;
 		mrapi_sem_hndl_t sem1 = 0;
 		mrapi_sem_hndl_t sem2 = 0;
 		mca_boolean_t attribute = MRAPI_FALSE;
@@ -45,37 +49,111 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		assert(mrapi_impl_create_sys_semaphore(&sys_id,num_locks,key,MRAPI_TRUE));
 		assert(sys_sem_delete(sys_id));
 
-        assert(sys_file_key(NULL,'d',&key));
+        assert(sys_file_key(NULL,'d',&key1));
+		assert(sys_file_key(NULL, 'e', &key2));
+
+		num_sems = mrapi_db->num_sems;
+		status = MRAPI_SUCCESS;
 
 		// Semaphore create
-        status = MRAPI_SUCCESS;
+		shared_lock_limit = 1;
 		assert(mrapi_impl_create_lock_locked(&sem1, MRAPI_SEM_ID_ANY, shared_lock_limit, SEM, &status));
-		assert(mrapi_impl_create_lock_locked(&sem1,key,shared_lock_limit,SEM,&status));
 		assert(MRAPI_SUCCESS == status);	// status only set if lock_locked returns an error
-		assert(mrapi_impl_decode_hndl(sem1,&s_index));
-		assert(0 == mrapi_db->sems[s_index].id);	// Not used
-		assert(key == mrapi_db->sems[s_index].key);
-		assert(1 == mrapi_db->domains[d_index].nodes[n_index].sems[s_index]);
-		assert(1 == mrapi_db->sems[s_index].refs);
-		assert(mrapi_db->sems[s_index].valid);
-		assert((int32_t)shared_lock_limit == mrapi_db->sems[s_index].shared_lock_limit);
-		assert(SEM == mrapi_db->sems[s_index].type);
-		assert(0 < mrapi_db->num_sems);
-		assert(mrapi_db->sems[s_index].locks[0].valid);
-		assert(sem1 == mrapi_db->sems[s_index].handle);
+		assert(num_sems + 1 == mrapi_db->num_sems);
+		// Semaphore must be acquired before it can be deleted.
+		assert(mrapi_impl_sem_lock(sem1, 1, 0, &status));
+		assert(mrapi_impl_sem_delete(sem1));
+		assert(num_sems + 1 == mrapi_db->num_sems);	// num_sems is never decremented
+		assert(mrapi_impl_create_lock_locked(&sem1,key1,shared_lock_limit,SEM,&status));
+		assert(MRAPI_SUCCESS == status);
+		assert(mrapi_impl_decode_hndl(sem1,&s_index1));
+		assert(0 == mrapi_db->sems[s_index1].id);	// Not used
+		assert(key1 == mrapi_db->sems[s_index1].key);
+		assert(1 == mrapi_db->domains[d_index].nodes[n_index].sems[s_index1]);
+		assert(1 == mrapi_db->sems[s_index1].refs);
+		assert(mrapi_db->sems[s_index1].valid);
+		assert((int32_t)shared_lock_limit == mrapi_db->sems[s_index1].shared_lock_limit);
+		assert(0 == mrapi_db->sems[s_index1].num_locks);
+		assert(SEM == mrapi_db->sems[s_index1].type);
+		assert(num_sems + 2 == mrapi_db->num_sems);
+		assert(mrapi_db->sems[s_index1].locks[0].valid);
+		assert(0 == mrapi_db->sems[s_index1].locks[0].lock_holder_dindex);
+		assert(0 == mrapi_db->sems[s_index1].locks[0].lock_holder_nindex);
+		assert(0 == mrapi_db->sems[s_index1].locks[0].id);
+		assert(sem1 == mrapi_db->sems[s_index1].handle);
+
+		shared_lock_limit = 2;
+		assert(mrapi_impl_create_lock_locked(&sem2, key2, shared_lock_limit, SEM, &status));
+		assert(MRAPI_SUCCESS == status);
+		assert(mrapi_impl_decode_hndl(sem2, &s_index2));
+		assert(key2 == mrapi_db->sems[s_index2].key);
+		assert(1 == mrapi_db->domains[d_index].nodes[n_index].sems[s_index2]);
+		assert(1 == mrapi_db->sems[s_index2].refs);
+		assert(mrapi_db->sems[s_index2].valid);
+		assert((int32_t)shared_lock_limit == mrapi_db->sems[s_index2].shared_lock_limit);
+		assert(0 == mrapi_db->sems[s_index2].num_locks);
+		assert(SEM == mrapi_db->sems[s_index2].type);
+		assert(num_sems + 3 == mrapi_db->num_sems);
+		assert(mrapi_db->sems[s_index2].locks[0].valid);
+		assert(mrapi_db->sems[s_index2].locks[1].valid);
+		assert(0 == mrapi_db->sems[s_index2].locks[0].id);
+		assert(0 == mrapi_db->sems[s_index2].locks[1].id);
+		assert(sem2 == mrapi_db->sems[s_index2].handle);
 
         // Semaphore lock, unlock
         assert(mrapi_impl_sem_lock(sem1,1,0,&status));
-		assert(MRAPI_FALSE == status);	// status only set if sem_lock returns an error
+		assert(MRAPI_SUCCESS == status);
+		assert(1 == mrapi_db->sems[s_index1].num_locks);
+		assert(MRAPI_TRUE == mrapi_db->sems[s_index1].locks[0].locked);
+		assert(d_index == mrapi_db->sems[s_index1].locks[0].lock_holder_dindex);
+		assert(n_index == mrapi_db->sems[s_index1].locks[0].lock_holder_nindex);
+		assert(0 == mrapi_db->sems[s_index1].locks[0].id);
 		assert(!mrapi_impl_sem_lock(sem1,1,10,&status));
 		assert(MRAPI_TIMEOUT == status);
 		assert(mrapi_impl_sem_unlock(sem1,1,&status));
-		// Semaphore must be acquired before it can be deleted.
+		assert(MRAPI_SUCCESS == status);
+		assert(0 == mrapi_db->sems[s_index1].num_locks);
+		assert(MRAPI_FALSE == mrapi_db->sems[s_index1].locks[0].locked);
+		assert(0 == mrapi_db->sems[s_index1].locks[0].lock_holder_dindex);
+		assert(0 == mrapi_db->sems[s_index1].locks[0].lock_holder_nindex);
+		assert(0 == mrapi_db->sems[s_index1].locks[0].id);
+
+		assert(mrapi_impl_sem_lock(sem2, 1, 0, &status));
+		assert(MRAPI_SUCCESS == status);
+		assert(1 == mrapi_db->sems[s_index2].num_locks);
+		assert(MRAPI_TRUE == mrapi_db->sems[s_index2].locks[0].locked);
+		assert(d_index == mrapi_db->sems[s_index2].locks[0].lock_holder_dindex);
+		assert(n_index == mrapi_db->sems[s_index2].locks[0].lock_holder_nindex);
+		assert(0 == mrapi_db->sems[s_index2].locks[0].id);
+		assert(mrapi_impl_sem_lock(sem2, 1, 10, &status));
+		assert(MRAPI_SUCCESS == status);
+		assert(2 == mrapi_db->sems[s_index2].num_locks);
+		assert(MRAPI_TRUE == mrapi_db->sems[s_index2].locks[1].locked);
+		assert(d_index == mrapi_db->sems[s_index2].locks[1].lock_holder_dindex);
+		assert(n_index == mrapi_db->sems[s_index2].locks[1].lock_holder_nindex);
+		assert(0 == mrapi_db->sems[s_index2].locks[1].id);
+		assert(!mrapi_impl_sem_lock(sem2, 1, 10, &status));
+		assert(MRAPI_TIMEOUT == status);
+		assert(mrapi_impl_sem_unlock(sem2, 2, &status));
+		assert(MRAPI_SUCCESS == status);
+		assert(0 == mrapi_db->sems[s_index2].num_locks);
+		assert(MRAPI_FALSE == mrapi_db->sems[s_index2].locks[0].locked);
+		assert(0 == mrapi_db->sems[s_index2].locks[0].lock_holder_dindex);
+		assert(0 == mrapi_db->sems[s_index2].locks[0].lock_holder_nindex);
+		assert(0 == mrapi_db->sems[s_index2].locks[0].id);
+		assert(MRAPI_FALSE == mrapi_db->sems[s_index2].locks[1].locked);
+		assert(0 == mrapi_db->sems[s_index2].locks[1].lock_holder_dindex);
+		assert(0 == mrapi_db->sems[s_index2].locks[1].lock_holder_nindex);
+		assert(0 == mrapi_db->sems[s_index2].locks[1].id);
+
 		assert(mrapi_impl_sem_lock(sem1,1,0,&status));
 		assert(mrapi_impl_sem_delete(sem1));
-		assert(1 == mrapi_db->sems[s_index].refs);	// Semaphores are marked as deleted but not reused
-		assert(MRAPI_FALSE == mrapi_db->sems[s_index].valid);
-		assert(1 == mrapi_db->domains[d_index].nodes[n_index].sems[s_index]);
+		assert(1 == mrapi_db->sems[s_index1].refs);	// Semaphores are marked as deleted but not reused
+		assert(MRAPI_FALSE == mrapi_db->sems[s_index1].valid);
+		assert(1 == mrapi_db->domains[d_index].nodes[n_index].sems[s_index1]);
+		// All the locks must be acquired before deleting
+		assert(mrapi_impl_sem_lock(sem2, 2, 0, &status));
+		assert(mrapi_impl_sem_delete(sem2));
 
 		// Semaphore attributes
 		memset(&attributes,0,sizeof(mrapi_sem_attributes_t));
@@ -89,23 +167,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		mrapi_impl_sem_set_attribute(&attributes,MRAPI_DOMAIN_SHARED,&attribute,sizeof(attribute),&status);
 
 		// Implementation layer semaphore
+		shared_lock_limit = 1;
 		assert(mrapi_impl_sem_create(&sem1,key,&attributes,shared_lock_limit,&status));
 		assert(mrapi_impl_valid_sem_hndl(sem1, &status));
 		assert(MRAPI_LOCK_SEM == mrapi_impl_lock_type_get(sem1, &status));
-		assert(mrapi_impl_decode_hndl(sem1,&s_index));
-		assert(attributes.ext_error_checking == mrapi_db->sems[s_index].attributes.ext_error_checking);
-		assert(attributes.shared_across_domains == mrapi_db->sems[s_index].attributes.shared_across_domains);
+		assert(mrapi_impl_decode_hndl(sem1,&s_index1));
+		assert(attributes.ext_error_checking == mrapi_db->sems[s_index1].attributes.ext_error_checking);
+		assert(attributes.shared_across_domains == mrapi_db->sems[s_index1].attributes.shared_across_domains);
 		mrapi_impl_sem_get_attribute(sem1,MRAPI_ERROR_EXT,&attributes,sizeof(attributes.ext_error_checking),&status);
 		assert(MRAPI_TRUE == attributes.ext_error_checking);
 		mrapi_impl_sem_get_attribute(sem1,MRAPI_DOMAIN_SHARED,&attributes,sizeof(attributes.shared_across_domains),&status);
 		assert(MRAPI_FALSE == attributes.ext_error_checking);
-        assert(1 == mrapi_db->sems[s_index].refs);
+        assert(1 == mrapi_db->sems[s_index1].refs);
 		assert(mrapi_impl_sem_get(&sem2,key));
 		assert(sem2 == sem1);
-        assert(1 == mrapi_db->sems[s_index].refs); // same node
+        assert(1 == mrapi_db->sems[s_index1].refs); // same node
 
 		// Semaphore rundown
 		assert(mrapi_impl_sem_lock(sem1,num_locks,0,&status));
 		assert(mrapi_impl_sem_delete(sem1));
-		assert(MRAPI_TRUE == mrapi_db->sems[s_index].deleted);
+		assert(MRAPI_TRUE == mrapi_db->sems[s_index1].deleted);
 	}

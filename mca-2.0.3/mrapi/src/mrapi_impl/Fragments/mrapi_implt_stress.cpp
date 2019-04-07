@@ -47,7 +47,7 @@ mca_set_debug_level(0);
         mrapi_test_db_t* db = NULL;
 
         if(0 == d_offset) {
-            assert(sys_file_key(NULL,'h',&mutex_key));
+            assert(sys_file_key(NULL,'m',&mutex_key));
             mrapi_impl_mutex_init_attributes(&mutex_attributes);
             assert(mrapi_impl_mutex_create(&mutex_id,mutex_key,&mutex_attributes,&status));
         }
@@ -57,7 +57,7 @@ mca_set_debug_level(0);
         }
 
         if(0 == d_offset) {
-            assert(sys_file_key(NULL,'i',&shmem_key));
+            assert(sys_file_key(NULL,'n',&shmem_key));
             mrapi_impl_shmem_init_attributes(&shmem_attributes);
             status = MRAPI_SUCCESS;
             mrapi_impl_shmem_create(&shmem_id,shmem_key,sizeof(mrapi_test_db_t),&shmem_attributes,&status);
