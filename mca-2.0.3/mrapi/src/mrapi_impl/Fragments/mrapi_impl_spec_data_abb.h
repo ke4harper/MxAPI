@@ -127,12 +127,17 @@ typedef struct {
   mrapi_node_t node_id;
 } mrapi_callback_t;
 
+/* lock state is atomic */
 typedef struct {
-  mrapi_boolean_t valid;
-  mrapi_boolean_t locked;
+  mrapi_uint32_t lock_key;
   mrapi_uint8_t lock_holder_nindex;
   mrapi_uint8_t lock_holder_dindex;
-  mrapi_uint32_t lock_key;
+  mrapi_uint8_t id;
+  struct {
+	uint8_t valid : 1;
+	uint8_t locked : 1;
+	uint8_t : 6;
+  };
 } mrapi_lock_t;
 
 /* mutexes, semaphores and reader-writer locks share this data structure */
