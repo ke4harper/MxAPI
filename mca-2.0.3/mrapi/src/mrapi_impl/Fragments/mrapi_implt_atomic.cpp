@@ -44,7 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mrapi_shmem_attributes_t attributes = { 0 };
     atomic_data* addr = NULL;
 
-    assert(sys_file_key(NULL,'c',&key));
+    assert(sys_file_key(NULL,'z',&key));
 	mrapi_impl_shmem_init_attributes(&attributes);
 	mrapi_impl_shmem_create(&shmem_id,key,sizeof(atomic_data),&attributes,&status);
 	addr = (atomic_data*)mrapi_impl_shmem_attach(shmem_id);
