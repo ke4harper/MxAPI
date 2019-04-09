@@ -22,11 +22,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Fragments\sysvr4_key.c" />
-    <None Include="Fragments\sysvr4_sem.c" />
     <None Include="Fragments\sysvr4_shmem.c" />
     <None Include="Fragments\sysvr4_atomic.c" />
     <None Include="Fragments\sysvr4_inc_abb.c" />
     <None Include="Fragments\sysvr4_os.c" />
+    <None Include="Fragments\sysvr4_sem_abb.c" />
     <ClCompile Include="sysvr4_abb.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

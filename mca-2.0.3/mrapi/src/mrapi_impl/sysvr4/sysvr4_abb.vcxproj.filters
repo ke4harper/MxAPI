@@ -41,9 +41,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Fragments\sysvr4_sem.c">
-      <Filter>Source Files\Fragments</Filter>
-    </None>
     <None Include="Fragments\sysvr4_shmem.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
@@ -69,6 +66,9 @@
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\sysvr4_os.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\sysvr4_sem_abb.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
   </ItemGroup>
