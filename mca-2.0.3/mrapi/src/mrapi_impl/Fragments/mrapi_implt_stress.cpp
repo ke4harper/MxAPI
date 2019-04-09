@@ -26,8 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-mca_set_debug_level(0);
-
     // Runtime stress tests
     {
         int rc = 0;
@@ -46,7 +44,9 @@ mca_set_debug_level(0);
         mrapi_shmem_attributes_t shmem_attributes = { 0 };
         mrapi_test_db_t* db = NULL;
 
-        if(0 == d_offset) {
+		mca_set_debug_level(0);
+		
+		if(0 == d_offset) {
             assert(sys_file_key(NULL,'m',&mutex_key));
             mrapi_impl_mutex_init_attributes(&mutex_attributes);
             assert(mrapi_impl_mutex_create(&mutex_id,mutex_key,&mutex_attributes,&status));
