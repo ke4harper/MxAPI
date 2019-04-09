@@ -279,7 +279,15 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
       if ((mrapi_db->sems[s].valid == MRAPI_FALSE) && (mrapi_db->sems[s].deleted == MRAPI_FALSE))  {
         mrapi_dprintf(1,"mrapi_impl_sem_create: Adding new semaphore set with %d shared_lock_limit (dindex=%d,nindex=%d,semindex=%d id=%d, key=%d",
                       shared_lock_limit,d,n,s,id,key);
+
+		int32_t spin = mrapi_db->sems[s].spin;
         memset(&mrapi_db->sems[s],0,sizeof(mrapi_sem_t));
+		if (use_spin_lock)
+		{
+			/* restore spin lock */
+			mrapi_db->sems[s].spin = spin;
+		}
+
 		if (MRAPI_SEM_ID_ANY == key)
 		{
 			/* Use address of array entry for key */
@@ -288,7 +296,7 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
 		mrapi_db->sems[s].key = key;
         /* log this node as a user, this way we can decrease the ref count when this node calls finalize */
         mrapi_db->domains[d].nodes[n].sems[s]=1;
-        sys_atomic_inc(NULL,&mrapi_db->sems[s].refs,NULL,sizeof(uint16_t)); /* bump the reference count */
+		mrapi_db->sems[s].refs++; /* bump the reference count */
         mrapi_db->sems[s].valid = MRAPI_TRUE;
         mrapi_db->sems[s].shared_lock_limit = shared_lock_limit;
         mrapi_db->sems[s].type = t;
@@ -624,7 +632,7 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
               (mrapi_db->sems[s].locks[l].lock_holder_nindex == n) && 
               (mrapi_db->sems[s].locks[l].lock_holder_dindex == d)) {
             mrapi_db->sems[s].locks[l].locked = MRAPI_FALSE;
-            num_removed++;
+			num_removed++;
             if(--r <= 0) {
 				*mrapi_status = MRAPI_SUCCESS;
 				break;

@@ -50,7 +50,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     int semid_local;
     int shmemid_local;
     int key;
-    int db_key;
+	int db_key;
     int sems_key;
     int shmems_key;
     int rmems_key;
@@ -67,6 +67,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     mrapi_boolean_t use_uid = MRAPI_TRUE;
 
     mrapi_dprintf(1,"mrapi_impl_initialize (%d,%d);",domain_id,node_id);
+
+	if (mrapi_impl_initialized())
+	{
+		*status = MRAPI_ERR_NODE_INITFAILED;
+		return MRAPI_FALSE;
+	}
 
     if (use_uid) {
 #if (__unix__)
@@ -188,7 +194,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
        finalize-1 can occur between initialize-1 and initialize-2 which will cause initilize-2
        to fail because the semaphore no longer exists.
     */
-    if (!mrapi_impl_create_sys_semaphore(&semid_local,1/*num_locks*/,key,MRAPI_TRUE)) {
+    if (!mrapi_impl_create_sys_semaphore(&semid_local,1/*num_locks*/,key,!use_spin_lock)) {
 #if (__unix__||__MINGW32__)
       fprintf(stderr,"MRAPI ERROR: Unable to get the semaphore key= %x, errno=%s\n",
               key,strerror(errno));
@@ -219,16 +225,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           !mrapi_impl_create_sys_semaphore(&sems_semid,MRAPI_MAX_SEMS+1/*num_locks*/,sems_key,MRAPI_FALSE)) {
         sems_semid = sems_global = semid;
       }
-      if (use_global_only ||
-          !mrapi_impl_create_sys_semaphore(&shmems_semid,1/*num_locks*/,shmems_key,MRAPI_FALSE)) {
+      if (!mrapi_impl_create_sys_semaphore(&shmems_semid,1/*num_locks*/,shmems_key,MRAPI_FALSE)) {
         shmems_semid = shmems_global = semid;
       }
-      if (use_global_only ||
-          !mrapi_impl_create_sys_semaphore(&rmems_semid,1/*num_locks*/,rmems_key,MRAPI_FALSE)) {
+      if (!mrapi_impl_create_sys_semaphore(&rmems_semid,1/*num_locks*/,rmems_key,MRAPI_FALSE)) {
         rmems_semid = rmems_global = semid;
       }
-      if (use_global_only ||
-          !mrapi_impl_create_sys_semaphore(&requests_semid,1/*num_locks*/,requests_key,MRAPI_FALSE)) {
+      if (!mrapi_impl_create_sys_semaphore(&requests_semid,1/*num_locks*/,requests_key,MRAPI_FALSE)) {
         requests_semid = requests_global = semid;
       }
 
@@ -245,6 +248,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       mrapi_proc = mrapi_pid;
       mrapi_tid = pthread_self();
 #endif  /* (__unix__||__MINGW32__) */
+
+	  if (use_spin_lock)
+	  {
+		  /* lock the internal database */
+		  int32_t unlocked = 0;
+		  int32_t locked = (int32_t)mrapi_tid;
+		  int32_t prev;
+		  mrapi_status_t status;
+
+		  while (1)
+		  {
+			  if (mrapi_impl_atomic_cas(NULL, &mrapi_db->sems[0].spin, &locked, &unlocked, &prev, sizeof(int32_t), &status))
+			  {
+				  break;
+			  }
+			  sys_os_yield();
+		  }
+	  }
 
 	  /* seed random number generator */
 	  sys_os_srand((unsigned int)mrapi_tid);

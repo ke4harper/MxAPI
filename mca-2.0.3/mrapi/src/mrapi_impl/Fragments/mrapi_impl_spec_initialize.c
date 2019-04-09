@@ -233,16 +233,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           !mrapi_impl_create_sys_semaphore(&sems_semid,MRAPI_MAX_SEMS+1/*num_locks*/,sems_key,MRAPI_FALSE)) {
         sems_semid = semid;
       }
-      if (use_global_only ||
-          !mrapi_impl_create_sys_semaphore(&shmems_semid,1/*num_locks*/,shmems_key,MRAPI_FALSE)) {
+      if (!mrapi_impl_create_sys_semaphore(&shmems_semid,1/*num_locks*/,shmems_key,MRAPI_FALSE)) {
         shmems_semid = semid;
       }
-      if (use_global_only ||
-          !mrapi_impl_create_sys_semaphore(&rmems_semid,1/*num_locks*/,rmems_key,MRAPI_FALSE)) {
+      if (!mrapi_impl_create_sys_semaphore(&rmems_semid,1/*num_locks*/,rmems_key,MRAPI_FALSE)) {
         rmems_semid = semid;
       }
-      if (use_global_only ||
-          !mrapi_impl_create_sys_semaphore(&requests_semid,1/*num_locks*/,requests_key,MRAPI_FALSE)) {
+      if (!mrapi_impl_create_sys_semaphore(&requests_semid,1/*num_locks*/,requests_key,MRAPI_FALSE)) {
         requests_semid = semid;
       }
 

@@ -53,11 +53,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         else {
           while (trycount < max_tries) {
             if (sys_sem_trylock(*id,0)) {
-              return MRAPI_TRUE;
+				return MRAPI_TRUE;
             }
-            else {
-              sys_os_yield();
-            }
+            sys_os_yield();
           }
         }
       }

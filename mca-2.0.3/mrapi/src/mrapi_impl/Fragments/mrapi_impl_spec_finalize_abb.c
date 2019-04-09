@@ -281,8 +281,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
       /* if we locked the database and didn't delete it, then we need to unlock it */
       if (locked) {
-        /* unlock the database */
-        mrapi_assert(mrapi_impl_access_database_post(semid,0));
+		  if (!use_spin_lock || !last_man_standing)
+		  {
+			  /* unlock the database */
+			  mrapi_assert(mrapi_impl_access_database_post(semid, 0));
+		  }
       }
       if(last_man_standing) {
         /* free the global semaphore last */

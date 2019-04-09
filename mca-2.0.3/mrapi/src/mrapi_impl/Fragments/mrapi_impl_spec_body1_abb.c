@@ -279,29 +279,53 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       id = semid;
       member = 0;
     }
-    if (!sys_sem_lock(id,member)) {
+
+	if (!use_spin_lock)
+	{
+		if (!sys_sem_lock(id, member)) {
 #if (__unix__||__MINGW32__)
-      mrapi_dprintf(4,"mrapi_impl_access_database_pre - errno:%s",strerror(errno));
-      //fprintf(stderr,"FATAL ERROR: unable to lock mrapi database: errno:%s\n",strerror(errno));
-      if (fail_on_error) {
-        fprintf(stderr,"FATAL ERROR: unable to lock mrapi database: errno:%s id=%x\n",strerror(errno),id);
-        exit(1);
-      }
+			mrapi_dprintf(4, "mrapi_impl_access_database_pre - errno:%s", strerror(errno));
+			//fprintf(stderr,"FATAL ERROR: unable to lock mrapi database: errno:%s\n",strerror(errno));
+			if (fail_on_error) {
+				fprintf(stderr, "FATAL ERROR: unable to lock mrapi database: errno:%s id=%x\n", strerror(errno), id);
+				exit(1);
+			}
 #else
-      char buf[80];
-	  strerror_s(buf,80,errno);
-      mrapi_dprintf(4,"mrapi_impl_access_database_pre - errno:%s",buf);
-      //fprintf(stderr,"FATAL ERROR: unable to lock mrapi database: errno:%s\n",strerror(errno));
-      if (fail_on_error) {
-        fprintf(stderr,"FATAL ERROR: unable to lock mrapi database: errno:%s id=%x\n",buf,id);
-        exit(1);
-      }
+			char buf[80];
+			strerror_s(buf, 80, errno);
+			mrapi_dprintf(4, "mrapi_impl_access_database_pre - errno:%s", buf);
+			//fprintf(stderr,"FATAL ERROR: unable to lock mrapi database: errno:%s\n",strerror(errno));
+			if (fail_on_error) {
+				fprintf(stderr, "FATAL ERROR: unable to lock mrapi database: errno:%s id=%x\n", buf, id);
+				exit(1);
+			}
 #endif  /* !(__unix__||__MINGW32__) */
-      return MRAPI_FALSE;
-    }
+			return MRAPI_FALSE;
+		}
+	}
+	else  /* spin lock */
+	{
+		int32_t lock = (int32_t)mrapi_tid;
+		int32_t unlock = 0;
+		int32_t prev;
+		mrapi_status_t status;
+
+		int usec = 1;
+		int delay = 1;
+
+		while (1)
+		{
+			if (mrapi_impl_atomic_cas(NULL, &mrapi_db->sems[member].spin, &lock, &unlock, &prev, sizeof(int32_t), &status))
+			{
+				break;
+			}
+			sys_os_usleep(usec * sys_os_rand());
+		}
+	}
 
     mrapi_dprintf(4,"mrapi_impl_access_database_pre (got the internal mrapi db lock)");
-    return MRAPI_TRUE;
+
+	return MRAPI_TRUE;
   }
 
   /***************************************************************************
@@ -321,19 +345,44 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       id = semid;
       member = 0;
     }
-    mrapi_dprintf(4,"mrapi_impl_access_database_post (released the internal mrapi db lock)");
-    if (!sys_sem_unlock(id,member)) {
+
+	mrapi_dprintf(4, "mrapi_impl_access_database_post (released the internal mrapi db lock)");
+
+	if (!use_spin_lock)
+	{
+		if (!sys_sem_unlock(id, member)) {
 #if (__unix__||__MINGW32__)
-      mrapi_dprintf(4,"mrapi_impl_access_database_post (id=%d)- errno:%s",id,strerror(errno));
+			mrapi_dprintf(4, "mrapi_impl_access_database_post (id=%d)- errno:%s", id, strerror(errno));
 #else
-      char buf[80];
-	  strerror_s(buf,80,errno);
-      mrapi_dprintf(4,"mrapi_impl_access_database_post (id=%d)- errno:%s",id,buf);
+			char buf[80];
+			strerror_s(buf, 80, errno);
+			mrapi_dprintf(4, "mrapi_impl_access_database_post (id=%d)- errno:%s", id, buf);
 #endif  /* !(__unix__||__MINGW32__) */
-      fflush(stdout);
-      return MRAPI_FALSE;
-    }
-    return MRAPI_TRUE;
+			fflush(stdout);
+			return MRAPI_FALSE;
+		}
+	}
+	else  /* spin lock */
+	{
+		int32_t lock = (int32_t)mrapi_tid;
+		int32_t unlock = 0;
+		int32_t prev;
+		mrapi_status_t status;
+
+		int usec = 1;
+		int delay = 1;
+
+		while (1)
+		{
+			if (mrapi_impl_atomic_cas(NULL, &mrapi_db->sems[member].spin, &unlock, &lock, &prev, sizeof(int32_t), &status))
+			{
+				break;
+			}
+			sys_os_usleep(usec * sys_os_rand());
+		}
+	}
+
+	return MRAPI_TRUE;
   }
 
   /***************************************************************************

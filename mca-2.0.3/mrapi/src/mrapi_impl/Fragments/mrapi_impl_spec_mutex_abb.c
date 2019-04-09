@@ -244,7 +244,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     /* lock the database */
     mrapi_assert(mrapi_impl_access_database_pre(sems_semid,m,MRAPI_TRUE));
         
-    if ( (mrapi_db->sems[m].locks[0].locked == MRAPI_TRUE) &&
+	mrapi_dprintf(1, "mrapi_impl_mutex_lock attempt (0x%x,%d /*lock_key*/,%d /*timeout*/,&status);",
+		mutex, *lock_key, timeout);
+
+	if ( (mrapi_db->sems[m].locks[0].locked == MRAPI_TRUE) &&
          (mrapi_db->sems[m].locks[0].lock_holder_nindex == n) &&
          (mrapi_db->sems[m].locks[0].lock_holder_dindex == d)) {
       
@@ -262,7 +265,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
     
-    /* unlock the database */
+	/* unlock the database */
    mrapi_assert(mrapi_impl_access_database_post(sems_semid,m));
     
    if (!rc) {
