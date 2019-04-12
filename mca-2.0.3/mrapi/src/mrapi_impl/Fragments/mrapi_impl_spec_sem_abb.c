@@ -541,7 +541,7 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
   }
   
   /***************************************************************************
-  Function: mrapi_sem_unlock
+  Function: mrapi_impl_sem_unlock
     
   Description: unlocks the given semaphore
     
@@ -558,7 +558,7 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
   }
   
   /***************************************************************************
-  Function: mrapi_release_lock
+  Function: mrapi_impl_release_lock
     
   Description: unlocks the given semaphore
     

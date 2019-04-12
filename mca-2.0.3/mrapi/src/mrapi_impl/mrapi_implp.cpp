@@ -52,8 +52,11 @@ int main(int argc, char* argv[])
     mrapi_status_t status = 0;
     mrapi_mutex_id_t mutex_id = 0;
     mrapi_mutex_hndl_t mutex = 0;
-    mrapi_mutex_attributes_t mutex_attributes = { 0 };
-    mrapi_key_t lock_key = 0;
+	mrapi_sem_id_t sem_id = 0;
+	mrapi_sem_hndl_t sem = 0;
+	mrapi_mutex_attributes_t mutex_attributes = { 0 };
+	mrapi_sem_attributes_t sem_attributes = { 0 };
+	mrapi_key_t lock_key = 0;
     mrapi_shmem_id_t shmem_id = 0;
     mrapi_shmem_hndl_t shmem = 0;
     mrapi_shmem_attributes_t shmem_attributes = { 0 };
@@ -88,6 +91,9 @@ int main(int argc, char* argv[])
     mutex_id = mca_Crc32_ComputeBuf(0,"mrapi_implt_mutex_stress",24);
     mrapi_impl_mutex_init_attributes(&mutex_attributes);
     assert(mrapi_impl_mutex_create(&mutex,mutex_id,&mutex_attributes,&status));
+	sem_id = mutex_id + 10;
+	mrapi_impl_sem_init_attributes(&sem_attributes);
+	assert(mrapi_impl_sem_create(&sem, sem_id, &sem_attributes, 1, &status));
 
     shmem_id = mca_Crc32_ComputeBuf(0,"mrapi_implt_shmem_stress",24);
     mrapi_impl_shmem_init_attributes(&shmem_attributes);
@@ -180,6 +186,8 @@ int main(int argc, char* argv[])
     assert(mrapi_impl_shmem_delete(shmem));
     assert(mrapi_impl_mutex_lock(mutex,&lock_key,MRAPI_TIMEOUT_INFINITE,&status));
     assert(mrapi_impl_mutex_delete(mutex));
+	assert(mrapi_impl_sem_lock(sem, 1, MRAPI_TIMEOUT_INFINITE, &status));
+	assert(mrapi_impl_sem_delete(sem));
 
     assert(mrapi_impl_finalize());
 

@@ -41,6 +41,7 @@ typedef struct
 	mrapi_domain_t domain;
 	mrapi_node_t node;
 	int mutex_key;
+	int sem_key;
     mrapi_shmem_hndl_t shmem_id;
     mrapi_test_db_t* db;
 } mrapi_test_args_t;

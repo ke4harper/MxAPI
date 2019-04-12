@@ -26,19 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-void shared_memory_stress(mrapi_test_db_t * db, int bproc, int affinity,
-	const int p_index, const int t_index,
-	const int rp_index, const int at_index,
-	const pid_t pid, const pthread_t tid,
-	int nprocess, int nthread,
-	char* threadmode_rtpshared, char* threadmode_localshared, char* threadmode_global);
-void semaphore_stress(mrapi_test_args_t * mta, mrapi_test_db_t * db,
-	const int p_index, const int t_index,
-	const int rp_index, const int at_index,
-	const pid_t pid, const pthread_t tid,
-	int nprocess, int nthread,
-	char* threadmode_rtpshared, char* threadmode_localshared, char* threadmode_global);
-
 volatile int barrier = 0;
 static mrapi_proc_t gpdb = { 0 };
 
@@ -48,35 +35,50 @@ void* client(void* args)
     static char threadmode_localshared[] = "task-task shared";
     static char threadmode_global[] = "task-task";
 
-	uint32_t n_index = 0;
-	uint32_t d_index = 0;
-	mrapi_node_t node = 0;
-	mrapi_domain_t domain = 0;
-	mrapi_mutex_hndl_t mutex_id = 0;
+    uint32_t n_index = 0;
+    uint32_t d_index = 0;
+    mrapi_node_t node = 0;
+    mrapi_domain_t domain = 0;
+    mrapi_mutex_hndl_t mutex_id = 0;
 	mrapi_sem_hndl_t sem_id = 0;
 	mrapi_key_t lock_key = 0;
-	volatile int who_is_here = 0;
+    volatile int who_is_here = 0;
 
 	mrapi_status_t status = MRAPI_SUCCESS;
 	mrapi_test_args_t* mta = (mrapi_test_args_t*)args;
 
-	int i = 0;
-	int j = 0;
-	int m = 0;
+    int i = 0;
+    int j = 0;
 	int p_index = 0;
 	int t_index = 0;
 	int rp_index = 0;
 	int at_index = 0;
+    int zero = 0;
+    int one = 1;
+    int idx = 0;
+    int txn_id = 0;
+    int role = 0;
 	int nthread = 0;
 	int nprocess = 0;
+    int counter = 0;
 #ifdef NOTUSED
-	char* threadmode = NULL;
+    char* threadmode = NULL;
 #endif  // NOTUSED
-	pid_t pid = 0;
-	pid_t empty = 0;
-	pid_t prev = 0;
-	pthread_t tid = 0;
+    pid_t pid = 0;
+    pid_t empty = 0;
+    pid_t prev = 0;
+    pthread_t tid = 0;
+    mrapi_proc_t* pdb = NULL;
+    mrapi_sync_t* sync = NULL;
+    mrapi_sync_t* rsync = NULL;
 	mrapi_test_db_t* db = NULL;
+
+	mca_cpu_t sem_cpu = { 0 };
+	mca_timestamp_t sem_start = { 0 };
+	mrapi_elapsed_t sem_elapsed = { 0 };
+	mca_cpu_t mutex_cpu = { 0 };
+	mca_timestamp_t mutex_start = { 0 };
+	mrapi_elapsed_t mutex_elapsed = { 0 };
 
 #if (__unix__)
     cpu_set_t mask = { { 0 } };
@@ -85,12 +87,15 @@ void* client(void* args)
     assert(0 == sched_setaffinity(0,sizeof(cpu_set_t),&mask));
 #endif  // (__unix__)
 
-    assert(mrapi_impl_initialize(mta->domain,mta->node,&status));
+	mca_set_debug_level(0);
+	
+	assert(mrapi_impl_initialize(mta->domain,mta->node,&status));
     assert(MRAPI_SUCCESS == status);
 	assert(mrapi_impl_initialized());
     assert(mrapi_impl_whoami(&node,&n_index,&domain,&d_index));
 
 	assert(mrapi_impl_mutex_get(&mutex_id,mta->mutex_key));
+	assert(mrapi_impl_sem_get(&sem_id, mta->sem_key));
     assert(mrapi_impl_mutex_lock(mutex_id,&lock_key,MRAPI_TIMEOUT_INFINITE /*timeout*/,&status));
     assert(MRAPI_SUCCESS == status);
     barrier++;
@@ -173,410 +178,410 @@ void* client(void* args)
 	// Get alternate thread slot
 	at_index = (0 == t_index % 2) ? t_index + 1 : t_index - 1;
 
-	for (m = 0; m < 4; m++)
-	{
-		switch (m)
-		{
-		case 0:  // shared memory
-			if (0 == t_index) printf("shared memory:\n");
-			shared_memory_stress(db, mta->bproc, mta->affinity,
-				p_index, t_index,
-				rp_index, at_index,
-				pid, tid,
-				nprocess, nthread, threadmode_rtpshared, threadmode_localshared, threadmode_global);
-			break;
-		case 1:  // semaphores
-		{
-		}
-		break;
-		case 2:  // mutexes
-		{
+    for(j = 0; j < 3; j++) {
 
-		}
-		break;
-		case 3:  // read-write locks
-		{
+        int txn[SPLIT_ITERATIONS] = { 0 };
 
-		}
-		break;
-		}
-	}
-
-	assert(mrapi_impl_finalize());
-    return 0;
-}
-
-void shared_memory_stress(mrapi_test_db_t * db, int bproc, int affinity,
-	const int p_index, const int t_index,
-	const int rp_index, const int at_index,
-	const pid_t pid, const pthread_t tid,
-	int nprocess, int nthread,
-	char* threadmode_rtpshared, char* threadmode_localshared, char* threadmode_global)
-{
-	int i = 0;
-	int j = 0;
-	int idx = 0;
-	int txn_id = 0;
-	int role = 0;
-	int counter = 0;
-	int zero = 0;
-	int one = 1;
-
-	mrapi_proc_t* pdb = NULL;
-	mrapi_proc_t* rpdb = NULL;
-
-	mrapi_sync_t* sync = NULL;
-	mrapi_sync_t* rsync = NULL;
-
-	for (j = 0; j < 3; j++) {
-
-		int txn[SPLIT_ITERATIONS] = { 0 };
-
-		switch (j) {
-		case 0: // Shared memory between processes
-			pdb = &db->process[p_index];
-			sync = &pdb->thread[t_index].sync[j];
-			rsync = &db->process[rp_index].thread[at_index].sync[j];
-			role = p_index % 2;
+        switch(j) {
+        case 0: // Shared memory between processes
+            pdb = &db->process[p_index];
+            sync = &pdb->thread[t_index].sync[j];
+            rsync = &db->process[rp_index].thread[at_index].sync[j];
+            role = p_index % 2;
 #ifdef NOTUSED
-			threadmode = threadmode_rtpshared;
+            threadmode = threadmode_rtpshared;
 #endif  // NOTUSED
-			break;
-		case 1: // Shared memory between threads
-			pdb = &db->process[p_index];
-			sync = &pdb->thread[t_index].sync[j];
-			rsync = &pdb->thread[at_index].sync[j];
-			role = t_index % 2;
+            break;
+        case 1: // Shared memory between threads
+            pdb = &db->process[p_index];
+            sync = &pdb->thread[t_index].sync[j];
+            rsync = &pdb->thread[at_index].sync[j];
+            role = t_index % 2;
 #ifdef NOTUSED
-			threadmode = threadmode_localshared;
+            threadmode = threadmode_localshared;
 #endif  // NOTUSED
-			break;
-		case 2: // Global memory between threads
-			pdb = &gpdb;
-			sync = &pdb->thread[t_index].sync[j];
-			rsync = &pdb->thread[at_index].sync[j];
-			pdb->thread[t_index].tid = db->process[p_index].thread[t_index].tid;
-			role = t_index % 2;
+            break;
+        case 2: // Global memory between threads
+            pdb = &gpdb;
+            sync = &pdb->thread[t_index].sync[j];
+            rsync = &pdb->thread[at_index].sync[j];
+            pdb->thread[t_index].tid = db->process[p_index].thread[t_index].tid;
+            role = t_index % 2;
 #ifdef NOTUSED
-			threadmode = threadmode_global;
+            threadmode = threadmode_global;
 #endif  // NOTUSED
-			break;
-		}
-		sync->mode = j;
+            break;
+        }
+        sync->mode = j;
 
-		if (0 == j && !bproc) {
-			// no remote process
-			continue;
-		}
+        if(0 == j && !mta->bproc) {
+          // no remote process
+          continue;
+        }
 
-		/* Increment mode count */
+        /* Increment mode count */
 #if !(__unix__)
-		(void)InterlockedIncrement((uint32_t*)&pdb->nmode[j]);
+        (void)InterlockedIncrement((uint32_t*)&pdb->nmode[j]);
 #else
-		(void)__sync_add_and_fetch(&pdb->nmode[j], 1);
+        (void)__sync_add_and_fetch(&pdb->nmode[j],1);
 #endif  // (__unix__)
 
-		// Force memory synchronization
+    	// Force memory synchronization
 #if !(__unix__)
-		MemoryBarrier();
+        MemoryBarrier();
 #else
-		__sync_synchronize();
+        __sync_synchronize();
 #endif  // (__unix__)
 
-		// Reset read and write counters
-		sync->nread = sync->nwrite = counter = 0;
+        // Reset read and write counters
+        sync->nread = sync->nwrite = counter = 0;
 
-		memset(txn, 0, SPLIT_ITERATIONS * sizeof(int));
-		memset(&sync->elapsed, 0, sizeof(mrapi_elapsed_t));
-		memset(&sync->cpu, 0, sizeof(mca_cpu_t));
+        memset(txn,0,SPLIT_ITERATIONS*sizeof(int));
+        memset(&sync->elapsed,0,sizeof(mrapi_elapsed_t));
+        memset(&sync->cpu,0,sizeof(mca_cpu_t));
 
-		// Enable self
+	    // Enable self
 #if !(__unix__)
-		(void)InterlockedCompareExchange((uint32_t*)&sync->benable, one, sync->benable);
+        (void)InterlockedCompareExchange((uint32_t*)&sync->benable,one,sync->benable);
 #else
-		(void)__sync_val_compare_and_swap(&sync->benable, sync->benable, one);
+        (void)__sync_val_compare_and_swap(&sync->benable,sync->benable,one);
 #endif  /* (__unix__) */
 
-		// Force memory synchronization
+    	// Force memory synchronization
 #if !(__unix__)
-		MemoryBarrier();
+        MemoryBarrier();
 #else
-		__sync_synchronize();
+        __sync_synchronize();
 #endif  // (__unix__)
 
-		// Spin waiting for remote enable
-		while (!rsync->benable) {
-			sys_os_yield();
-		}
+        // Spin waiting for remote enable
+        while(!rsync->benable) {
+            sys_os_yield();
+        }
 
-		//printf("pid %d tid 0x%x: nmode %d, %s start\n",
-		//    db->process[p].pid,db->process[p].thread[t].tid,pdb->nmode[j],threadmode);
+        //printf("pid %d tid 0x%x: nmode %d, %s start\n",
+        //    db->process[p].pid,db->process[p].thread[t].tid,pdb->nmode[j],threadmode);
 
-		// Save beginning time
-		mca_begin_cpu(&sync->cpu); /* causes a delay, call before timing start */
-		mca_begin_ts(&sync->start);
+        // Save beginning time
+        mca_begin_cpu(&sync->cpu); /* causes a delay, call before timing start */
+        mca_begin_ts(&sync->start);
 
-		for (i = 0; i < SPLIT_ITERATIONS; i++) {
+        for(i = 0; i < SPLIT_ITERATIONS; i++) {
 
-			// Increment number of iterations
-			sync->elapsed.iterations++;
-			assert(SPLIT_ITERATIONS >= sync->elapsed.iterations);
+            // Increment number of iterations
+            sync->elapsed.iterations++;
+            assert(SPLIT_ITERATIONS >= sync->elapsed.iterations);
 
-			switch (role) {
-			case 0: // Write to remote
-
-#ifdef NOTUSED
-				// Save beginning write delay time
-				mca_begin_split_ts(&sync->start_write);
-#endif  // NOTUSED
-
-				// Spin waiting for available write slot
-				idx = counter % SYNC_BUFFERS;
-				while (sync->buffer[idx].valid) {
-					sys_os_yield();
-				}
+            switch(role) {
+            case 0: // Write to remote
 
 #ifdef NOTUSED
-				// Compute and save elapsed write delay time
-				(void)mca_end_split_ts(&sync->start_write);
+                // Save beginning write delay time
+                mca_begin_split_ts(&sync->start_write);
 #endif  // NOTUSED
 
-				// Set message with transaction ID
-				sync->buffer[idx].txn = i;
-				txn[i]++;
-
-				// Enable remote read
-				sync->buffer[idx].valid = 1;
+                // Spin waiting for available write slot
+                idx = counter % SYNC_BUFFERS;
+                while(sync->buffer[idx].valid) {
+                    sys_os_yield();
+                }
 
 #ifdef NOTUSED
-				// Save beginning transfer time
-				(void)mca_begin_split_ts(&sync->buffer[idx].start_xfr);
+                // Compute and save elapsed write delay time
+                (void)mca_end_split_ts(&sync->start_write);
 #endif  // NOTUSED
 
-				// Increment self write counter
+                // Set message with transaction ID
+                sync->buffer[idx].txn = i;
+                txn[i]++;
+
+                // Enable remote read
+                sync->buffer[idx].valid = 1;
+
+#ifdef NOTUSED
+                // Save beginning transfer time
+                (void)mca_begin_split_ts(&sync->buffer[idx].start_xfr);
+#endif  // NOTUSED
+
+                // Increment self write counter
 #if !(__unix__)
-				counter = InterlockedIncrement((uint32_t*)&sync->nwrite);
+                counter = InterlockedIncrement((uint32_t*)&sync->nwrite);
 #else
-				counter = __sync_add_and_fetch(&sync->nwrite, 1);
-#endif  // (__unix__)
-
-#ifdef NOTUSED
-				// Save beginning sync delay time
-				mca_begin_split_ts(&sync->start_sync);
-#endif  // NOTUSED
-
-				// Force memory synchronization
-#if !(__unix__)
-				MemoryBarrier();
-#else
-				__sync_synchronize();
+                counter = __sync_add_and_fetch(&sync->nwrite,1);
 #endif  // (__unix__)
 
 #ifdef NOTUSED
-				// Compute and save elapsed sync delay time
-				(void)mca_end_split_ts(&sync->start_sync);
+                // Save beginning sync delay time
+                mca_begin_split_ts(&sync->start_sync);
 #endif  // NOTUSED
 
-				break;
-
-			case 1: // Read from remote
-#ifdef NOTUSED
-				// Save beginning read delay time
-				mca_begin_split_ts(&sync->start_read);
-#endif  // NOTUSED
-
-				// Spin waiting for available read transfer
-				idx = counter % SYNC_BUFFERS;
-				while (!rsync->buffer[idx].valid) {
-					sys_os_yield();
-				}
-
-#ifdef NOTUSED
-				// Compute and save elapsed read delay time
-				(void)mca_end_split_ts(&sync->start_read);
-#endif  // NOTUSED
-
-				// Collect transaction ID
-				txn_id = rsync->buffer[idx].txn;
-				txn[txn_id]++;
-
-#ifdef NOTUSED
-				// Compute and save elapsed transfer time
-				(void)mca_end_split_ts(&rsync->buffer[idx].start_xfr);
-#endif  // NOTUSED
-
-				// Enable remote write
-				rsync->buffer[idx].valid = 0;
-
-				// Increment self read counter
+                // Force memory synchronization
 #if !(__unix__)
-				counter = InterlockedIncrement((uint32_t*)&sync->nread);
+                MemoryBarrier();
 #else
-				counter = __sync_add_and_fetch(&sync->nread, 1);
+                __sync_synchronize();
 #endif  // (__unix__)
 
-				break;
-			}
-		}
+#ifdef NOTUSED
+                // Compute and save elapsed sync delay time
+                (void)mca_end_split_ts(&sync->start_sync);
+#endif  // NOTUSED
 
-		// Save beginning rundown time
-		mca_begin_ts(&sync->start_rundown);
+                break;
 
-		if (0 == t_index && 0 == role) {
-			// Spin waiting for final remote read
-			while (rsync->nread < SPLIT_ITERATIONS) {
-				sys_os_yield();
-			}
-		}
+            case 1: // Read from remote
+#ifdef NOTUSED
+                // Save beginning read delay time
+                mca_begin_split_ts(&sync->start_read);
+#endif  // NOTUSED
 
-		// Force memory synchronization
+                // Spin waiting for available read transfer
+                idx = counter % SYNC_BUFFERS;
+                while(!rsync->buffer[idx].valid) {
+                    sys_os_yield();
+                }
+
+#ifdef NOTUSED
+                // Compute and save elapsed read delay time
+                (void)mca_end_split_ts(&sync->start_read);
+#endif  // NOTUSED
+
+                // Collect transaction ID
+                txn_id = rsync->buffer[idx].txn;
+                txn[txn_id]++;
+
+#ifdef NOTUSED
+                // Compute and save elapsed transfer time
+                (void)mca_end_split_ts(&rsync->buffer[idx].start_xfr);
+#endif  // NOTUSED
+
+                // Enable remote write
+                rsync->buffer[idx].valid = 0;
+
+                // Increment self read counter
 #if !(__unix__)
-		MemoryBarrier();
+                counter = InterlockedIncrement((uint32_t*)&sync->nread);
 #else
-		__sync_synchronize();
+                counter = __sync_add_and_fetch(&sync->nread,1);
 #endif  // (__unix__)
 
-		// Compute and save elapsed rundown time/iteration
-		sync->elapsed.rundown = mca_end_ts(&sync->start_rundown) / sync->elapsed.iterations;
+                break;
+            }
+        }
 
 		// Compute and save elapsed total time/iteration
 		sync->elapsed.run = mca_end_ts(&sync->start) / sync->elapsed.iterations;
 		sync->elapsed.util = mca_end_cpu(&sync->cpu); /* causes delay, call after timing measurement */
 
-		// Verify all transactions complete
+		// Save beginning time
+		mca_begin_cpu(&sem_cpu); /* causes a delay, call before timing start */
+		mca_begin_ts(&sem_start);
+		memset(&sem_elapsed, 0, sizeof(mrapi_elapsed_t));
+
 		for (i = 0; i < SPLIT_ITERATIONS; i++) {
-			assert(1 == txn[i]);
+
+			// Increment number of iterations
+			sem_elapsed.iterations++;
+			assert(SPLIT_ITERATIONS >= sem_elapsed.iterations);
+
+			while (1)
+			{
+				if (mrapi_impl_sem_lock(sem_id, 1, MRAPI_TIMEOUT_INFINITE, &status))
+				{
+					break;
+				}
+				sys_os_yield();
+			}
+			while (1)
+			{
+				if (mrapi_impl_sem_unlock(sem_id, 1, &status))
+				{
+					break;
+				}
+				sys_os_yield();
+			}
 		}
 
-		// Disable self
+		// Compute and save elapsed total time/iteration
+		sem_elapsed.run = mca_end_ts(&sem_start) / sem_elapsed.iterations;
+		sem_elapsed.util = mca_end_cpu(&sem_cpu); /* causes delay, call after timing measurement */
+
+		// Save beginning rundown time
+        mca_begin_ts(&sync->start_rundown);
+
+        if(0 == t_index && 0 == role) {
+            // Spin waiting for final remote read
+            while(rsync->nread < SPLIT_ITERATIONS) {
+                sys_os_yield();
+            }
+        }
+
+        // Force memory synchronization
 #if !(__unix__)
-		(void)InterlockedCompareExchange((uint32_t*)&sync->benable, zero, sync->benable);
+        MemoryBarrier();
 #else
-		(void)__sync_val_compare_and_swap(&sync->benable, sync->benable, zero);
+        __sync_synchronize();
+#endif  // (__unix__)
+
+        // Compute and save elapsed rundown time/iteration
+        sync->elapsed.rundown = mca_end_ts(&sync->start_rundown)/sync->elapsed.iterations;
+
+        // Verify all transactions complete
+        for(i = 0; i < SPLIT_ITERATIONS; i++) {
+          assert(1 == txn[i]);
+        }
+
+        // Disable self
+#if !(__unix__)
+        (void)InterlockedCompareExchange((uint32_t*)&sync->benable,zero,sync->benable);
+#else
+        (void)__sync_val_compare_and_swap(&sync->benable,sync->benable,zero);
 #endif  /* (__unix__) */
 
-		// Force memory synchronization
+        // Force memory synchronization
 #if !(__unix__)
-		MemoryBarrier();
+        MemoryBarrier();
 #else
-		__sync_synchronize();
+        __sync_synchronize();
 #endif  // (__unix__)
 
-		// Spin waiting for remote disable
-		while (rsync->benable) {
-			sys_os_yield();
-		}
+	    // Spin waiting for remote disable
+        while(rsync->benable) {
+            sys_os_yield();
+        }
 
-		/* Decrement mode count */
+        /* Decrement mode count */
 #if !(__unix__)
-		(void)InterlockedDecrement((uint32_t*)&pdb->nmode[j]);
+        (void)InterlockedDecrement((uint32_t*)&pdb->nmode[j]);
 #else
-		(void)__sync_add_and_fetch(&pdb->nmode[j], -1);
+        (void)__sync_add_and_fetch(&pdb->nmode[j],-1);
 #endif  // (__unix__)
 
-		/* Spin waiting for rest of threads to finish mode */
-		while (0 < pdb->nmode[j]) {
-			sys_os_yield();
-		}
+        /* Spin waiting for rest of threads to finish mode */
+        while(0 < pdb->nmode[j]) {
+            sys_os_yield();
+        }
 
-		//printf("pid %d tid 0x%x: nmode %d, %s end\n",
-		//    db->process[p].pid,db->process[p].thread[t].tid,pdb->nmode[j],threadmode);
-	}
+        //printf("pid %d tid 0x%x: nmode %d, %s end\n",
+        //    db->process[p].pid,db->process[p].thread[t].tid,pdb->nmode[j],threadmode);
+    }
 
-	// Enable thread rundown
+    // Enable thread rundown
 #if !(__unix__)
-	nthread = InterlockedDecrement((uint32_t*)&db->process[p_index].nthread);
+    nthread = InterlockedDecrement((uint32_t*)&db->process[p_index].nthread);
 #else
-	nthread = __sync_add_and_fetch(&db->process[p].nthread, -1);
+    nthread = __sync_add_and_fetch(&db->process[p].nthread,-1);
 #endif  // (__unix__)
-	assert(0 <= nthread);
-	if (0 >= nthread) {
+    assert(0 <= nthread);
+    if(0 >= nthread) {
 #if !(__unix__)
-		nprocess = InterlockedDecrement((uint32_t*)&db->nprocess);
+        nprocess = InterlockedDecrement((uint32_t*)&db->nprocess);
 #else
-		nprocess = __sync_add_and_fetch(&db->nprocess, -1);
+        nprocess = __sync_add_and_fetch(&db->nprocess,-1);
 #endif  // (__unix__)
-		//printf("pid %d tid 0x%x: DEC db->nprocess %d, rundown process idx %d\n",pid,tid,db->nprocess,p);
-		assert(0 <= nprocess);
-	}
+        //printf("pid %d tid 0x%x: DEC db->nprocess %d, rundown process idx %d\n",pid,tid,db->nprocess,p);
+        assert(0 <= nprocess);
+    }
 
-	//printf("pid %d tid 0x%x: nprocess %d nthread %d end\n",pid,tid,nprocess,nthread);
+    //printf("pid %d tid 0x%x: nprocess %d nthread %d end\n",pid,tid,nprocess,nthread);
 
-	// Force memory synchronization
+    // Force memory synchronization
 #if !(__unix__)
-	MemoryBarrier();
+    MemoryBarrier();
 #else
-	__sync_synchronize();
+    __sync_synchronize();
 #endif  // (__unix__)
 
 	// Spin waiting for thread rundown
-	while (0 < db->process[p_index].nthread) {
-		sys_os_yield();
-	}
+    while(0 < db->process[p_index].nthread) {
+        sys_os_yield();
+    }
 
-	if (0 == t_index) {
-		// Spin waiting for alternate thread rundown
-		while (0 < db->process[p_index].nthread) {
-			sys_os_yield();
-		}
+    if(0 == t_index) {
+        // Spin waiting for alternate thread rundown
+        while(0 < db->process[p_index].nthread) {
+            sys_os_yield();
+        }
 
-		// Spin waiting for remote thread rundown
-		while (0 < db->process[rp_index].nthread) {
-			sys_os_yield();
-		}
-	}
+        // Spin waiting for remote thread rundown
+        while(0 < db->process[rp_index].nthread) {
+            sys_os_yield();
+        }
+    }
 
-	for (j = 0; j < 3; j++) {
-		int k = 0;
-		char msg[512] = "";
-		char* threadmode = NULL;
-		double split_run = 0;
-		double split_rundown = 0;
-		double split_util = 0.0;
+    for(j = 0; j < 3; j++) {
+        int k = 0;
+        char msg[512] = "";
+        char* threadmode = NULL;
+        double split_run = 0;
+        double split_rundown = 0;
+        double split_util = 0.0;
 
-		if (0 == j && !bproc) {
-			continue; // no remote process
-		}
+        if(0 == j && !mta->bproc) {
+            continue; // no remote process
+        }
 
-		switch (j) {
-		case 0: // Shared memory between processes
-			pdb = &db->process[p_index];
-			sync = &pdb->thread[t_index].sync[j];
-			threadmode = threadmode_rtpshared;
-			break;
-		case 1: // Shared memory between threads
-			pdb = &db->process[p_index];
-			sync = &pdb->thread[t_index].sync[j];
-			threadmode = threadmode_localshared;
-			break;
-		case 2: // Global memory between threads
-			pdb = &gpdb;
-			sync = &pdb->thread[t_index].sync[j];
-			pdb->thread[t_index].tid = db->process[p_index].thread[t_index].tid;
-			threadmode = threadmode_global;
-			break;
-		}
+        switch(j) {
+        case 0: // Shared memory between processes
+            pdb = &db->process[p_index];
+            sync = &pdb->thread[t_index].sync[j];
+            threadmode = threadmode_rtpshared;
+            break;
+        case 1: // Shared memory between threads
+            pdb = &db->process[p_index];
+            sync = &pdb->thread[t_index].sync[j];
+            threadmode = threadmode_localshared;
+            break;
+        case 2: // Global memory between threads
+            pdb = &gpdb;
+            sync = &pdb->thread[t_index].sync[j];
+            pdb->thread[t_index].tid = db->process[p_index].thread[t_index].tid;
+            threadmode = threadmode_global;
+            break;
+        }
 
-		split_run = (0.0 == sync->elapsed.run) ? -1.0 : sync->elapsed.run;
-		split_rundown = (0 == sync->elapsed.rundown) ? -1.0 : sync->elapsed.rundown;
-		split_util = sync->elapsed.util;
+        split_run = (0.0 == sync->elapsed.run) ? -1.0 : sync->elapsed.run;
+        split_rundown = (0 == sync->elapsed.rundown) ? -1.0 : sync->elapsed.rundown;
+        split_util = sync->elapsed.util;
 
-		i = sync->elapsed.iterations;
-		assert(0 < i);
+        i = sync->elapsed.iterations;
+        assert(0 < i);
 #if !(__unix__)
-		sprintf_s(msg, sizeof(msg), "pid %6d t %d cpu %d, %d: %12.2f %7.2f %7.2f %7.2f  ",
-			pid, t_index, affinity, i, 1.0E6 / split_run, split_run, split_rundown, split_util);
+        sprintf_s(msg,sizeof(msg),"(SM)  pid %6d t %d cpu %d, %d: %12.2f %7.2f %7.2f %7.2f  ",
+            pid,t_index,mta->affinity,i,1.0E6/split_run,split_run,split_rundown,split_util);
+        for(k = 0; k < (int)sync->cpu.processors; k++) {
+            int msglen = strlen(msg);
+            sprintf_s(&msg[msglen],sizeof(msg)-msglen," %6.2f",sync->cpu.split_sum[k+1]/sync->cpu.split_samples);
+        }
+        sprintf_s(&msg[strlen(msg)],sizeof(msg)-strlen(msg)," (%s)\n",threadmode);
+#else
+        sprintf(msg,"(SM)  pid %6d t %d cpu %d, %d: %12.2f %7.2f %7.2f %7.2f  ",
+            pid,t,mta->affinity,i,1.0E6/split_run,split_run,split_rundown,split_util);
+        for(k = 0; k < (int)sync->cpu.processors; k++) {
+            int msglen = strlen(msg);
+            sprintf(&msg[msglen]," %6.2f",sync->cpu.split_sum[k+1]/sync->cpu.split_samples[k]);
+        }
+        sprintf(&msg[strlen(msg)]," (%s)\n",threadmode);
+#endif  // (__unix__)
+        printf(msg);
+
+		split_run = (0.0 == sem_elapsed.run) ? -1.0 : sem_elapsed.run;
+		split_util = sem_elapsed.util;
+
+#if !(__unix__)
+		sprintf_s(msg, sizeof(msg), "(SEM) pid %6d t %d cpu %d, %d: %12.2f %7.2f %7.2f  ",
+			pid, t_index, mta->affinity, i, 1.0E6 / split_run, split_run, split_util);
 		for (k = 0; k < (int)sync->cpu.processors; k++) {
 			int msglen = strlen(msg);
-			sprintf_s(&msg[msglen], sizeof(msg) - msglen, " %6.2f", sync->cpu.split_sum[k + 1] / sync->cpu.split_samples);
+			sprintf_s(&msg[msglen], sizeof(msg) - msglen, " %6.2f", sem_cpu.split_sum[k + 1] / sem_cpu.split_samples);
 		}
 		sprintf_s(&msg[strlen(msg)], sizeof(msg) - strlen(msg), " (%s)\n", threadmode);
 #else
-		sprintf(msg, "pid %6d t %d cpu %d, %d: %12.2f %7.2f %7.2f %7.2f  ",
-			pid, t, mta->affinity, i, 1.0E6 / split_run, split_run, split_rundown, split_util);
+		sprintf(msg, "(SEM) pid %6d t %d cpu %d, %d: %12.2f %7.2f %7.2f  ",
+			pid, t, mta->affinity, i, 1.0E6 / split_run, split_run, split_util);
 		for (k = 0; k < (int)sync->cpu.processors; k++) {
 			int msglen = strlen(msg);
-			sprintf(&msg[msglen], " %6.2f", sync->cpu.split_sum[k + 1] / sync->cpu.split_samples[k]);
+			sprintf(&msg[msglen], " %6.2f", sem_cpu.split_sum[k + 1] / sem_cpu.split_samples[k]);
 		}
 		sprintf(&msg[strlen(msg)], " (%s)\n", threadmode);
 #endif  // (__unix__)
@@ -585,27 +590,21 @@ void shared_memory_stress(mrapi_test_db_t * db, int bproc, int affinity,
 
 	db->process[p_index].pid = 0;
 
-	// Force memory synchronization
+    // Force memory synchronization
 #if !(__unix__)
-	MemoryBarrier();
+    MemoryBarrier();
 #else
-	__sync_synchronize();
+    __sync_synchronize();
 #endif  // (__unix__)
 
-	if (bproc) {
-		// Spin waiting for remote process rundown
-		while (0 < db->nprocess &&
-			0 < db->process[rp_index].nthread) {
-			sys_os_yield();
-		}
-	}
-}
+    if(mta->bproc) {
+        // Spin waiting for remote process rundown
+        while(0 < db->nprocess &&
+            0 < db->process[rp_index].nthread) {
+                sys_os_yield();
+        }
+    }
 
-void semaphore_stress(mrapi_test_args_t * mta, mrapi_test_db_t * db,
-	const int p_index, const int t_index,
-	const int rp_index, const int at_index,
-	const pid_t pid, const pthread_t tid,
-	int nprocess, int nthread,
-	char* threadmode_rtpshared, char* threadmode_localshared, char* threadmode_global)
-{
+    assert(mrapi_impl_finalize());
+    return 0;
 }

@@ -42,7 +42,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         mrapi_shmem_id_t shmem_key = 0;
         mrapi_shmem_hndl_t shmem_id = 0;
         mrapi_shmem_attributes_t shmem_attributes = { 0 };
-        mrapi_test_db_t* db = NULL;
+		mrapi_sem_id_t sem_key = 0;
+		mrapi_sem_hndl_t sem_id = 0;
+		mrapi_sem_attributes_t sem_attributes = { 0 };
+		mrapi_test_db_t* db = NULL;
 
 		mca_set_debug_level(0);
 		
@@ -50,11 +53,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             assert(sys_file_key(NULL,'m',&mutex_key));
             mrapi_impl_mutex_init_attributes(&mutex_attributes);
             assert(mrapi_impl_mutex_create(&mutex_id,mutex_key,&mutex_attributes,&status));
-        }
+			sem_key = mutex_key + 10;
+			mrapi_impl_sem_init_attributes(&sem_attributes);
+			assert(mrapi_impl_sem_create(&sem_id, sem_key, &sem_attributes, 1, &status));
+		}
         else {
 		    // mutex created by parent process
             assert(sys_file_key(NULL,'a',&mutex_key));
-        }
+			sem_key = mutex_key + 10;
+			assert(mrapi_impl_sem_get(&sem_id, sem_key));
+		}
 
         if(0 == d_offset) {
             assert(sys_file_key(NULL,'n',&shmem_key));
@@ -62,7 +70,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             status = MRAPI_SUCCESS;
             mrapi_impl_shmem_create(&shmem_id,shmem_key,sizeof(mrapi_test_db_t),&shmem_attributes,&status);
             assert(MRAPI_SUCCESS == status);
-        }
+		}
         else {
 		    // shared memory created by parent process
             assert(sys_file_key(NULL,'b',&shmem_key));
@@ -97,7 +105,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 mta[ii].domain = d_offset+1;
                 mta[ii].node = n_offset+ii+2; // main thread is node 1
                 mta[ii].mutex_key = mutex_key;
-                mta[ii].shmem_id = shmem_id;
+				mta[ii].sem_key = sem_key;
+				mta[ii].shmem_id = shmem_id;
                 mta[ii].db = db;
             }
 
@@ -127,6 +136,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         if(0 == d_offset) {
             assert(mrapi_impl_mutex_lock(mutex_id,&lock_key,MRAPI_TIMEOUT_INFINITE,&status));
             assert(mrapi_impl_mutex_delete(mutex_id));
+			assert(mrapi_impl_sem_lock(sem_id, 1, MRAPI_TIMEOUT_INFINITE, &status));
+			assert(mrapi_impl_sem_delete(sem_id));
             assert(mrapi_impl_shmem_delete(shmem_id));
         }
 

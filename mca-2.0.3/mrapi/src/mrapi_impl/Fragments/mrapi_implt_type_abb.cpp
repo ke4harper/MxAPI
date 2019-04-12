@@ -36,7 +36,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 typedef enum
 {
     MRAPI_TEST_WRITE = 0,
-    MRAPI_TEST_READ
+    MRAPI_TEST_READ,
+	MRAPI_TEST_LOCK,
+	MRAPI_TEST_UNLOCK,
 } mrapi_test_role_t;
 
 typedef struct
@@ -47,6 +49,7 @@ typedef struct
 	mrapi_domain_t domain;
 	mrapi_node_t node;
 	int mutex_key;
+	int sem_key;
     mrapi_shmem_hndl_t shmem_id;
     mrapi_test_db_t* db;
 } mrapi_test_args_t;

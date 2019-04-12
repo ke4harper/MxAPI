@@ -52,8 +52,11 @@ int main(int argc, char* argv[])
     mrapi_status_t status = 0;
     mrapi_mutex_hndl_t mutex_id = 0;
     int mutex_key = 0;
+	mrapi_sem_hndl_t sem_id = 0;
+	int sem_key = 0;
     mrapi_mutex_attributes_t mutex_attributes = { 0 };
-    mrapi_key_t lock_key = 0;
+	mrapi_sem_attributes_t sem_attributes = { 0 };
+	mrapi_key_t lock_key = 0;
     uint32_t shmem_id = 0;
     int shmem_key = 0;
     mrapi_test_db_t* db = NULL;
@@ -92,6 +95,9 @@ int main(int argc, char* argv[])
     assert(sys_file_key(NULL,'a',&mutex_key));
     mrapi_impl_mutex_init_attributes(&mutex_attributes);
     assert(mrapi_impl_mutex_create(&mutex_id,mutex_key,&mutex_attributes,&status));
+	sem_key = mutex_key + 10;
+	mrapi_impl_sem_init_attributes(&sem_attributes);
+	assert(mrapi_impl_sem_create(&sem_id, sem_key, &sem_attributes, 1, &status));
 
     assert(sys_file_key(NULL,'b',&shmem_key));
     mrapi_impl_shmem_init_attributes(&shmem_attributes);
@@ -194,7 +200,9 @@ int main(int argc, char* argv[])
 
     assert(mrapi_impl_mutex_lock(mutex_id,&lock_key,MRAPI_TIMEOUT_INFINITE,&status));
     assert(mrapi_impl_mutex_delete(mutex_id));
-    assert(mrapi_impl_shmem_detach(shmem_id)); // release reference count
+	assert(mrapi_impl_sem_lock(sem_id, 1, MRAPI_TIMEOUT_INFINITE, &status));
+	assert(mrapi_impl_sem_delete(sem_id));
+	assert(mrapi_impl_shmem_detach(shmem_id)); // release reference count
     assert(mrapi_impl_shmem_delete(shmem_id));
 
     assert(mrapi_impl_finalize());
