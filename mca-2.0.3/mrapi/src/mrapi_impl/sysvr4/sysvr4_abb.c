@@ -38,7 +38,7 @@ extern "C" {
 #include "Fragments/sysvr4_inc_abb.c"
 #include "Fragments/sysvr4_os.c"
 #include "Fragments/sysvr4_key.c"
-#include "Fragments/sysvr4_sem.c"
+#include "Fragments/sysvr4_sem_abb.c"
 #include "Fragments/sysvr4_shmem.c"
 #include "Fragments/sysvr4_atomic.c"
 

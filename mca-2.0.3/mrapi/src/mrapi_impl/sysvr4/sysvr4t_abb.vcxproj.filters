@@ -37,7 +37,7 @@
     <None Include="Fragments\sysvr4t_shmem.cpp">
       <Filter>Source Files\Fragments</Filter>
     </None>
-    <None Include="Fragments\sysvr4t_sem.cpp">
+    <None Include="Fragments\sysvr4t_sem_abb.cpp">
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\sysvr4t_key.cpp">

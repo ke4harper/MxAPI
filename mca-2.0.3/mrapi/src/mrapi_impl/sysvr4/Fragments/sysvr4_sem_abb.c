@@ -451,6 +451,160 @@ mrapi_boolean_t sys_sem_duplicate(int pproc, int psemid, int* semid) {
 }
 
 /***************************************************************************
+	  Function: sys_sem_trylock_multiple
+
+	  Description: This version of trylock will retry if another thread/process
+		has the lock but will not retry if the lock has gone bad (been deleted).
+
+	  Parameters:
+
+	  Returns: boolean indicating success or failure
+
+ ***************************************************************************/
+  mrapi_boolean_t sys_sem_trylock_multiple(int* semid, int* member, int count, mrapi_boolean_t waitall) {
+	  int i;
+	  int rc = 0;
+
+	  if (0 > count)
+	  {
+		  /* No semaphores to lock */
+		  return MRAPI_TRUE;
+	  }
+
+#if (__unix__)
+	  struct sembuf* sem_lock = (struct sembuf*) malloc(count * sizeof struct sembuf);
+	  for (i = 0; i < count; i++)
+	  {
+		  sem_lock[i].sem_num = member[i];
+		  sem_lock[i].sem_op = -1;
+		  sem_lock[i].sem_flg = IPC_NOWAIT;
+	  }
+#else
+#if !(__MINGW32__)
+	  char buf[80];
+#endif  /* !(__MINGW32__) */
+	  DWORD dwWaitResult = 0;
+	  HANDLE* obj = (HANDLE*)malloc(count * sizeof(HANDLE));
+	  for (i = 0; i < count; i++)
+	  {
+		  sem_set_t* ss = (sem_set_t*)semid[i];
+		  obj[i] = ss->sem[member[i]];
+	  }
+#endif  /* !(__unix__) */
+	  mrapi_dprintf(1, "sys_sem_trylock_multiple");
+	  // retry only if we get EINTR
+	  while (1) {
+#if (__unix__)
+		  for (i = 0; i < count; i++)
+		  {
+			  rc = semop(semid[i], &sem_lock[i], 1);
+			  if (waitall)
+			  {
+				  if (rc < 0)
+				  {
+					  /* One of the semaphores is not ready */
+					  break;
+				  }
+			  }
+			  else
+			  {
+				  if (rc >= 0)
+				  {
+					  /* One of the semaphores is ready */
+					  break;
+				  }
+			  }
+		  }
+		  free(sem_lock);
+
+		  if ((!waitall && rc >= 0)			/* One of the semaphores is ready */
+			  || (waitall && i >= count))	/* All of the semaphores are ready */
+		  {
+			  return MRAPI_TRUE;
+		  }
+
+		  if ((rc == -1) && (errno != EINTR)) {
+			  mrapi_dprintf(3, "sys_sem_trylock_multiple failed: errno=%s", strerror(errno));
+			  return MRAPI_FALSE;
+		  }
+		  mrapi_dprintf(6, "sys_sem_trylock_multiple attempt failed: errno=%s", strerror(errno));
+#else
+		  dwWaitResult = WaitForMultipleObjects(count, obj, waitall, 0);
+		  switch (dwWaitResult)
+		  {
+		  case WAIT_TIMEOUT:
+			  rc = -1;
+			  errno = EAGAIN;
+			  break;
+		  case WAIT_FAILED:
+		  case WAIT_ABANDONED:
+			  rc = -1;
+			  errno = EINVAL;
+			  break;
+		  }
+		  free(obj);
+#if (__MINGW32__)
+		  if (rc >= 0) {
+			  return MRAPI_TRUE;
+		  }
+		  if ((rc == -1) && (errno != EINTR)) {
+			  mrapi_dprintf(3, "sys_sem_trylock failed: errno=%s", strerror(errno));
+			  return MRAPI_FALSE;
+		  }
+		  mrapi_dprintf(6, "sys_sem_trylock attempt failed: errno=%s", strerror(errno));
+#else
+		  if (rc >= 0) {
+			  return MRAPI_TRUE;
+		  }
+		  strerror_s(buf, 80, errno);
+		  if ((rc == -1) && (errno != EINTR)) {
+			  mrapi_dprintf(3, "sys_sem_trylock_multiple failed: errno=%s", buf);
+			  return MRAPI_FALSE;
+		  }
+		  mrapi_dprintf(6, "sys_sem_trylock_multiple attempt failed: errno=%s", buf);
+#endif  /* !(__MINGW32__) */
+#endif  /* !(__unix__) */
+		  break;
+	  }
+
+	  return MRAPI_FALSE;
+  }
+
+/***************************************************************************
+	  Function: sys_sem_lock_multiple
+
+	  Description:
+
+	  Parameters:
+
+	  Returns: boolean indicating success or failure
+
+ ***************************************************************************/
+  mrapi_boolean_t sys_sem_lock_multiple(int* semid, int* member, int count, mrapi_boolean_t waitall) {
+
+	  while (1) {
+		  // repeatedly call trylock until we get the lock or fail due to an
+		  // error other than EAGAIN (someone else has the lock).
+		  if (sys_sem_trylock_multiple(semid, member, count, waitall)) {
+			  return MRAPI_TRUE;
+		  }
+		  else if (errno != EAGAIN) {
+#if (__unix__||__MINGW32__)
+			  mrapi_dprintf(2, "sys_sem_lock_multiple attempt failed: errno=%s", strerror(errno));
+#else
+			  char buf[80];
+			  strerror_s(buf, 80, errno);
+			  mrapi_dprintf(2, "sys_sem_lock_multiple attempt failed: errno=%s", buf);
+#endif  /* !(__unix__||__MINGW32__) */
+		  }
+		  else {
+			  sys_os_yield();
+		  }
+	  }
+	  return MRAPI_FALSE;
+  }
+
+/***************************************************************************
   Function: sys_sem_unlock
 
   Description:

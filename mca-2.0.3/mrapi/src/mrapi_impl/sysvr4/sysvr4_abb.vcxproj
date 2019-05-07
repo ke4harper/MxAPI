@@ -13,7 +13,7 @@
   <ItemGroup>
     <None Include="..\Fragments\mrapi_sys_atomic.h" />
     <None Include="..\Fragments\mrapi_sys_key.h" />
-    <None Include="..\Fragments\mrapi_sys_sem.h" />
+    <None Include="..\Fragments\mrapi_sys_sem_abb.h" />
     <None Include="..\Fragments\mrapi_sys_shmem.h" />
     <ClInclude Include="..\..\..\include\mrapi_abb.h" />
     <ClInclude Include="..\Fragments\mrapi_sys_inc_abb.h" />

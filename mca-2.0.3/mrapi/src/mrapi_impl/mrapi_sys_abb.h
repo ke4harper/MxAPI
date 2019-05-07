@@ -46,7 +46,7 @@ extern "C" {
 */
 
 #include "Fragments/mrapi_sys_shmem.h"
-#include "Fragments/mrapi_sys_sem.h"
+#include "Fragments/mrapi_sys_sem_abb.h"
 #include "Fragments/mrapi_sys_key.h"
 #include "Fragments/mrapi_sys_os.h"
 #include "Fragments/mrapi_sys_atomic.h"

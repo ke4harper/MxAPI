@@ -96,7 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Fragments\sysvr4t_key.cpp" />
-    <None Include="Fragments\sysvr4t_sem.cpp" />
+    <None Include="Fragments\sysvr4t_sem_abb.cpp" />
     <None Include="Fragments\sysvr4t_shmem.cpp" />
     <None Include="Fragments\sysvr4t_atomic.cpp" />
     <None Include="Fragments\sysvr4t_inc_abb.cpp" />
