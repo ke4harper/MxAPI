@@ -396,7 +396,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   Returns: boolean indicating success or failure
 
   ***************************************************************************/
-  inline mrapi_boolean_t mrapi_impl_whoami (mrapi_node_t* node_id,
+  MCA_INLINE mrapi_boolean_t mrapi_impl_whoami (mrapi_node_t* node_id,
                                                      uint32_t* n_index,
                                                      mrapi_domain_t* domain_id,
                                                      uint32_t* d_index)

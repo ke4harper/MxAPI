@@ -57,10 +57,12 @@ extern "C" {
 #include <pdh.h>
 #include <pdhmsg.h>
 #if !(__MINGW32__)
-#define inline
+#define MCA_INLINE
 typedef HANDLE pthread_t;
 typedef unsigned long sigset_t;
-#endif  /* !(__MINGW32__) */
+#else
+#define MCA_INLINE inline
+#endif  /* (__MINGW32__) */
 
 #if (__MINGW32__)
 #define	SIG_GET	((__p_sig_fn_t) 2)
