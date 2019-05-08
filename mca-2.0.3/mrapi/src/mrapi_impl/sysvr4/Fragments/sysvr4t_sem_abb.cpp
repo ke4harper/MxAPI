@@ -209,8 +209,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 			assert(sys_sem_create(key[1], num_locks, &id[1]));
 			member[1] = 0;
 		}
-		assert(sys_sem_trylock_multiple(id, member, 2, TRUE));
-		assert(!sys_sem_trylock_multiple(id, member, 2, TRUE));
+		void* obj = NULL;
+		assert(sys_sem_trylock_multiple(&obj, id, member, 2, TRUE));
+		assert(NULL != obj);
+		sys_sem_trylock_multiple_free(&obj);
+		assert(NULL == obj);
+		assert(!sys_sem_trylock_multiple(&obj, id, member, 2, TRUE));
+		sys_sem_trylock_multiple_free(&obj);
 		assert(sys_sem_unlock(id[0], 0));
 		assert(sys_sem_unlock(id[1], 0));
 		assert(sys_sem_lock_multiple(id, member, 2, TRUE));
