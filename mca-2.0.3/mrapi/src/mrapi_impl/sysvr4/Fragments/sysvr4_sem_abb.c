@@ -455,6 +455,7 @@ mrapi_boolean_t sys_sem_duplicate(int pproc, int psemid, int* semid) {
 
 	  Description: This version of trylock will retry if another thread/process
 		has the lock but will not retry if the lock has gone bad (been deleted).
+	Note: not tested yet for Linux, needs more work.
 
 	  Parameters:
 
