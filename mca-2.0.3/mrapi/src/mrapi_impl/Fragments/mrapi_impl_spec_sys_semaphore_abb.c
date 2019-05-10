@@ -26,21 +26,40 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-typedef struct {
-	int set;
-	int member;
-} sem_ref_t;
+/***************************************************************************
+   Function: mrapi_impl_create_sys_semaphore
 
-/* semaphore management */
-mrapi_boolean_t sys_sem_create(int key, int num_locks, int* semid);
-mrapi_boolean_t sys_sem_get(int key, int num_locks, int* semid);
-mrapi_boolean_t sys_sem_duplicate(int pproc, int psemid, int* semid);
-mrapi_boolean_t sys_sem_lock(sem_ref_t ref);
-mrapi_boolean_t sys_sem_trylock(sem_ref_t id);
-mrapi_boolean_t sys_sem_lock_multiple(sem_ref_t* ref, int count, mrapi_boolean_t waitall);
-mrapi_boolean_t sys_sem_trylock_multiple(void** objp, sem_ref_t* ref, int count, mrapi_boolean_t waitall);
-void sys_sem_trylock_multiple_free(void** objp);
-mrapi_boolean_t sys_sem_unlock(sem_ref_t ref);
-mrapi_boolean_t sys_sem_unlock_multiple(sem_ref_t* ref, int count);
-mrapi_boolean_t sys_sem_release(int semid);
-mrapi_boolean_t sys_sem_delete(int semid);
+   Description: Create or get the semaphore corresponding to the key
+
+   Parameters:
+
+   Returns: boolean indicating success or failure
+
+***************************************************************************/
+mrapi_boolean_t mrapi_impl_create_sys_semaphore(int* id,
+	int num_locks,
+	int key,
+	mrapi_boolean_t lock)
+{
+	unsigned max_tries = 0xffffffff;
+	unsigned trycount = 0;
+
+	while (trycount < max_tries) {
+		trycount++;
+		if ((sys_sem_create(key, num_locks, id) || sys_sem_get(key, num_locks, id))) {
+			if (!lock) {
+				return MRAPI_TRUE;
+			}
+			else {
+				sem_ref_t ref = { *id, 0 };
+				while (trycount < max_tries) {
+					if (sys_sem_trylock(ref)) {
+						return MRAPI_TRUE;
+					}
+					sys_os_yield();
+				}
+			}
+		}
+	}
+	return MRAPI_FALSE;
+}

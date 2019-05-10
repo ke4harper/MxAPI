@@ -14,18 +14,20 @@
     <None Include="Fragments\mrapi_impl_spec_inc_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_body1_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_body2.c" />
-    <None Include="Fragments\mrapi_impl_spec_sys_semaphore.c" />
     <None Include="Fragments\mrapi_impl_spec_initialize_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_finalize_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_mutex_abb.c" />
-    <None Include="Fragments\mrapi_impl_spec_resources.c" />
-    <None Include="Fragments\mrapi_impl_spec_rmem.c" />
+    <None Include="Fragments\mrapi_impl_spec_resources_abb.c" />
+    <None Include="Fragments\mrapi_impl_spec_rmem_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_shmem_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_atomic.c" />
     <None Include="Fragments\mrapi_impl_spec_declaration_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_signal_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_sem_abb.c" />
     <None Include="Fragments\mrapi_impl_spec_rwl_abb.c" />
+    <None Include="Fragments\mrapi_impl_spec_sys_semaphore_abb.c">
+      <FileType>CppCode</FileType>
+    </None>
     <ClCompile Include="mrapi_impl_spec_abb.c" />
   </ItemGroup>
   <ItemGroup>
@@ -36,7 +38,7 @@
     <ClInclude Include="Fragments\mrapi_sys_inc_abb.h" />
     <ClInclude Include="Fragments\mrapi_sys_key.h" />
     <ClInclude Include="Fragments\mrapi_sys_os.h" />
-    <ClInclude Include="Fragments\mrapi_sys_sem.h" />
+    <ClInclude Include="Fragments\mrapi_sys_sem_abb.h" />
     <ClInclude Include="Fragments\mrapi_sys_shmem.h" />
     <ClInclude Include="mrapi_impl_spec_abb.h" />
     <None Include="mrapi_sys_abb.h" />

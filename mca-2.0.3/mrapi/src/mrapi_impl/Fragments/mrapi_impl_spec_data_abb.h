@@ -90,6 +90,8 @@ typedef struct {
   mrapi_resource_t resource;
 } mrapi_impl_attributes_t;
 
+#define mrapi_impl_sem_ref_t sem_ref_t
+
 typedef mrapi_impl_attributes_t mrapi_mutex_attributes_t;
 typedef mrapi_impl_attributes_t mrapi_sem_attributes_t;
 typedef mrapi_impl_attributes_t mrapi_rwl_attributes_t;

@@ -168,17 +168,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		int id = 0;
 		int key = 0;
 		int created = 0;
+		sem_ref_t semref;
 		assert(sys_file_key(NULL, 'g', &key));
 		created = 0;
 		if (!sys_sem_get(key, num_locks, &id)) { // race with other process?
 			created = 1;
 			assert(sys_sem_create(key, num_locks, &id));
 		}
-		assert(sys_sem_trylock(id, 0));
-		assert(!sys_sem_trylock(id, 0));
-		assert(sys_sem_unlock(id, 0));
-		assert(sys_sem_lock(id, 0));
-		assert(sys_sem_unlock(id, 0));
+		semref.set = id;
+		semref.member = 0;
+		assert(sys_sem_trylock(semref));
+		assert(!sys_sem_trylock(semref));
+		assert(sys_sem_unlock(semref));
+		assert(sys_sem_lock(semref));
+		assert(sys_sem_unlock(semref));
 		if (created) {
 			assert(sys_sem_delete(id)); // clean up Windows resources,
 		}                               // Unix error is ignored
@@ -192,45 +195,42 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		const int num_locks = 1;
 		int created1 = 0;
 		int created2 = 0;
-		int id[2];
 		int key[2];
-		int member[2];
+		sem_ref_t semref[2];
 		assert(sys_file_key(NULL, 'o', &key[0]));
 		assert(sys_file_key(NULL, 'p', &key[1]));
 		created1 = 0;
-		if (!sys_sem_get(key[0], num_locks, &id[0])) { // race with other process?
+		if (!sys_sem_get(key[0], num_locks, &semref[0].set)) { // race with other process?
 			created1 = 1;
-			assert(sys_sem_create(key[0], num_locks, &id[0]));
-			member[0] = 0;
+			assert(sys_sem_create(key[0], num_locks, &semref[0].set));
+			semref[0].member = 0;
 		}
 		created2 = 0;
-		if (!sys_sem_get(key[1], num_locks, &id[1])) { // race with other process?
+		if (!sys_sem_get(key[1], num_locks, &semref[1].set)) { // race with other process?
 			created2 = 1;
-			assert(sys_sem_create(key[1], num_locks, &id[1]));
-			member[1] = 0;
+			assert(sys_sem_create(key[1], num_locks, &semref[1].set));
+			semref[1].member = 0;
 		}
 		void* obj = NULL;
-		assert(sys_sem_trylock_multiple(&obj, id, member, 2, TRUE));
+		assert(sys_sem_trylock_multiple(&obj, semref, 2, TRUE));
 		assert(NULL != obj);
 		sys_sem_trylock_multiple_free(&obj);
 		assert(NULL == obj);
-		assert(!sys_sem_trylock_multiple(&obj, id, member, 2, TRUE));
+		assert(!sys_sem_trylock_multiple(&obj, semref, 2, TRUE));
 		sys_sem_trylock_multiple_free(&obj);
-		assert(sys_sem_unlock(id[0], 0));
-		assert(sys_sem_unlock(id[1], 0));
-		assert(sys_sem_lock_multiple(id, member, 2, TRUE));
-		assert(sys_sem_unlock(id[0], 0));
-		assert(sys_sem_unlock(id[1], 0));
+		assert(sys_sem_unlock_multiple(semref, 2));
+		assert(sys_sem_lock_multiple(semref, 2, TRUE));
+		assert(sys_sem_unlock_multiple(semref, 2));
 		if (created1) {
-			assert(sys_sem_delete(id[0])); // clean up Windows resources,
+			assert(sys_sem_delete(semref[0].set)); // clean up Windows resources,
 		}                               // Unix error is ignored
 		else {
-			assert(sys_sem_release(id[0]));
+			assert(sys_sem_release(semref[0].set));
 		}
 		if (created2) {
-			assert(sys_sem_delete(id[1])); // clean up Windows resources,
+			assert(sys_sem_delete(semref[1].set)); // clean up Windows resources,
 		}                               // Unix error is ignored
 		else {
-			assert(sys_sem_release(id[1]));
+			assert(sys_sem_release(semref[1].set));
 		}
 	}

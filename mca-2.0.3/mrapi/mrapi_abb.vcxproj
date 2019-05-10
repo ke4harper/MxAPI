@@ -121,7 +121,7 @@ xcopy /Y $(TargetDir)$(TargetName).pdb ..\mcapi\src\mcapi_trans\mcapi_trans_sm</
     </ClCompile>
     <None Include="src\Fragments\mrapi_initialize.c" />
     <None Include="src\Fragments\mrapi_mutex.c" />
-    <None Include="src\Fragments\mrapi_sem.c" />
+    <None Include="src\Fragments\mrapi_sem_abb.c" />
     <None Include="src\Fragments\mrapi_rwl.c" />
     <None Include="src\Fragments\mrapi_shmem.c" />
     <None Include="src\Fragments\mrapi_rmem.c" />

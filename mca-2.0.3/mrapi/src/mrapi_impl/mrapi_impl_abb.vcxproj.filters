@@ -53,10 +53,10 @@
     <ClInclude Include="Fragments\mrapi_sys_os.h">
       <Filter>Header Files\Fragments</Filter>
     </ClInclude>
-    <ClInclude Include="Fragments\mrapi_sys_sem.h">
+    <ClInclude Include="Fragments\mrapi_sys_shmem.h">
       <Filter>Header Files\Fragments</Filter>
     </ClInclude>
-    <ClInclude Include="Fragments\mrapi_sys_shmem.h">
+    <ClInclude Include="Fragments\mrapi_sys_sem_abb.h">
       <Filter>Header Files\Fragments</Filter>
     </ClInclude>
   </ItemGroup>
@@ -67,19 +67,10 @@
     <None Include="Fragments\mrapi_impl_spec_body2.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
-    <None Include="Fragments\mrapi_impl_spec_sys_semaphore.c">
-      <Filter>Source Files\Fragments</Filter>
-    </None>
     <None Include="Fragments\mrapi_impl_spec_initialize_abb.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\mrapi_impl_spec_finalize_abb.c">
-      <Filter>Source Files\Fragments</Filter>
-    </None>
-    <None Include="Fragments\mrapi_impl_spec_rmem.c">
-      <Filter>Source Files\Fragments</Filter>
-    </None>
-    <None Include="Fragments\mrapi_impl_spec_resources.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\mrapi_impl_spec_shmem_abb.c">
@@ -107,6 +98,15 @@
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\mrapi_impl_spec_body1_abb.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_resources_abb.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_rmem_abb.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_impl_spec_sys_semaphore_abb.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
   </ItemGroup>

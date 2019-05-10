@@ -445,16 +445,40 @@ void mrapi_sem_lock(
  );
 
 PUBLIC
+void mrapi_sem_lock_multiple(
+	MRAPI_OUT mrapi_sem_hndl_t* sem,
+	MRAPI_IN int count,
+	MRAPI_IN mrapi_boolean_t waitall,
+	MRAPI_IN mrapi_timeout_t timeout,
+	MRAPI_OUT mrapi_status_t* status
+);
+
+PUBLIC
 mrapi_boolean_t mrapi_sem_trylock(
  MRAPI_IN mrapi_sem_hndl_t sem,
  MRAPI_OUT mrapi_status_t* status
  );
 
 PUBLIC
+mrapi_boolean_t mrapi_sem_trylock_multiple(
+	MRAPI_OUT mrapi_sem_hndl_t* sem,
+	MRAPI_IN int count,
+	MRAPI_IN mrapi_boolean_t waitall,
+	MRAPI_OUT mrapi_status_t* status
+);
+
+PUBLIC
 void mrapi_sem_unlock (
  MRAPI_IN mrapi_sem_hndl_t sem,
  MRAPI_OUT mrapi_status_t* status
  );
+
+PUBLIC
+void mrapi_sem_unlock_multiple(
+	MRAPI_OUT mrapi_sem_hndl_t* sem,
+	MRAPI_IN int count,
+	MRAPI_OUT mrapi_status_t* status
+);
 
 PUBLIC
 mrapi_rwl_hndl_t mrapi_rwl_create(

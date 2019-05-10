@@ -60,7 +60,7 @@ mrapi_lock_type mrapi_lock_type_get(
 
 #include "Fragments/mrapi_initialize.c"
 #include "Fragments/mrapi_mutex.c"
-#include "Fragments/mrapi_sem.c"
+#include "Fragments/mrapi_sem_abb.c"
 #include "Fragments/mrapi_rwl.c"
 #include "Fragments/mrapi_shmem.c"
 #include "Fragments/mrapi_rmem.c"

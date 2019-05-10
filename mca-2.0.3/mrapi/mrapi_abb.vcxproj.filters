@@ -58,9 +58,6 @@
     <None Include="src\Fragments\mrapi_mutex.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
-    <None Include="src\Fragments\mrapi_sem.c">
-      <Filter>Source Files\Fragments</Filter>
-    </None>
     <None Include="src\Fragments\mrapi_rwl.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
@@ -77,6 +74,9 @@
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="src\Fragments\mrapi_atomic.c">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="src\Fragments\mrapi_sem_abb.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
   </ItemGroup>

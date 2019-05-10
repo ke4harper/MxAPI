@@ -41,14 +41,14 @@ extern "C" {
 #include "Fragments/mrapi_impl_spec_finalize_abb.c"
 #include "Fragments/mrapi_impl_spec_body2.c"
 #include "Fragments/mrapi_impl_spec_signal_abb.c"
-#include "Fragments/mrapi_impl_spec_sys_semaphore.c"
+#include "Fragments/mrapi_impl_spec_sys_semaphore_abb.c"
 #include "Fragments/mrapi_impl_spec_initialize_abb.c"
 #include "Fragments/mrapi_impl_spec_mutex_abb.c"
 #include "Fragments/mrapi_impl_spec_rwl_abb.c"
 #include "Fragments/mrapi_impl_spec_shmem_abb.c"
 #include "Fragments/mrapi_impl_spec_sem_abb.c"
-#include "Fragments/mrapi_impl_spec_rmem.c"
-#include "Fragments/mrapi_impl_spec_resources.c"
+#include "Fragments/mrapi_impl_spec_rmem_abb.c"
+#include "Fragments/mrapi_impl_spec_resources_abb.c"
 #include "Fragments/mrapi_impl_spec_atomic.c"
   
 #ifdef __cplusplus
