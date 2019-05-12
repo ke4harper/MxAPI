@@ -540,17 +540,25 @@ mrapi_boolean_t sys_sem_trylock_multiple(void** objp, sem_ref_t* ref, int count,
 		mrapi_dprintf(6, "sys_sem_trylock_multiple attempt failed: errno=%s", strerror(errno));
 #else
 		dwWaitResult = WaitForMultipleObjects(count, *hndl, waitall, 0);
-		switch (dwWaitResult)
+		if (WAIT_OBJECT_0 <= dwWaitResult &&
+			WAIT_OBJECT_0 + count > dwWaitResult)
 		{
-		case WAIT_TIMEOUT:
-			rc = -1;
-			errno = EAGAIN;
-			break;
-		case WAIT_FAILED:
-		case WAIT_ABANDONED:
+			/* Semaphore(s) are signaled */
+			rc = 0;
+		}
+		else if ((WAIT_ABANDONED_0 <= dwWaitResult &&
+			WAIT_ABANDONED_0 + count > dwWaitResult) ||
+			WAIT_FAILED == dwWaitResult)
+		{
+			/* Semaphore(s) are no longer valid or in error */
 			rc = -1;
 			errno = EINVAL;
-			break;
+		}
+		else if (WAIT_TIMEOUT == dwWaitResult)
+		{
+			/* Wait timeout */
+			rc = -1;
+			errno = EAGAIN;
 		}
 
 #if (__MINGW32__)
