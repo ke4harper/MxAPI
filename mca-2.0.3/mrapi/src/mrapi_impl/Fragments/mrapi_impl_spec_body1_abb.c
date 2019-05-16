@@ -345,11 +345,8 @@ mrapi_boolean_t mrapi_impl_access_database_pre_multiple(mrapi_impl_sem_ref_t* re
 
 	// if we are told to only use the global sem, then ignore the id passed in
 	if (use_global_only) {
-		for (i = 0; i < count; i++)
-		{
-			ref[i].set = semid;
-			ref[i].member = 0;
-		}
+		mrapi_impl_sem_ref_t sref = { semid, 0 };
+		return mrapi_impl_access_database_pre(sref, fail_on_error);
 	}
 
 	if (!use_spin_lock)
@@ -473,11 +470,8 @@ mrapi_boolean_t mrapi_impl_access_database_post_multiple(mrapi_impl_sem_ref_t* r
 
 	// if we are told to only use the global sem, then ignore the id passed in
 	if (use_global_only) {
-		for (i = 0; i < count; i++)
-		{
-			ref[i].set = semid;
-			ref[i].member = 0;
-		}
+		mrapi_impl_sem_ref_t sref = { semid, 0 };
+		return mrapi_impl_access_database_post(sref);
 	}
 
 	mrapi_dprintf(4, "mrapi_impl_access_database_post_multiple (released the internal mrapi db lock)");
