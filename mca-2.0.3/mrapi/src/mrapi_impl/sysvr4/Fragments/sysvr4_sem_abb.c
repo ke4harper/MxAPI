@@ -560,6 +560,10 @@ mrapi_boolean_t sys_sem_trylock_multiple(void** objp, sem_ref_t* ref, int count,
 			rc = -1;
 			errno = EAGAIN;
 		}
+		else
+		{
+			mrapi_dprintf(1, "sys_sem_trylock_multiple wait error: %d\n", GetLastError());
+		}
 
 #if (__MINGW32__)
 		if (rc >= 0) {
