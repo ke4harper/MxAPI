@@ -120,6 +120,13 @@ mrapi_boolean_t mrapi_impl_sem_unlock_multiple(mrapi_sem_hndl_t* sem,
 	int32_t num_locks,
 	int count,
 	mrapi_status_t* status);
+mrapi_boolean_t mrapi_impl_sem_post(mrapi_sem_hndl_t sem,
+	int32_t num_locks,
+	mrapi_status_t* status);
+mrapi_boolean_t mrapi_impl_sem_post_multiple(mrapi_sem_hndl_t* sem,
+	int32_t num_locks,
+	int count,
+	mrapi_status_t* status);
 mrapi_boolean_t mrapi_impl_sem_validID(mrapi_sem_id_t sem);
 
 /* READER/WRITER LOCKS */

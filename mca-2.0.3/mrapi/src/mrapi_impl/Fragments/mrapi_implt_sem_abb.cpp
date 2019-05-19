@@ -118,7 +118,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	assert(0 == mrapi_db->sems[s_index2].locks[1].id);
 	assert(sem2 == mrapi_db->sems[s_index2].handle);
 
-	// Semaphore lock, unlock
+	// Semaphore lock, unlock, post
 	assert(mrapi_impl_sem_lock(sem1, 1, 0, &status));
 	assert(MRAPI_SUCCESS == status);
 	assert(1 == mrapi_db->sems[s_index1].num_locks);
@@ -135,6 +135,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	assert(0 == mrapi_db->sems[s_index1].locks[0].lock_holder_dindex);
 	assert(0 == mrapi_db->sems[s_index1].locks[0].lock_holder_nindex);
 	assert(0 == mrapi_db->sems[s_index1].locks[0].id);
+
+	assert(mrapi_impl_sem_lock(sem1, 1, 0, &status));
+	assert(MRAPI_SUCCESS == status);
+	assert(mrapi_impl_sem_post(sem1, 1, &status));
+	assert(MRAPI_SUCCESS == status);
 
 	assert(mrapi_impl_sem_lock(sem2, 1, 0, &status));
 	assert(MRAPI_SUCCESS == status);
@@ -164,9 +169,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	assert(0 == mrapi_db->sems[s_index2].locks[1].lock_holder_nindex);
 	assert(0 == mrapi_db->sems[s_index2].locks[1].id);
 
-	// Multiple semaphore lock, unlock
+	// Multiple semaphore lock, unlock, post
 	mrapi_sem_hndl_t sem[2] = { sem1, sem2 };
-	assert(mrapi_impl_sem_lock_multiple(sem, 1, 2, TRUE, 0, &status));
+	assert(mrapi_impl_sem_lock_multiple(sem, num_locks, 2, TRUE, 0, &status));
 	assert(MRAPI_SUCCESS == status);
 	assert(1 == mrapi_db->sems[s_index1].num_locks);
 	assert(1 == mrapi_db->sems[s_index2].num_locks);
@@ -179,12 +184,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	assert(0 == mrapi_db->sems[s_index1].locks[0].id);
 	assert(0 == mrapi_db->sems[s_index2].locks[0].id);
 	// Should be able to get the remaining sem2 lock
-	assert(mrapi_impl_sem_lock_multiple(sem, 1, 2, FALSE, 0, &status));
+	assert(mrapi_impl_sem_lock_multiple(sem, num_locks, 2, FALSE, 0, &status));
 	assert(MRAPI_SUCCESS == status);
 	assert(mrapi_impl_sem_unlock(sem2, 1, &status));
-	assert(!mrapi_impl_sem_lock_multiple(sem, 1, 2, TRUE, 10, &status));
+	assert(!mrapi_impl_sem_lock_multiple(sem, num_locks, 2, TRUE, 10, &status));
 	assert(MRAPI_TIMEOUT == status);
-	assert(mrapi_impl_sem_unlock_multiple(sem, 1, 2, &status));
+	assert(mrapi_impl_sem_unlock_multiple(sem, num_locks, 2, &status));
 	assert(MRAPI_SUCCESS == status);
 	assert(0 == mrapi_db->sems[s_index1].num_locks);
 
@@ -197,6 +202,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	assert(0 == mrapi_db->sems[s_index2].locks[0].lock_holder_nindex);
 	assert(0 == mrapi_db->sems[s_index1].locks[0].id);
 	assert(0 == mrapi_db->sems[s_index2].locks[0].id);
+
+	assert(mrapi_impl_sem_lock_multiple(sem, num_locks, 2, TRUE, 0, &status));
+	assert(MRAPI_SUCCESS == status);
+	assert(mrapi_impl_sem_post_multiple(sem, num_locks, 2, &status));
+	assert(MRAPI_SUCCESS == status);
 
 	assert(mrapi_impl_sem_lock(sem1, 1, 0, &status));
 	assert(mrapi_impl_sem_delete(sem1));

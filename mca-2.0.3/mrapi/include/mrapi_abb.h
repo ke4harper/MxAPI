@@ -475,9 +475,8 @@ void mrapi_sem_unlock (
  );
 
 PUBLIC
-void mrapi_sem_unlock_multiple(
-	MRAPI_OUT mrapi_sem_hndl_t* sem,
-	MRAPI_IN int count,
+void mrapi_sem_post(
+	MRAPI_IN mrapi_sem_hndl_t sem,
 	MRAPI_OUT mrapi_status_t* status
 );
 

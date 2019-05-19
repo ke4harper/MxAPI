@@ -552,6 +552,7 @@ mrapi_boolean_t mrapi_impl_sem_lock_multiple(mrapi_sem_hndl_t* sem,
 {
 	/* blocking version */
 	int i = 0;
+	int32_t total_locks = 0;
 	mrapi_timeout_t time = 0;
 	mrapi_boolean_t rc = MRAPI_TRUE;
 
@@ -565,17 +566,20 @@ mrapi_boolean_t mrapi_impl_sem_lock_multiple(mrapi_sem_hndl_t* sem,
 			return MRAPI_FALSE;
 		}
 		ref[i].member = s;
+		total_locks += num_locks;
 	}
 
 	/* lock the database */
 	mrapi_assert(mrapi_impl_access_database_pre_multiple(ref, count, MRAPI_TRUE));
 
-	mrapi_dprintf(2, "mrapi_impl_sem_lock_multiple (0x%x,%d /*num_locks*/,%d /*timeout*/,&status);",
-		sem, num_locks, timeout);
+	mrapi_dprintf(2, "mrapi_impl_sem_lock_multiple (0x%x,%d /*total_locks*/,%d /*timeout*/,&status);",
+		sem, total_locks, timeout);
 
 	while (1) {
 		time++;
-		if (mrapi_impl_acquire_lock_locked_multiple(sem, num_locks, count, waitall, mrapi_status) == num_locks) {
+		int added_locks = mrapi_impl_acquire_lock_locked_multiple(sem, num_locks, count, waitall, mrapi_status);
+		if ((waitall && (total_locks == added_locks)) ||
+			(!waitall && (0 < added_locks))) {
 			*mrapi_status = MRAPI_SUCCESS;
 			break;
 		}
@@ -684,6 +688,7 @@ int32_t mrapi_impl_acquire_lock_locked_multiple(mrapi_sem_hndl_t* sem,
 
 	int i = 0;
 	int num_added = 0;
+	int total_added = 0;
 	mrapi_status_t mrapi_status;
 
 	for (i = 0; i < count; i++)
@@ -691,6 +696,7 @@ int32_t mrapi_impl_acquire_lock_locked_multiple(mrapi_sem_hndl_t* sem,
 		num_added = mrapi_impl_acquire_lock_locked(sem[i], num_locks, &mrapi_status);
 		if (num_added != num_locks)
 		{
+			total_added = 0;
 			if (waitall)
 			{
 				/* Not all the locks could be taken; revert */
@@ -704,14 +710,15 @@ int32_t mrapi_impl_acquire_lock_locked_multiple(mrapi_sem_hndl_t* sem,
 		}
 		else
 		{
-			if (!waitall)
+			total_added += num_added;
+			if (!waitall && (0 < num_added))
 			{
 				break;
 			}
 		}
 	}
 
-	return num_added;
+	return total_added;
 }
 
 /***************************************************************************
@@ -810,10 +817,9 @@ mrapi_boolean_t mrapi_impl_release_lock(mrapi_sem_hndl_t sem,
 		for (l = 0; l < mrapi_db->sems[s].shared_lock_limit; l++) {
 			if ((mrapi_db->sems[s].locks[l].valid) &&
 				(mrapi_db->sems[s].locks[l].locked == MRAPI_TRUE) &&
+				/* only the owner can unlock a semaphore */
 				(mrapi_db->sems[s].locks[l].lock_holder_dindex == d) &&
-				((mrapi_db->sems[s].locks[l].lock_holder_nindex == n) ||
-					/* could be anonymous owner within domain */
-				(mrapi_db->sems[s].locks[l].lock_holder_nindex == (mrapi_uint8_t)-1))) {
+				(mrapi_db->sems[s].locks[l].lock_holder_nindex == n)) {
 				my_locks++;
 			}
 		}
@@ -836,10 +842,144 @@ mrapi_boolean_t mrapi_impl_release_lock(mrapi_sem_hndl_t sem,
 			for (l = 0; l < mrapi_db->sems[s].shared_lock_limit; l++) {
 				if ((mrapi_db->sems[s].locks[l].valid) &&
 					(mrapi_db->sems[s].locks[l].locked == MRAPI_TRUE) &&
+					/* only the owner can unlock a semaphore */
 					(mrapi_db->sems[s].locks[l].lock_holder_dindex == d) &&
-					((mrapi_db->sems[s].locks[l].lock_holder_nindex == n) ||
-						/* could be anonymous owner within domain */
-					(mrapi_db->sems[s].locks[l].lock_holder_nindex == (mrapi_uint8_t)-1))) {
+					(mrapi_db->sems[s].locks[l].lock_holder_nindex == n)) {
+					mrapi_db->sems[s].locks[l].locked = MRAPI_FALSE;
+					num_removed++;
+					if (--r <= 0) {
+						*mrapi_status = MRAPI_SUCCESS;
+						break;
+					}
+				}
+			}
+			mrapi_assert(num_removed == num_locks);
+		}
+		}
+
+	/* unlock the database */
+	mrapi_assert(mrapi_impl_access_database_post(ref));
+	return rc;
+	}
+
+/***************************************************************************
+Function: mrapi_impl_sem_post
+
+Description: releases the requested locks for a semaphore regardless of ownership
+
+Parameters: sem - the semaphore
+
+Returns:
+
+***************************************************************************/
+mrapi_boolean_t mrapi_impl_sem_post(mrapi_sem_hndl_t sem,
+	int32_t num_locks,
+	mrapi_status_t* mrapi_status)
+{
+	return mrapi_impl_signal_lock(sem, num_locks, mrapi_status);
+}
+
+/***************************************************************************
+Function: mrapi_impl_sem_post_multiple
+
+Description: unlocks the requested locks for semaphores regardless of ownership
+
+Parameters: sem - the semaphores
+
+Returns:
+
+***************************************************************************/
+mrapi_boolean_t mrapi_impl_sem_post_multiple(mrapi_sem_hndl_t* sem,
+	int32_t num_locks,
+	int count,
+	mrapi_status_t* mrapi_status)
+{
+	int i = 0;
+	mrapi_boolean_t rc = MRAPI_TRUE;
+
+	for (i = 0; i < count; i++)
+	{
+		if (!mrapi_impl_signal_lock(sem[i], num_locks, mrapi_status))
+		{
+			rc = MRAPI_FALSE;
+		}
+	}
+	return rc;
+}
+
+/***************************************************************************
+Function: mrapi_impl_signal_lock
+
+Description: unlocks the given semaphore regardless of ownership
+
+Parameters: sem - the semaphore
+
+Returns:
+
+***************************************************************************/
+mrapi_boolean_t mrapi_impl_signal_lock(mrapi_sem_hndl_t sem,
+	int32_t num_locks,
+	mrapi_status_t* mrapi_status)
+{
+
+	//  struct sembuf sem_unlock={ member, 1, 0};
+	uint16_t s, l, r;
+	uint32_t d = 0;
+	uint32_t n = 0;
+	uint32_t my_locks = 0;
+	uint32_t num_removed = 0;
+	mrapi_boolean_t rc = MRAPI_TRUE;
+	mca_node_t node_id;
+	mca_domain_t domain_id;
+
+	if (!mrapi_impl_decode_hndl(sem, &s)) {
+		return MRAPI_FALSE;
+	}
+
+	/* lock the database */
+	mrapi_impl_sem_ref_t ref = { sems_semid, s };
+	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
+
+	mrapi_dprintf(2, "mrapi_impl_sem_post(%x);", sem);
+
+
+	/* even though these conditions were checked at the mrapi level, we have to check again
+	   because they could have changed (it's not atomic) */
+	mrapi_assert(mrapi_impl_whoami(&node_id, &n, &domain_id, &d));
+
+	if (mrapi_db->sems[s].valid == MRAPI_FALSE) {
+		rc = MRAPI_FALSE;
+		if (mrapi_db->sems[s].type == RWL) { *mrapi_status = MRAPI_ERR_RWL_INVALID; }
+		else if (mrapi_db->sems[s].type == SEM) { *mrapi_status = MRAPI_ERR_SEM_INVALID; }
+		else if (mrapi_db->sems[s].type == MUTEX) { *mrapi_status = MRAPI_ERR_MUTEX_INVALID; }
+	}
+	else {
+		/* check that this semaphore has num_locks to unlock */
+		for (l = 0; l < mrapi_db->sems[s].shared_lock_limit; l++) {
+			if ((mrapi_db->sems[s].locks[l].valid) &&
+				(mrapi_db->sems[s].locks[l].locked == MRAPI_TRUE)) {
+				my_locks++;
+			}
+		}
+#if (__unix__||__MINGW32__)
+		if (my_locks < num_locks) {
+#else
+		if (my_locks < (uint32_t)num_locks) {
+#endif  /* !(__unix__||__MINGW32__) */
+			rc = MRAPI_FALSE;
+			if (mrapi_db->sems[s].type == RWL) { *mrapi_status = MRAPI_ERR_RWL_NOTLOCKED; }
+			else if (mrapi_db->sems[s].type == SEM) { *mrapi_status = MRAPI_ERR_SEM_NOTLOCKED; }
+			else if (mrapi_db->sems[s].type == MUTEX) {
+				*mrapi_status = MRAPI_ERR_MUTEX_NOTLOCKED;
+			}
+		}
+		else {
+			/* update the lock array in our db */
+			mrapi_db->sems[s].num_locks -= num_locks;
+			r = num_locks;
+			for (l = 0; l < mrapi_db->sems[s].shared_lock_limit; l++) {
+				if ((mrapi_db->sems[s].locks[l].valid) &&
+					(mrapi_db->sems[s].locks[l].locked == MRAPI_TRUE)) {
 					mrapi_db->sems[s].locks[l].locked = MRAPI_FALSE;
 					num_removed++;
 					if (--r <= 0) {

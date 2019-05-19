@@ -97,6 +97,9 @@ int32_t mrapi_impl_acquire_lock_locked_multiple(mrapi_sem_hndl_t* sem,
 mrapi_boolean_t mrapi_impl_release_lock(mrapi_sem_hndl_t sem,
 	int32_t num_locks,
 	mrapi_status_t* mrapi_status);
+mrapi_boolean_t mrapi_impl_signal_lock(mrapi_sem_hndl_t sem,
+	int32_t num_locks,
+	mrapi_status_t* mrapi_status);
 
 mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
 	mrapi_sem_id_t key,

@@ -588,10 +588,10 @@ void mrapi_sem_unlock(
 }
 
 /************************************************************************
-mrapi_sem_unlock_multiple
+mrapi_sem_post
 
 DESCRIPTION
-This function releases a set of locks.
+This function releases a single lock regardless of the owner.
 
 RETURN VALUE
 On success, *status is set to MRAPI_SUCCESS.  On error, *status
@@ -615,9 +615,8 @@ otherwise MRAPI will just return MRAPI_ERR_SEM_INVALID.
 NOTE
 
 ***********************************************************************/
-void mrapi_sem_unlock_multiple(
-	MRAPI_OUT mrapi_sem_hndl_t* sem,
-	MRAPI_IN int count,
+void mrapi_sem_post(
+	MRAPI_IN mrapi_sem_hndl_t sem,
 	MRAPI_OUT mrapi_status_t* status)
 {
 
@@ -625,21 +624,7 @@ void mrapi_sem_unlock_multiple(
 	if (!mrapi_impl_initialized()) {
 		*status = MRAPI_ERR_NODE_NOTINIT;
 	}
-	else
-	{
-		int i = 0;
-		mrapi_boolean_t rc = MRAPI_TRUE;
-
-		for (i = 0; i < count; i++)
-		{
-			if (!mrapi_impl_valid_sem_hndl(sem[i], status))
-			{
-				rc = MRAPI_FALSE;
-			}
-		}
-		if (rc)
-		{
-			mrapi_impl_sem_unlock_multiple(sem, 1, count, status);
-		}
+	else if (mrapi_impl_valid_sem_hndl(sem, status)) {
+		mrapi_impl_sem_post(sem, 1, status);
 	}
 }
