@@ -29,9 +29,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /***************************************************************************
    Function: mrapi_impl_initialize
 
-   Description:initializeZs the mrapi_impl layer (sets up the database and semaphore)
+   Description: initializes the mrapi_impl layer (sets up the database and semaphore)
 
    Parameters:
+	domain_id - collection of nodes that share resources
+	node_id - task that synchronizes with other nodes in a domain
+	status - initialization error:
+		MRAPI_ERR_NODE_INITFAILED
+		MRAPI_ERR_ATOM_OP_NOFORWARD
 
    Returns: boolean indicating success or failure
 

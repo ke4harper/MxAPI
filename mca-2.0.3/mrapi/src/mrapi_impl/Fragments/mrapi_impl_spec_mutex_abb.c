@@ -49,7 +49,7 @@ mrapi_boolean_t mrapi_impl_mutex_create(mrapi_mutex_hndl_t* mutex,
 	mrapi_impl_sem_ref_t ref = { semid, 0 };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
-	if (mrapi_impl_create_lock_locked(mutex, mutex_id, 1, MUTEX, mrapi_status)) {
+	if (mrapi_impl_create_lock_locked(mutex, mutex_id, 0, 1, MUTEX, mrapi_status)) {
 		mrapi_assert(mrapi_impl_decode_hndl(*mutex, &m));
 		mrapi_db->sems[m].type = MUTEX;
 		if (attributes != NULL) {

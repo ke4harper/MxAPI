@@ -46,9 +46,6 @@
     <None Include="Fragments\mrapi_implt_request.cpp">
       <Filter>Source Files\Fragments</Filter>
     </None>
-    <None Include="Fragments\mrapi_implt_stress.cpp">
-      <Filter>Source Files\Fragments</Filter>
-    </None>
     <None Include="Fragments\mrapi_implt_shmem_abb.cpp">
       <Filter>Source Files\Fragments</Filter>
     </None>
@@ -74,6 +71,9 @@
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\mrapi_implt_rwl_abb.cpp">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\mrapi_implt_stress_abb.cpp">
       <Filter>Source Files\Fragments</Filter>
     </None>
   </ItemGroup>

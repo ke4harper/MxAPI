@@ -50,7 +50,7 @@ mrapi_boolean_t mrapi_impl_rwl_create(mrapi_rwl_hndl_t* rwl,
 	mrapi_impl_sem_ref_t ref = { semid, 0 };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
-	if (mrapi_impl_create_lock_locked(rwl, rwl_id, reader_lock_limit, RWL, mrapi_status)) {
+	if (mrapi_impl_create_lock_locked(rwl, rwl_id, 0, reader_lock_limit, RWL, mrapi_status)) {
 		mrapi_assert(mrapi_impl_decode_hndl(*rwl, &r));
 		mrapi_db->sems[r].type = RWL;
 		if (attributes != NULL) {

@@ -98,7 +98,6 @@
     <None Include="Fragments\mrapi_implt_initialize_abb.cpp" />
     <None Include="Fragments\mrapi_implt_request.cpp" />
     <None Include="Fragments\mrapi_implt_rmem.cpp" />
-    <None Include="Fragments\mrapi_implt_stress.cpp" />
     <None Include="Fragments\mrapi_implt_shmem_abb.cpp" />
     <None Include="Fragments\mrapi_implt_atomic.cpp" />
     <None Include="Fragments\mrapi_implt_declaration_abb.cpp" />
@@ -111,6 +110,7 @@
     </None>
     <None Include="Fragments\mrapi_implt_sem_abb.cpp" />
     <None Include="Fragments\mrapi_implt_rwl_abb.cpp" />
+    <None Include="Fragments\mrapi_implt_stress_abb.cpp" />
     <ClCompile Include="mrapi_implt_abb.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

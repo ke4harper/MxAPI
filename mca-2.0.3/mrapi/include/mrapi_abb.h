@@ -397,7 +397,8 @@ PUBLIC
 mrapi_sem_hndl_t mrapi_sem_create(
  	MRAPI_IN mrapi_sem_id_t sem_id,
  	MRAPI_IN mrapi_sem_attributes_t* attributes,
- 	MRAPI_IN mrapi_uint_t shared_lock_limit,
+	MRAPI_IN mrapi_uint_t num_locks,
+	MRAPI_IN mrapi_uint_t shared_lock_limit,
  	MRAPI_OUT mrapi_status_t* status
  );
 

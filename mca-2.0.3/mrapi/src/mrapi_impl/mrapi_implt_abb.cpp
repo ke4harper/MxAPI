@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
 #include "Fragments/mrapi_implt_rmem.cpp"
 #include "Fragments/mrapi_implt_request.cpp"
     }
-#include "Fragments/mrapi_implt_stress.cpp"
+#include "Fragments/mrapi_implt_stress_abb.cpp"
 
     assert(mrapi_impl_finalize());
 

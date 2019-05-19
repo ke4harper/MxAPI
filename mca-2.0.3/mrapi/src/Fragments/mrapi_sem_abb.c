@@ -64,6 +64,7 @@ NOTE
 mrapi_sem_hndl_t mrapi_sem_create(
 	MRAPI_IN mrapi_sem_id_t sem_id,
 	MRAPI_IN mrapi_sem_attributes_t* attributes,
+	MRAPI_IN mrapi_uint_t num_locks,
 	MRAPI_IN mrapi_uint_t shared_lock_limit,
 	MRAPI_OUT mrapi_status_t* status)
 {
@@ -78,7 +79,7 @@ mrapi_sem_hndl_t mrapi_sem_create(
 	else if ((shared_lock_limit == 0) || (shared_lock_limit > MRAPI_MAX_SHARED_LOCKS)) {
 		*status = MRAPI_ERR_SEM_LOCKLIMIT;
 	}
-	else if (mrapi_impl_sem_create(&sem_hndl, sem_id, attributes, shared_lock_limit, status)) {
+	else if (mrapi_impl_sem_create(&sem_hndl, sem_id, attributes, num_locks, shared_lock_limit, status)) {
 		*status = MRAPI_SUCCESS;
 	}
 	return sem_hndl;

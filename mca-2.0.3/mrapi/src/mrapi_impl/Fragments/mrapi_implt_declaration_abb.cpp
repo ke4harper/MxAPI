@@ -63,6 +63,7 @@ extern "C" {
                                                    mrapi_boolean_t lock) ;
   mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,  
                                        mrapi_sem_id_t key,
+                                       mrapi_uint32_t num_locks,
                                        mrapi_uint32_t shared_lock_limit,
                                        lock_type t,
                                        mrapi_status_t* mrapi_status);

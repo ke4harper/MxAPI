@@ -92,8 +92,9 @@ mrapi_boolean_t mrapi_impl_sem_get(mrapi_sem_hndl_t* sem,
 mrapi_boolean_t mrapi_impl_sem_create(mrapi_sem_hndl_t* sem,
 	mrapi_sem_id_t sem_id,
 	const mrapi_sem_attributes_t* attributes,
-	mrapi_uint32_t shared_lock_limit
-	, mrapi_status_t* status);
+	mrapi_uint32_t num_locks,
+	mrapi_uint32_t shared_lock_limit,
+	mrapi_status_t* status);
 void mrapi_impl_sem_init_attributes(mrapi_sem_attributes_t* attributes);
 void mrapi_impl_sem_set_attribute(mrapi_sem_attributes_t* attributes,
 	mrapi_uint_t attribute_num, const void* attribute, size_t

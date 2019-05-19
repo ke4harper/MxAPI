@@ -82,15 +82,22 @@ Function: mrapi_impl_sem_create
 
 Description: Creates the semaphore for the given semaphore key.
 
-Parameters: key - semaphore key
-			members - the number of resources
-			sem - the semaphore (to be filled in)
+Parameters:
+  sem - the semaphore (to be filled in)
+  key - semaphore key
+  attributes - semaphore properties
+  num_locks - initial number of locks
+  shared_lock_limit - total number of locks
+  mrapi_status - create result:
+	  MRAPI_ERR_SEM_LIMIT
+
 Returns:  boolean indicating success or failure
 
 ***************************************************************************/
 mrapi_boolean_t mrapi_impl_sem_create(mrapi_sem_hndl_t* sem,
 	mrapi_sem_id_t key,
 	const mrapi_sem_attributes_t* attributes,
+	mrapi_uint32_t num_locks,
 	mrapi_uint32_t shared_lock_limit,
 	mrapi_status_t* mrapi_status)
 {
@@ -102,7 +109,7 @@ mrapi_boolean_t mrapi_impl_sem_create(mrapi_sem_hndl_t* sem,
 	mrapi_impl_sem_ref_t ref = { semid, 0 };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
-	if (mrapi_impl_create_lock_locked(sem, key, shared_lock_limit, SEM, mrapi_status)) {
+	if (mrapi_impl_create_lock_locked(sem, key, num_locks, shared_lock_limit, SEM, mrapi_status)) {
 		mrapi_assert(mrapi_impl_decode_hndl(*sem, &s));
 		mrapi_db->sems[s].type = SEM;
 		if (attributes != NULL) {
@@ -231,14 +238,24 @@ Function: mrapi_impl_create_lock_locked
 
 Description: Creates the semaphore for the given semaphore key.
 
-Parameters: key - semaphore key
-			members - the number of resources
-			sem - the semaphore (to be filled in)
-Returns:  boolean indicating success or failure
+Parameters:
+  sem - the semaphore (to be filled in)
+  key - semaphore key
+  num_locks - initial number of locks
+  shared_lock_limit - total number of locks
+  lock_type - semaphore, mutex, read-write
+  mrapi_status - create result:
+	  MRAPI_ERR_RWL_EXISTS
+	  MRAPI_ERR_SEM_EXISTS
+	  MRAPI_ERR_MUTEX_EXISTS
+	  MRAPI_SUCCESS
+
+  Returns:  boolean indicating success or failure
 
 ***************************************************************************/
 mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
 	mrapi_sem_id_t key,
+	mrapi_uint32_t num_locks,
 	mrapi_uint32_t shared_lock_limit,
 	lock_type t,
 	mrapi_status_t* mrapi_status)
@@ -252,8 +269,8 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
 	mrapi_domain_t d_id;
 	mrapi_boolean_t rc = MRAPI_FALSE;
 
-	mrapi_dprintf(1, "mrapi_impl_sem_create (&sem,0x%x /*key*/,attrs,%d /*shared_lock_limit*/,&status);",
-		key, shared_lock_limit);
+	mrapi_dprintf(1, "mrapi_impl_sem_create (&sem,0x%x /*key*/,attrs,%d /*num_locks*/, %d /*shared_lock_limit*/,&status);",
+		key, num_locks, shared_lock_limit);
 	mrapi_assert(mrapi_impl_whoami(&node_id, &n, &d_id, &d));
 
 	if (MRAPI_SEM_ID_ANY == key)
@@ -315,6 +332,13 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
 				for (l = 0; (mrapi_uint32_t)l < shared_lock_limit; l++) {
 #endif  /* !(__unix__||__MINGW32__) */
 					mrapi_db->sems[s].locks[l].valid = MRAPI_TRUE;
+					if (num_locks > (mrapi_uint32_t)l)
+					{
+						mrapi_db->sems[s].locks[l].locked = MRAPI_TRUE;
+						/* anonymous lock owner within domain */
+						mrapi_db->sems[s].locks[l].lock_holder_dindex = d;
+						mrapi_db->sems[s].locks[l].lock_holder_nindex = (mrapi_uint8_t)-1;
+					}
 				}
 				*sem = mrapi_impl_encode_hndl(s);
 				mrapi_db->sems[s].handle = *sem;
@@ -375,8 +399,10 @@ mrapi_boolean_t mrapi_impl_sem_delete(mrapi_sem_hndl_t sem)
 #endif  /* !(__unix__||__MINGW32__) */
 		if ((mrapi_db->sems[s].locks[l].valid) &&
 			(mrapi_db->sems[s].locks[l].locked == MRAPI_TRUE) &&
-			(mrapi_db->sems[s].locks[l].lock_holder_nindex == n) &&
-			(mrapi_db->sems[s].locks[l].lock_holder_dindex == d)) {
+			(mrapi_db->sems[s].locks[l].lock_holder_dindex == d) &&
+			((mrapi_db->sems[s].locks[l].lock_holder_nindex == n) ||
+				/* could be anonymous owner within domain */
+			(mrapi_db->sems[s].locks[l].lock_holder_nindex == (mrapi_uint8_t)-1))) {
 			my_locks++;
 		}
 	}
@@ -784,8 +810,10 @@ mrapi_boolean_t mrapi_impl_release_lock(mrapi_sem_hndl_t sem,
 		for (l = 0; l < mrapi_db->sems[s].shared_lock_limit; l++) {
 			if ((mrapi_db->sems[s].locks[l].valid) &&
 				(mrapi_db->sems[s].locks[l].locked == MRAPI_TRUE) &&
-				(mrapi_db->sems[s].locks[l].lock_holder_nindex == n) &&
-				(mrapi_db->sems[s].locks[l].lock_holder_dindex == d)) {
+				(mrapi_db->sems[s].locks[l].lock_holder_dindex == d) &&
+				((mrapi_db->sems[s].locks[l].lock_holder_nindex == n) ||
+					/* could be anonymous owner within domain */
+				(mrapi_db->sems[s].locks[l].lock_holder_nindex == (mrapi_uint8_t)-1))) {
 				my_locks++;
 			}
 		}
@@ -808,8 +836,10 @@ mrapi_boolean_t mrapi_impl_release_lock(mrapi_sem_hndl_t sem,
 			for (l = 0; l < mrapi_db->sems[s].shared_lock_limit; l++) {
 				if ((mrapi_db->sems[s].locks[l].valid) &&
 					(mrapi_db->sems[s].locks[l].locked == MRAPI_TRUE) &&
-					(mrapi_db->sems[s].locks[l].lock_holder_nindex == n) &&
-					(mrapi_db->sems[s].locks[l].lock_holder_dindex == d)) {
+					(mrapi_db->sems[s].locks[l].lock_holder_dindex == d) &&
+					((mrapi_db->sems[s].locks[l].lock_holder_nindex == n) ||
+						/* could be anonymous owner within domain */
+					(mrapi_db->sems[s].locks[l].lock_holder_nindex == (mrapi_uint8_t)-1))) {
 					mrapi_db->sems[s].locks[l].locked = MRAPI_FALSE;
 					num_removed++;
 					if (--r <= 0) {

@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
     assert(mrapi_impl_mutex_create(&mutex_id,mutex_key,&mutex_attributes,&status));
 	sem_key = mutex_key + 10;
 	mrapi_impl_sem_init_attributes(&sem_attributes);
-	assert(mrapi_impl_sem_create(&sem_id, sem_key, &sem_attributes, 1, &status));
+	assert(mrapi_impl_sem_create(&sem_id, sem_key, &sem_attributes, 0, 1, &status));
 
     assert(sys_file_key(NULL,'b',&shmem_key));
     mrapi_impl_shmem_init_attributes(&shmem_attributes);
