@@ -11,7 +11,7 @@ The objective for the concurrency libraries and tools is to accelerate embedded 
 ### Logical Tasks
 Given that a task is a set of instructions that can run without being blocked; the interactions between tasks and their resources can be modeled as a graph. The nodes are tasks and resources, and the edges are communication between them. Figure 3 below shows a top level view of this graph. Depending on the interactions some tasks should be “closer” to each other (Message Neighborhood), meaning performance is improved by reducing the communication latencies.  
 
-![Tasks](https://github.com/ke4harper/MxAPI/tree/master/img/MxAPI Tasks, Messages and Resources.png)
+![Tasks](https://github.com/ke4harper/MxAPI/blob/master/img/MxAPI%20Tasks%2C%20Messages%20and%20Resources.png)
 
 *MxAPI Tasks, Messages and Resources*
 
