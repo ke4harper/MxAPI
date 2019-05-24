@@ -30,7 +30,7 @@ The fundamental building block for communication is the one-way channel, either 
 Given a message abstraction that can survive hardware changes, what is the best messaging implementation technique possible today? Viper task communication can be based on available multicore hardware and SMP operating systems, with a modifiable software structure to support future variants. On shared memory architectures (multicore), the most efficient data exchange is through shared memory. Shared memory offers a high bandwidth, low latency alternative<sup>[2](#Smith2012)</sup>. Using shared memory requires making decisions about the end points, such as how message ownership is transferred from producer to consumer and whether it is necessary to copy received messages into private buffers.
 ### Concurrency Runtime
 
-![Runtime](./img/MxAPI Concurrency Runtime.png)
+![Runtime](https://github.com/ke4harper/MxAPI/blob/master/img/MxAPI%20Concurrency%20Runtime.png)
 
 *MxAPI Concurrency Runtime*
 
@@ -75,7 +75,7 @@ What are the compiler settings in Code::Blocks to build on Linux? Set independen
 
 One of the hurdles becoming productive in a software implementation that is intended for multiple platforms is navigating the conditional compiler directives. Determining which code lines are active can be a challenge.  
 
-![Variant](./img/Variant Management.png)
+![Variant](https://github.com/ke4harper/MxAPI/blob/master/img/Variant%20Management.png)
 
 *Variant Management*
 
@@ -83,7 +83,7 @@ A proposed alternative to this is to use code fragments. This concept is very ne
 
 The implementation is organized as a set of Areas, where each area is responsible for a capability or feature of the product. Each area contains Components that have specific roles and responsibilities. A component’s functionality is based on a collection of binaries which are built from file compilation units or source files.  
 
-![Fragments](./img/Software Fragments Example.png)
+![Fragments](https://github.com/ke4harper/MxAPI/blob/master/img/Software%20Fragments%20Example.png)
 
 *Software Fragments Example*
 
@@ -114,7 +114,7 @@ The source code compiler used to build the embedded image for VxWorks generates 
 
 Data consistency across address spaces and for non-atomic types requires explicit programming instructions.
 
-![StateMessaging](./img/Lock-Free State Messaging.png)
+![StateMessaging](https://github.com/ke4harper/MxAPI/blob/master/img/Lock-Free%20State%20Messaging.png)
 
 *Lock-Free State Messaging*
 
@@ -126,7 +126,7 @@ There are two classes of communication: state and event. For lock-free state mes
 
 The algorithm is implemented with an atomic counter, initially set to zero. The approach is similar to optimistic record locking in databases. Each time the writer has a new value, it first increments the counter, writes the value into the next available buffer, and then increments the counter again. A reader grabs the value of the counter, reads the value in the associated buffer, and then checks to see if the value was corrupted while it was being read. If the value was overwritten during the process of reading (counter tests odd), the reader attempts to read again. The more buffers the less likely it is there will be a collision between reading and writing.  
 
-![EventMessaging](./img/Lock-Free Event Messaging.png)
+![EventMessaging](https://github.com/ke4harper/MxAPI/blob/master/img/Lock-Free%20Event%20Messaging.png)
 
 *Lock-Free Event Messaging*
 
@@ -154,11 +154,11 @@ Another benefit of NBB: event messages do not need to necessarily be copied into
 
 Message buffers, either NBW or NBB, can be composed to provide more complex messaging designs. For example, the figure below shows NBBs combined for a message concentrator with multiple producers feeding a single consumer (*P/1C).  One NBB is used for each producer and the consumer has a strategy, for example round robin, for determining which NBB is read next.  
 
-![ManyToOne](./img/StarP-1C.png)
+![ManyToOne](https://github.com/ke4harper/MxAPI/blob/master/img/StarP-1C.png)
 
 *Multiple Producers, One Consumer*
 
-![OneToMany](./img/1P-StarC.png)
+![OneToMany](https://github.com/ke4harper/MxAPI/blob/master/img/1P-StarC.png)
 
 *One Producer, Multiple Consumers*
 
