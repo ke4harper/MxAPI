@@ -22,7 +22,7 @@ The categories of MCAPI unit tests are:
 
 ## Message Topology
 
-![Topology](img/Example Message Topology.png)
+![Topology](https://github.com/ke4harper/MxAPI/blob/master/img/Example%20Message%20Topology.png)
 
 *Example Message Topology*
 
@@ -67,7 +67,7 @@ The runtime can be additionally enhanced to support a task querying the configur
 
 ## Reference Design
 
-![MCAPIReference](img/MCAPI Reference Design.png)
+![MCAPIReference](https://github.com/ke4harper/MxAPI/blob/master/img/MCAPI%20Reference%20Design.png)
 
 *MCAPI Reference Design*
 
@@ -77,7 +77,7 @@ The reference design is shown in the figure above. The implementation uses globa
 
 ## Lock-Free Requests (Version 1)
 
-![MCAPIVersion1](img/MCAPI Lock-free Requests, Version 1.png)
+![MCAPIVersion1](https://github.com/ke4harper/MxAPI/blob/master/img/MCAPI%20Lock-free%20Requests,%20Version%201.png)
 
 *MCAPI Lock-free Requests, Version 1*
 
@@ -89,7 +89,7 @@ The first version of this refactoring is shown in the figure above. In anticipat
 
 ## Lock-Free Queues
 
-![MCAPILockFree](img/MCAPI Lock-free Queues.png)
+![MCAPILockFree](https://github.com/ke4harper/MxAPI/blob/master/img/MCAPI%20Lock-free%20Queues.png)
 
 *MCAPI Lock-free Queues*
 
@@ -103,7 +103,7 @@ Debugging race conditions is non-trivial in high throughput, low latency designs
 
 ### Request Transitions
 
-![MCAPIRequest](img/MCAPI Request Transitions.png)
+![MCAPIRequest](https://github.com/ke4harper/MxAPI/blob/master/img/MCAPI%20Request%20Transitions.png)
 
 *MCAPI Request Transitions*
 
@@ -113,7 +113,7 @@ A request in the REQUEST_FREE state is available for any client to identify a pe
 
 ### Queue Entry Transitions
 
-![MCAPIQueue](img/MCAPI Queue Entry Transitions.png)
+![MCAPIQueue](https://github.com/ke4harper/MxAPI/blob/master/img/MCAPI%20Queue%20Entry%20Transitions.png)
 
 *MCAPI Queue Entry Transitions*
 
@@ -123,7 +123,7 @@ A queue entry in the BUFFER_FREE state does not have a buffer associated with it
 
 ### Buffer Entry Transitions
 
-![MCAPIBuffer](img/MCAPI Buffer Entry Transitions.png)
+![MCAPIBuffer](https://github.com/ke4harper/MxAPI/blob/master/img/MCAPI%20Buffer%20Entry%20Transitions.png)
 
 *MCAPI Buffer Entry Transitions*
 
@@ -133,7 +133,7 @@ A buffer entry in the BUFFER_FREE state does not have a buffer associated with i
 
 ### Lock-Free Requests (Version 2)
 
-![MCAPIVersion2](img/MCAPI Lock-Free Requests, Version 2.png)
+![MCAPIVersion2](https://github.com/ke4harper/MxAPI/blob/master/img/MCAPI%20Lock-Free%20Requests,%20Version%202.png)
 
 *MCAPI Lock-Free Requests, Version 2*
 
@@ -143,7 +143,7 @@ The revelation was that request index management did not require lists. This is 
 
 ## Stress Tests
 
-![Stress](img/MCAPI Stress Test.png)
+![Stress](https://github.com/ke4harper/MxAPI/blob/master/img/MCAPI%20Stress%20Test.png)
 
 *MCAPI Stress Test*
 
@@ -239,11 +239,11 @@ The <b>atomic_barrier_mode</b>, <b>try_atomic_barrier_acquire</b> and <b>atomic_
 
 The acquire operation is a NOOP if the source and destination process IDs are the same. Otherwise the index is used to select the current element in the buffer associated with the atomic operation. The acquire operation, based on the type of barrier and mode, spins waiting for the right conditions before returning. After the atomic operation is completed the release operation, based on the type of barrier and mode, spins waiting for the right conditions before returning.  
 
-![BarrierRead](img/Example Atomic Barrier Read.png)
+![BarrierRead](https://github.com/ke4harper/MxAPI/blob/master/img/Example%20Atomic%20Barrier%20Read.png)
 
 *Example Atomic Barrier Read*
 
-![BarrierWrite](img/Example Atomic Barrier Write.png)
+![BarrierWrite](https://github.com/ke4harper/MxAPI/blob/master/img/Example%20Atomic%20Barrier%20Write.png)
 
 *Example Atomic Barrier Write*
 
@@ -259,7 +259,7 @@ The stress tests were used to exercise the MCAPI concurrency runtime for single 
 
 For the multicore scenarios the tests were run with the tasks constrained to run on specific cores using CPU affinity vs. no affinity. The results are shown below. The memory bus is most probably saturated in these tests and adding more channels will degrade the performance of each channel.  
 
-![MessagePerformance](img/Message Exchange Performance.png)
+![MessagePerformance](https://github.com/ke4harper/MxAPI/blob/master/img/Message%20Exchange%20Performance.png)
 
 *Message Exchange Performance*
 
@@ -271,7 +271,7 @@ These tests use fine-grained transactions and represent the theoretical limit fo
 
 Another way to visualize the MCAPI data exchange performance is shown in the figure below. The horizontal axis separates the dimensions listed above (Windows vs. Linux, etc.) and the vertical axis is performance measured in thousands of transactions per second.  
 
-![ExchangePerformance](img/MCAPI Data Exchange Speedup.png)
+![ExchangePerformance](https://github.com/ke4harper/MxAPI/blob/master/img/MCAPI%20Data%20Exchange%20Speedup.png)
 
 *MCAPI Data Exchange Speedup*
 
