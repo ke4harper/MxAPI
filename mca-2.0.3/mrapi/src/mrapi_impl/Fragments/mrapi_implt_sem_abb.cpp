@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mrapi_sem_id_t key1 = 0;
 	mrapi_sem_id_t key2 = 0;
 	int sys_id = 0;
+	int sys_id2 = 0;
 	int num_locks = 1;
 	mrapi_uint8_t num_sems = 0;
 	uint16_t s_index1 = 0;
@@ -49,6 +50,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	// System semaphore
 	sem_key1 = 1;
 	assert(mrapi_impl_create_sys_semaphore(&sys_id, num_locks, sem_key1, MRAPI_TRUE));
+	// Duplicate create gets refreence to the existing semaphore, locks are already taken
+	assert(mrapi_impl_create_sys_semaphore(&sys_id2, num_locks, sem_key1, MRAPI_FALSE));
+	assert(sys_sem_delete(sys_id2));
 	assert(sys_sem_delete(sys_id));
 
 	assert(sys_file_key(NULL, 'd', &key1));

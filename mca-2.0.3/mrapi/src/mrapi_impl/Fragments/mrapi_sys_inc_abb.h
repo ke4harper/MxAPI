@@ -29,14 +29,27 @@ Port to Windows: #if !(__unix__||__MINGW32__), etc.
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdarg.h>
+#define MRAPI_SEM_OBJ_NAME_LEN 100
 #if (__unix__||__MINGW32__)
 #include <unistd.h> /* for memset and getpid */
 #include <pthread.h>
+#define MRAPI_SEM_OBJ_NAME_TEMPLATE "Local\\mca_%u_%u"
 #else
 #include <tchar.h>
+/* Local session prefix allows sharing across processes */
+#define MRAPI_SEM_OBJ_NAME_TEMPLATE L"Local\\mca_%u_%u"
 #endif  /* !(__unix__||__MINGW32__) */
 
 #include <mrapi_abb.h>
+
+#if !(__unix__)
+// Internal semaphore set representation
+typedef struct {
+	int key;
+	int num_locks;
+	HANDLE* sem;
+} sem_set_t;
+#endif  // !(__unix__)
 
 /* This conditional compile directive enables spinning
    synchronization on Windows that is normally only used

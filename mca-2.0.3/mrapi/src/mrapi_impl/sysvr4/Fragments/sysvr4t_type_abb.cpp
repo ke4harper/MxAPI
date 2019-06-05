@@ -26,15 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-#if !(__unix__)
-// Internal semaphore set representation
-typedef struct {
-  int key;
-  int num_locks;
-  HANDLE* sem;
-} sem_set_t;
-#endif  // !(__unix__)
-
 typedef struct
 {
 	int key;

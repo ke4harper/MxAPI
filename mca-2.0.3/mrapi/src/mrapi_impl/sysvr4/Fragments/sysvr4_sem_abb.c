@@ -27,11 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #if !(__unix__)
-typedef struct {
-	int key;
-	int num_locks;
-	HANDLE* sem;
-} sem_set_t;
 
 /***************************************************************************
   Function: sys_release_sem_set
@@ -109,9 +104,9 @@ mrapi_boolean_t sys_sem_create(int key, int num_locks, int* semid) {
 #if !(__unix__)
 	int i = 0;
 #if (__MINGW32__)
-	char buffer[40] = "";
+	char buffer[MRAPI_SEM_OBJ_NAME_LEN] = "";
 #else
-	wchar_t buffer[40] = L"";
+	wchar_t buffer[MRAPI_SEM_OBJ_NAME_LEN] = L"";
 #endif  /* !(__MINGW32__) */
 	sem_set_t* ss = NULL;
 #endif  /* !(__unix__) */
@@ -133,6 +128,21 @@ mrapi_boolean_t sys_sem_create(int key, int num_locks, int* semid) {
 		return MRAPI_FALSE;
 	}
 
+	/* Check if semaphore is already in use */
+#if (__MINGW32__)
+	sprintf(buffer, MRAPI_SEM_OBJ_NAME_TEMPLATE, key, 0);
+	if (OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, FALSE, buffer)) {
+		mrapi_dprintf(1, "sys_sem_get failed: errno=%s", strerror(EINVAL));
+#else
+	swprintf_s(buffer, MRAPI_SEM_OBJ_NAME_LEN, MRAPI_SEM_OBJ_NAME_TEMPLATE, key, 0);
+	if (OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, FALSE, buffer)) {
+		char buf[80];
+		strerror_s(buf, 80, EINVAL);
+		mrapi_dprintf(1, "sys_sem_get failed: errno=%s", buf);
+#endif  /* (__MINGW32__) */
+		return MRAPI_FALSE;
+	}
+
 	mrapi_dprintf(1, "sys_sem_create (create)");
 	/* 1. create the semaphore */
 #if (__unix__)
@@ -151,14 +161,13 @@ mrapi_boolean_t sys_sem_create(int key, int num_locks, int* semid) {
 	for (i = 0; i < num_locks; i++) {
 		/* Use ASCII representation of key for object name */
 #if (__MINGW32__)
-		sprintf(buffer, "%u_%u", key, i);
+		sprintf(buffer, MRAPI_SEM_OBJ_NAME_TEMPLATE, key, i);
 		/* Semaphore created in "free" state */
 		ss->sem[i] = CreateSemaphore(NULL, 1, 1, buffer);
 		if (ss->sem[i] == NULL) {
 			mrapi_dprintf(1, "sys_sem_create failed: errno=%s", strerror(EINVAL));
 #else
-	/* Local session prefix allows sharing across processes */
-		swprintf_s(buffer, 40, L"Local\\mca_%u_%u", key, i);
+		swprintf_s(buffer, MRAPI_SEM_OBJ_NAME_LEN, MRAPI_SEM_OBJ_NAME_TEMPLATE, key, i);
 		/* Semaphore created in "free" state */
 		ss->sem[i] = CreateSemaphore(NULL, 1, 1, buffer);
 		if (ss->sem[i] == (int)NULL) {
@@ -220,9 +229,9 @@ mrapi_boolean_t sys_sem_get(int key, int num_locks, int* semid) {
 	int MAX_RETRIES = 0xffff;
 #else
 #if (__MINGW32__)
-	char buffer[40];
+	char buffer[MRAPI_SEM_OBJ_NAME_LEN];
 #else
-	wchar_t buffer[40];
+	wchar_t buffer[MRAPI_SEM_OBJ_NAME_LEN];
 #endif  /* (__MINGW32__) */
 	sem_set_t* ss = NULL;
 #endif  /* !(__unix__) */
@@ -250,12 +259,12 @@ mrapi_boolean_t sys_sem_get(int key, int num_locks, int* semid) {
 		/* Use ASCII representation of key for object name */
 		/* TODO: Consider using DuplicateHandle to reduce resource utilization? */
 #if (__MINGW32__)
-		sprintf(buffer, "Local\\mca_%u_%u", key, i);
+		sprintf(buffer, MRAPI_SEM_OBJ_NAME_TEMPLATE, key, i);
 		ss->sem[i] = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, FALSE, buffer);
 		if (ss->sem[i] == NULL) {
 			mrapi_dprintf(1, "sys_sem_get failed: errno=%s", strerror(EINVAL));
 #else
-		swprintf_s(buffer, 40, L"Local\\mca_%u_%u", key, i);
+		swprintf_s(buffer, MRAPI_SEM_OBJ_NAME_LEN, MRAPI_SEM_OBJ_NAME_TEMPLATE, key, i);
 		ss->sem[i] = OpenSemaphore(SYNCHRONIZE | SEMAPHORE_MODIFY_STATE, FALSE, buffer);
 		if (ss->sem[i] == (int)NULL) {
 			char buf[80];

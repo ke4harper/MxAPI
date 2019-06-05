@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Create semaphore
 	{
 	int id = 0;
+	int id2 = 0;
 #if !(__unix__)
 	sem_set_t* ss = NULL;
 #endif  // !(__unix__)
@@ -50,6 +51,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	assert(NULL != ss->sem);
 	assert(NULL != ss->sem[0]);
 #endif  // !(__unix__)
+	// Duplicate create fails
+	assert(!sys_sem_create(key, 1, &id2));
 	if (created) {
 		assert(sys_sem_delete(id)); // clean up Windows resources,
 	}                               // possible Unix error is ignored

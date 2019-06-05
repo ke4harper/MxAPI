@@ -88,7 +88,7 @@ mrapi_boolean_t mrapi_impl_mutex_validID(mrapi_mutex_id_t mutex);
 /* SEMAPHORES */
 mrapi_boolean_t mrapi_impl_valid_sem_hndl(mrapi_sem_hndl_t sem, mrapi_status_t* status);
 mrapi_boolean_t mrapi_impl_sem_get(mrapi_sem_hndl_t* sem,
-	mrapi_sem_id_t sem_id);
+	mrapi_sem_id_t key);
 mrapi_boolean_t mrapi_impl_sem_create(mrapi_sem_hndl_t* sem,
 	mrapi_sem_id_t sem_id,
 	const mrapi_sem_attributes_t* attributes,
