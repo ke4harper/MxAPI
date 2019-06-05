@@ -8,7 +8,7 @@ Determining whether a concurrency approach satisfies the architectural non-funct
 ## Portability Sensitivity
 Adding a portability layer to the runtime stack may have a performance impact. Anecdotally, stack frames can cause overhead in preparing and returning function arguments. On the other hand, compilers today are very efficient at using registers to speed many of the common operations.  
 
-![SingleCPU](img/Portability Sensitivity - Single CPU.png)
+![SingleCPU](https://github.com/ke4harper/MxAPI/blob/master/img/Portability%20Sensitivity%20-%20Single%20CPU.png)
 
 *Portability Sensitivity - Single CPU*
 
@@ -16,7 +16,7 @@ The portability layer running on a single CPU does not have any significant impa
 
 The portability layer running on multicore also does not have a significant impact on performance as shown by the 1x speedup calculations in the table below. Memory access within an isolated process does not perform much better (1.4x max.) than between two tasks in the presence of shared memory, and actually performs incrementally better between two processes on both Windows and Linux. Like single CPU, process-to-process memory access performs better than task-to-task in the RTP deployment.  
 
-![MultiCPU](img/Portability Sensitivity – Multicore.png)
+![MultiCPU](https://github.com/ke4harper/MxAPI/blob/master/img/Portability%20Sensitivity%20%E2%80%93%20Multicore.png)
 
 *Portability Sensitivity – Multicore*
 
@@ -25,7 +25,7 @@ The one-way communication channel is the building block for all other messaging 
 
 Linux performs better than Windows in a single CPU RTP deployment, but Windows out-paces Linux on both Kernel and RTP multicore deployments. For both platforms it makes sense to go to multicore because of the speedups (as much as 3.3x on Windows) that are achieved. The exception is Linux RTP where the latency increases by more than a factor of 2, but the throughput increases as well. The bottom line based on Requests bandwidth is that on multicore, Windows performs better with a pool of threads and Linux performs better with a pool of processes.  
 
-![Tradeoffs](img/Platform and Memory Access Tradeoffs.png)
+![Tradeoffs](https://github.com/ke4harper/MxAPI/blob/master/img/Platform%20and%20Memory%20Access%20Tradeoffs.png)
 
 *Platform and Memory Access Tradeoffs*
 
@@ -43,7 +43,7 @@ The I/O performance numbers indicate a single runtime implementation for both Wi
 ## Atomic Operations Across Processes
 One of the solution assumptions is that communication between tasks is “frictionless”, i.e. very low latency. The lock-free techniques use synchronization between tasks and for RTP deployments this must be available across processes. One task must not be able to corrupt the data used by another task. Our experiments demonstrate this capability. As shown in the figure below, the techniques are different for Windows and Linux.
 
-![ProcessAtomic](img/Atomic Operations Across Processes.png)
+![ProcessAtomic](https://github.com/ke4harper/MxAPI/blob/master/img/Atomic%20Operations%20Across%20Processes.png)
 
 *Atomic Operations Across Processes*
 
