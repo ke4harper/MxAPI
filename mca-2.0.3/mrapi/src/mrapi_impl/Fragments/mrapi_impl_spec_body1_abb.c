@@ -229,10 +229,6 @@ mrapi_lock_type mrapi_impl_lock_type_get(uint32_t hndl, mrapi_status_t* status)
 	}
 	else
 	{
-		/* lock the database */
-		mrapi_impl_sem_ref_t ref = { sems_semid, s };
-		mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
-
 		if (mrapi_db->sems[s].valid == MRAPI_TRUE) {
 			*status = MRAPI_TRUE;
 			switch (mrapi_db->sems[s].type) {
@@ -242,6 +238,10 @@ mrapi_lock_type mrapi_impl_lock_type_get(uint32_t hndl, mrapi_status_t* status)
 			}
 		}
 		else {
+			/* lock the database */
+			mrapi_impl_sem_ref_t ref = { sems_semid, s };
+			mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
+
 			/* check to see if it is a deleted sem that had extended error checking set */
 			for (d = 0; d < MRAPI_MAX_SEMS; d++) {
 				if ((mrapi_db->sems[d].deleted == MRAPI_TRUE) &&
@@ -254,10 +254,10 @@ mrapi_lock_type mrapi_impl_lock_type_get(uint32_t hndl, mrapi_status_t* status)
 					break;
 				}
 			}
-		}
 
-		/* unlock the database */
-		mrapi_assert(mrapi_impl_access_database_post(ref));
+			/* unlock the database */
+			mrapi_assert(mrapi_impl_access_database_post(ref));
+		}
 	}
 
 	return type;
@@ -792,14 +792,14 @@ mrapi_boolean_t mrapi_impl_valid_lock_hndl(mrapi_sem_hndl_t sem,
 		return MRAPI_FALSE;
 	}
 
-	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { sems_semid, s };
-	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
-
 	if (mrapi_db->sems[s].valid == MRAPI_TRUE) {
 		rc = MRAPI_TRUE;
 	}
 	else {
+		/* lock the database */
+		mrapi_impl_sem_ref_t ref = { sems_semid, s };
+		mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
+
 		/* check to see if it is a deleted sem that had extended error checking set */
 		for (d = 0; d < MRAPI_MAX_SEMS; d++) {
 			if ((mrapi_db->sems[d].deleted == MRAPI_TRUE) &&
@@ -812,10 +812,10 @@ mrapi_boolean_t mrapi_impl_valid_lock_hndl(mrapi_sem_hndl_t sem,
 				break;
 			}
 		}
-	}
 
-	/* unlock the database */
-	mrapi_assert(mrapi_impl_access_database_post(ref));
+		/* unlock the database */
+		mrapi_assert(mrapi_impl_access_database_post(ref));
+	}
 	return rc;
 }
 

@@ -46,16 +46,15 @@ mrapi_boolean_t mrapi_impl_sem_get(mrapi_sem_hndl_t* sem_hndl,
 	mrapi_node_t node_id;
 	mrapi_domain_t domain_id;
 
-	/* lock the database (use global lock for get/create sem|rwl|mutex) */
-	mrapi_impl_sem_ref_t ref = { semid, 0 };
-	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 	mrapi_dprintf(1, "mrapi_impl_sem_get (&sem,0x%x /*sem key*/);", key);
 
 	mrapi_assert(mrapi_impl_whoami(&node_id, &n, &domain_id, &d));
 
 	/* now look for the semkey */
 	for (s = 0; s < MRAPI_MAX_SEMS; s++) {
-		if (mrapi_db->sems[s].key == key) {
+		mrapi_sem_id_t match;
+		if (sys_atomic_read(NULL, &mrapi_db->sems[s].key, &match, sizeof(mrapi_sem_id_t)) &&
+			key == match) {
 			uint16_t free = 0;
 			uint16_t user = 1;
 			uint16_t previous = 0;
@@ -72,8 +71,6 @@ mrapi_boolean_t mrapi_impl_sem_get(mrapi_sem_hndl_t* sem_hndl,
 	/* note: if we didn't find it, the handle will be invalid bc the indices will be max*/
 	*sem_hndl = mrapi_impl_encode_hndl(s);
 
-	/* unlock the database (use global lock for get/create sem|rwl|mutex) */
-	mrapi_assert(mrapi_impl_access_database_post(ref));
 	return rc;
 }
 
@@ -318,7 +315,7 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
 					/* Use address of array entry for key */
 					key = (mrapi_sem_id_t)&mrapi_db->sems[s];
 				}
-				mrapi_db->sems[s].key = key;
+				sys_atomic_xchg(NULL, &mrapi_db->sems[s].key, &key, NULL, sizeof(mrapi_sem_id_t));
 				/* log this node as a user, this way we can decrease the ref count when this node calls finalize */
 				mrapi_db->domains[d].nodes[n].sems[s] = 1;
 				mrapi_db->sems[s].refs++; /* bump the reference count */
@@ -338,6 +335,7 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
 						/* anonymous lock owner within domain */
 						mrapi_db->sems[s].locks[l].lock_holder_dindex = d;
 						mrapi_db->sems[s].locks[l].lock_holder_nindex = (mrapi_uint8_t)-1;
+						mrapi_db->sems[s].num_locks++;
 					}
 				}
 				*sem = mrapi_impl_encode_hndl(s);
