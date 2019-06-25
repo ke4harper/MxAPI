@@ -48,6 +48,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		sa.multicore = 0;
         sa.cpu = 0;
 
+		printf("nproc %d sem single CPU start: total(usec) lock(usec) unlock(usec) spin(usec) util(%%)\n", nproc);
+
 #if (__unix||__MINGW32__)
         rc += pthread_create(&threads[0], NULL, first_sem,(void*)&sa);
         rc += pthread_create(&threads[1], NULL, second_sem,(void*)&sa);
@@ -94,6 +96,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		sa.multicore = 1;
         sa.cpu = cpu;
 
+		printf("nproc %d sem multiple CPU start: total(usec) lock(usec) unlock(usec) spin(usec) util(%%)\n", nproc);
+
 #if (__unix||__MINGW32__)
         rc += pthread_create(&threads[0], NULL, first_sem,(void*)&sa);
         rc += pthread_create(&threads[1], NULL, second_sem,(void*)&sa);
@@ -134,7 +138,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         int t = 0;
 #endif  /* (__unix||__MINGW32__) */
 
-        printf("nproc %d iter %d shmem single CPU start: total(usec), split(usec), util(%%), cpus(%%)\n",nproc,i);
+        printf("nproc %d iter %d shmem single CPU start: total(usec), split(usec), util(%%), cpus(%%)\n",nproc,j);
 
 		shmem_args_t sa = { 0 };
 		sa.bproc = bproc;
@@ -239,7 +243,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         int t = 0;
 #endif  /* (__unix||__MINGW32__) */
 
-        printf("nproc %d iter %d shmem multiple CPU start: total(usec), split(usec), util(%%), cpus(%%)\n",nproc,i);
+        printf("nproc %d iter %d shmem multiple CPU start: total(usec), split(usec), util(%%), cpus(%%)\n",nproc,j);
 
         shmem_args_t sa = { 0 };
 		sa.bproc = bproc;

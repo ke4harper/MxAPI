@@ -101,7 +101,7 @@
     <None Include="Fragments\sysvr4t_atomic.cpp" />
     <None Include="Fragments\sysvr4t_inc_abb.cpp" />
     <None Include="Fragments\sysvr4t_threads_abb.cpp" />
-    <None Include="Fragments\sysvr4t_stress.cpp" />
+    <None Include="Fragments\sysvr4t_stress_abb.cpp" />
     <None Include="Fragments\sysvr4t_os.cpp" />
     <None Include="Fragments\sysvr4t_type_abb.cpp" />
     <ClCompile Include="stdafx.cpp" />

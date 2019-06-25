@@ -76,7 +76,7 @@ if(!bproc) {
 #include "Fragments/sysvr4t_shmem.cpp"
 #include "Fragments/sysvr4t_atomic.cpp"
 }
-#include "Fragments/sysvr4t_stress.cpp"
+#include "Fragments/sysvr4t_stress_abb.cpp"
 
 	return 0;
 }

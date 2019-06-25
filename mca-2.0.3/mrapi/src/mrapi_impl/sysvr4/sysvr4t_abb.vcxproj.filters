@@ -52,7 +52,7 @@
     <None Include="Fragments\sysvr4t_threads_abb.cpp">
       <Filter>Source Files\Fragments</Filter>
     </None>
-    <None Include="Fragments\sysvr4t_stress.cpp">
+    <None Include="Fragments\sysvr4t_stress_abb.cpp">
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\sysvr4t_os.cpp">
