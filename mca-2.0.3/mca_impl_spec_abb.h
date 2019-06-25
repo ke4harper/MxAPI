@@ -47,7 +47,9 @@ extern "C" {
 #if (__unix__||__MINGW32__)
 #define PUBLIC
 #else
+#ifndef PUBLIC
 #define PUBLIC __declspec(dllexport)
+#endif  /* !PUBLIC */
 #endif  /* !(__unix__||__MINGW32__) */
 
 #include <stdint.h>
