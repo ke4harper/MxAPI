@@ -73,6 +73,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	assert(mrapi_impl_create_lock_locked(&sem1, key1, 0, shared_lock_limit, SEM, &status));
 	assert(MRAPI_SUCCESS == status);
 	assert(mrapi_impl_decode_hndl(sem1, &s_index1));
+	assert(0 == mrapi_db->sems[s_index1].num_locks);
 	assert(0 == mrapi_db->sems[s_index1].spin);
 	assert(key1 == mrapi_db->sems[s_index1].key);
 	assert(1 == mrapi_db->domains[d_index].nodes[n_index].sems[s_index1]);
@@ -93,6 +94,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	assert(mrapi_impl_create_lock_locked(&sem2, MRAPI_SEM_ID_ANY, 1, shared_lock_limit, SEM, &status));
 	assert(MRAPI_SUCCESS == status);	// status only set if lock_locked returns an error
 	assert(mrapi_impl_decode_hndl(sem2, &s_index2));
+	assert(1 == mrapi_db->sems[s_index2].num_locks);
 	assert(num_sems + 3 == mrapi_db->num_sems);
 	assert(mrapi_db->sems[s_index2].locks[0].valid);
 	assert(mrapi_db->sems[s_index2].locks[0].locked);
