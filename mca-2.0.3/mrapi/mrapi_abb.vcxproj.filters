@@ -55,7 +55,7 @@
     <None Include="src\Fragments\mrapi_initialize.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
-    <None Include="src\Fragments\mrapi_mutex.c">
+    <None Include="src\Fragments\mrapi_mutex_abb.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="src\Fragments\mrapi_rwl.c">
