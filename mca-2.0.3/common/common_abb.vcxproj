@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Fragments\mca_impl_spec_def.h" />
+    <ClInclude Include="..\Fragments\mca_impl_spec_def_abb.h" />
     <ClInclude Include="..\Fragments\mca_impl_spec_inc_abb.h" />
     <ClInclude Include="..\mca_impl_spec_abb.h" />
     <ClInclude Include="Fragments\mca_utils_inc_abb.h" />
