@@ -26,7 +26,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource_tree.h">
+    <ClInclude Include="resource_tree_abb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mrapi_impl_spec_abb.h">
