@@ -41,9 +41,9 @@
     <None Include="Fragments\mca_utils_proto.h">
       <Filter>Header Files\Fragments</Filter>
     </None>
-    <None Include="..\Fragments\mca_impl_spec_def.h">
+    <ClInclude Include="..\Fragments\mca_impl_spec_def_abb.h">
       <Filter>Header Files\Fragments</Filter>
-    </None>
+    </ClInclude>
     <None Include="Fragments\mca_utils_impl.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
