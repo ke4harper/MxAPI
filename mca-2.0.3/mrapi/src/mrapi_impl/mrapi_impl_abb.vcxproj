@@ -42,7 +42,7 @@
     <ClInclude Include="Fragments\mrapi_sys_shmem.h" />
     <ClInclude Include="mrapi_impl_spec_abb.h" />
     <None Include="mrapi_sys_abb.h" />
-    <ClInclude Include="resource_tree.h" />
+    <ClInclude Include="resource_tree_abb.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{156155B4-888A-45FB-B3BB-4B354E3F1FA2}</ProjectGuid>
