@@ -63,14 +63,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	// Semaphore create
 	shared_lock_limit = 1;
-	assert(mrapi_impl_create_lock_locked(&sem1, MRAPI_SEM_ID_ANY, 0, shared_lock_limit, SEM, &status));
+	assert(mrapi_impl_create_lock_locked(&sem1, MRAPI_SEM_ID_ANY, 0, shared_lock_limit, MRAPI_SEM, &status));
 	assert(MRAPI_SUCCESS == status);	// status only set if lock_locked returns an error
 	assert(num_sems + 1 == mrapi_db->num_sems);
 	// Semaphore must be acquired before it can be deleted.
 	assert(mrapi_impl_sem_lock(sem1, 1, 0, &status));
 	assert(mrapi_impl_sem_delete(sem1));
 	assert(num_sems + 1 == mrapi_db->num_sems);	// num_sems is never decremented
-	assert(mrapi_impl_create_lock_locked(&sem1, key1, 0, shared_lock_limit, SEM, &status));
+	assert(mrapi_impl_create_lock_locked(&sem1, key1, 0, shared_lock_limit, MRAPI_SEM, &status));
 	assert(MRAPI_SUCCESS == status);
 	assert(mrapi_impl_decode_hndl(sem1, &s_index1));
 	assert(0 == mrapi_db->sems[s_index1].num_locks);
@@ -81,7 +81,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	assert(mrapi_db->sems[s_index1].valid);
 	assert((int32_t)shared_lock_limit == mrapi_db->sems[s_index1].shared_lock_limit);
 	assert(0 == mrapi_db->sems[s_index1].num_locks);
-	assert(SEM == mrapi_db->sems[s_index1].type);
+	assert(MRAPI_SEM == mrapi_db->sems[s_index1].type);
 	assert(num_sems + 2 == mrapi_db->num_sems);
 	assert(mrapi_db->sems[s_index1].locks[0].valid);
 	assert(0 == mrapi_db->sems[s_index1].locks[0].lock_holder_dindex);
@@ -108,7 +108,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	assert(mrapi_impl_sem_lock(sem2, 1, 0, &status));
 	assert(mrapi_impl_sem_delete(sem2));
 	assert(num_sems + 3 == mrapi_db->num_sems);
-	assert(mrapi_impl_create_lock_locked(&sem2, key2, 0, shared_lock_limit, SEM, &status));
+	assert(mrapi_impl_create_lock_locked(&sem2, key2, 0, shared_lock_limit, MRAPI_SEM, &status));
 	assert(MRAPI_SUCCESS == status);
 	assert(key2 == mrapi_db->sems[s_index2].key);
 	assert(1 == mrapi_db->domains[d_index].nodes[n_index].sems[s_index2]);
@@ -116,7 +116,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	assert(mrapi_db->sems[s_index2].valid);
 	assert((int32_t)shared_lock_limit == mrapi_db->sems[s_index2].shared_lock_limit);
 	assert(0 == mrapi_db->sems[s_index2].num_locks);
-	assert(SEM == mrapi_db->sems[s_index2].type);
+	assert(MRAPI_SEM == mrapi_db->sems[s_index2].type);
 	assert(num_sems + 4 == mrapi_db->num_sems);
 	assert(mrapi_db->sems[s_index2].locks[0].valid);
 	assert(mrapi_db->sems[s_index2].locks[1].valid);
