@@ -41,6 +41,9 @@
    */
 #define LT_OBJDIR ".libs/"
 
+/* Define to 0xC0000000 to not conflict with Windows, Linux or VxWorks handles */
+#define MCA_HANDLE_MASK 0xC0000000
+
 /* Defined and set to $max_attributes. */
 #define MCAPI_MAX_ATTRIBUTES 2
 
