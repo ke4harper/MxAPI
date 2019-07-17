@@ -31,19 +31,19 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************************************************/
 
 typedef enum {
-  RWL,
-  SEM,
-  MUTEX,
+  MRAPI_RWL,
+  MRAPI_SEM,
+  MRAPI_MUTEX,
 } lock_type;
 
 /* Metadata resource related structs */
 typedef enum {
-  CPU,
-  CACHE,
-  MEM,
-  CORE_COMPLEX,
-  CROSSBAR,
-  SYSTEM,
+  MRAPI_CPU,
+  MRAPI_CACHE,
+  MRAPI_MEM,
+  MRAPI_CORE_COMPLEX,
+  MRAPI_CROSSBAR,
+  MRAPI_SYSTEM,
 } mrapi_resource_type;
 
 
