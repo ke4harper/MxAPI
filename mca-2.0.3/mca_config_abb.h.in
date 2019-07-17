@@ -40,6 +40,9 @@
    */
 #undef LT_OBJDIR
 
+/* Define to 0xC0000000 to not conflict with Windows, Linux or VxWorks handles */
+#undef MCA_HANDLE_MASK
+
 /* Defined and set to $max_attributes. */
 #undef MCAPI_MAX_ATTRIBUTES
 
