@@ -543,7 +543,7 @@ Returns: the handle
 ***************************************************************************/
 uint32_t mrapi_impl_encode_hndl(uint16_t type_index)
 {
-	uint32_t valid = 0x80000000;
+	uint32_t valid = MCA_HANDLE_MASK;
 	return (valid | type_index);
 }
 
@@ -559,7 +559,7 @@ Returns: true/false indicating success or failure
 mrapi_boolean_t mrapi_impl_decode_hndl(uint32_t handle,
 	uint16_t *type_index)
 {
-	uint32_t valid = 0x80000000;
+	uint32_t valid = MCA_HANDLE_MASK;
 
 	*type_index = (handle & 0x00ffffff);
 
