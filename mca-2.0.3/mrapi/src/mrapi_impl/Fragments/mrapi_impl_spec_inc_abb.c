@@ -28,5 +28,5 @@ Port to Windows: #if !(__unix__||__MINGW32__), etc.
 */
 #include <mca_utils_abb.h>
 #include <mrapi_sys_abb.h>
-#include "resource_tree.h"
+#include "resource_tree_abb.h"
 #include <string.h>
