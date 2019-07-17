@@ -48,16 +48,16 @@ mrapi_resource_t* mrapi_impl_resources_get(
 #endif  /* !(__MINGW32__) */
 
 	if (subsystem_filter == MRAPI_RSRC_MEM) {
-		rsrc_type = MEM;
+		rsrc_type = MRAPI_MEM;
 	}
 	else if (subsystem_filter == MRAPI_RSRC_CPU) {
-		rsrc_type = CPU;
+		rsrc_type = MRAPI_CPU;
 	}
 	else if (subsystem_filter == MRAPI_RSRC_CACHE) {
-		rsrc_type = CACHE;
+		rsrc_type = MRAPI_CACHE;
 	}
 	else if (subsystem_filter == MRAPI_RSRC_CROSSBAR) {
-		rsrc_type = CROSSBAR;
+		rsrc_type = MRAPI_CROSSBAR;
 	}
 	else if (subsystem_filter == MRAPI_RSRC_DMA) {
 		*status = MRAPI_SUCCESS;
@@ -84,7 +84,7 @@ mrapi_resource_t* mrapi_impl_resources_get(
 #else
 		strcpy_s(filtered_tree->name, name_length + 1, tree_name);
 #endif  /* !(__unix__||__MINGW32__) */
-		filtered_tree->resource_type = SYSTEM;
+		filtered_tree->resource_type = MRAPI_SYSTEM;
 		filtered_tree->number_of_children = number_of_nodes;
 		filtered_tree->children = (mrapi_resource_t **)malloc(number_of_nodes * sizeof(mrapi_resource_t*));
 		filtered_tree->number_of_attributes = 0;
