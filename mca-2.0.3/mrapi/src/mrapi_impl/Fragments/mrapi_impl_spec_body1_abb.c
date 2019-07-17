@@ -232,9 +232,9 @@ mrapi_lock_type mrapi_impl_lock_type_get(uint32_t hndl, mrapi_status_t* status)
 		if (mrapi_db->sems[s].valid == MRAPI_TRUE) {
 			*status = MRAPI_TRUE;
 			switch (mrapi_db->sems[s].type) {
-			case (MUTEX): type = MRAPI_LOCK_MUTEX; break;
-			case (SEM):  type = MRAPI_LOCK_SEM; break;
-			case (RWL):  type = MRAPI_LOCK_RWL; break;
+			case (MRAPI_MUTEX): type = MRAPI_LOCK_MUTEX; break;
+			case (MRAPI_SEM):  type = MRAPI_LOCK_SEM; break;
+			case (MRAPI_RWL):  type = MRAPI_LOCK_RWL; break;
 			}
 		}
 		else {
@@ -247,9 +247,9 @@ mrapi_lock_type mrapi_impl_lock_type_get(uint32_t hndl, mrapi_status_t* status)
 				if ((mrapi_db->sems[d].deleted == MRAPI_TRUE) &&
 					(mrapi_db->sems[d].handle == hndl)) {
 					switch (mrapi_db->sems[d].type) {
-					case (MUTEX): *status = MRAPI_ERR_MUTEX_DELETED; break;
-					case (SEM):  *status = MRAPI_ERR_SEM_DELETED; break;
-					case (RWL):  *status = MRAPI_ERR_RWL_DELETED; break;
+					case (MRAPI_MUTEX): *status = MRAPI_ERR_MUTEX_DELETED; break;
+					case (MRAPI_SEM):  *status = MRAPI_ERR_SEM_DELETED; break;
+					case (MRAPI_RWL):  *status = MRAPI_ERR_RWL_DELETED; break;
 					};
 					break;
 				}
@@ -805,9 +805,9 @@ mrapi_boolean_t mrapi_impl_valid_lock_hndl(mrapi_sem_hndl_t sem,
 			if ((mrapi_db->sems[d].deleted == MRAPI_TRUE) &&
 				(mrapi_db->sems[d].handle == sem)) {
 				switch (mrapi_db->sems[d].type) {
-				case (MUTEX): *status = MRAPI_ERR_MUTEX_DELETED; break;
-				case (SEM):  *status = MRAPI_ERR_SEM_DELETED; break;
-				case (RWL):  *status = MRAPI_ERR_RWL_DELETED; break;
+				case (MRAPI_MUTEX): *status = MRAPI_ERR_MUTEX_DELETED; break;
+				case (MRAPI_SEM):  *status = MRAPI_ERR_SEM_DELETED; break;
+				case (MRAPI_RWL):  *status = MRAPI_ERR_RWL_DELETED; break;
 				};
 				break;
 			}
