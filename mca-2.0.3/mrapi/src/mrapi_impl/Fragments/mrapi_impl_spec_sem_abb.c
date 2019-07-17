@@ -106,9 +106,9 @@ mrapi_boolean_t mrapi_impl_sem_create(mrapi_sem_hndl_t* sem,
 	mrapi_impl_sem_ref_t ref = { semid, 0 };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
-	if (mrapi_impl_create_lock_locked(sem, key, num_locks, shared_lock_limit, SEM, mrapi_status)) {
+	if (mrapi_impl_create_lock_locked(sem, key, num_locks, shared_lock_limit, MRAPI_SEM, mrapi_status)) {
 		mrapi_assert(mrapi_impl_decode_hndl(*sem, &s));
-		mrapi_db->sems[s].type = SEM;
+		mrapi_db->sems[s].type = MRAPI_SEM;
 		if (attributes != NULL) {
 			/* set the user-specified attributes */
 			mrapi_db->sems[s].attributes.ext_error_checking = attributes->ext_error_checking;
@@ -285,9 +285,9 @@ mrapi_boolean_t mrapi_impl_create_lock_locked(mrapi_sem_hndl_t* sem,
 			/* Even though we checked for this at the mrapi layer, we have to check again here because
 			   the check and the create aren't atomic at the top layer. */
 			if (mrapi_db->sems[s].valid && mrapi_db->sems[s].key == key) {
-				if (t == RWL) { *mrapi_status = MRAPI_ERR_RWL_EXISTS; }
-				else if (t == SEM) { *mrapi_status = MRAPI_ERR_SEM_EXISTS; }
-				else if (t == MUTEX) { *mrapi_status = MRAPI_ERR_MUTEX_EXISTS; }
+				if (t == MRAPI_RWL) { *mrapi_status = MRAPI_ERR_RWL_EXISTS; }
+				else if (t == MRAPI_SEM) { *mrapi_status = MRAPI_ERR_SEM_EXISTS; }
+				else if (t == MRAPI_MUTEX) { *mrapi_status = MRAPI_ERR_MUTEX_EXISTS; }
 				mrapi_dprintf(1, "Unable to create mutex/sem/rwl because this key already exists key=%d", key);
 				break;
 			}
@@ -657,9 +657,9 @@ int32_t mrapi_impl_acquire_lock_locked(mrapi_sem_hndl_t sem,
 		}
 	else {
 		mrapi_dprintf(3, "unable to get the lock");
-		if (mrapi_db->sems[s].type == RWL) { *status = MRAPI_ERR_RWL_LOCKED; }
-		else if (mrapi_db->sems[s].type == SEM) { *status = MRAPI_ERR_SEM_LOCKED; }
-		else if (mrapi_db->sems[s].type == MUTEX) { *status = MRAPI_ERR_MUTEX_LOCKED; }
+		if (mrapi_db->sems[s].type == MRAPI_RWL) { *status = MRAPI_ERR_RWL_LOCKED; }
+		else if (mrapi_db->sems[s].type == MRAPI_SEM) { *status = MRAPI_ERR_SEM_LOCKED; }
+		else if (mrapi_db->sems[s].type == MRAPI_MUTEX) { *status = MRAPI_ERR_MUTEX_LOCKED; }
 	}
 
 	return num_added;
@@ -806,9 +806,9 @@ mrapi_boolean_t mrapi_impl_release_lock(mrapi_sem_hndl_t sem,
 
 	if (mrapi_db->sems[s].valid == MRAPI_FALSE) {
 		rc = MRAPI_FALSE;
-		if (mrapi_db->sems[s].type == RWL) { *mrapi_status = MRAPI_ERR_RWL_INVALID; }
-		else if (mrapi_db->sems[s].type == SEM) { *mrapi_status = MRAPI_ERR_SEM_INVALID; }
-		else if (mrapi_db->sems[s].type == MUTEX) { *mrapi_status = MRAPI_ERR_MUTEX_INVALID; }
+		if (mrapi_db->sems[s].type == MRAPI_RWL) { *mrapi_status = MRAPI_ERR_RWL_INVALID; }
+		else if (mrapi_db->sems[s].type == MRAPI_SEM) { *mrapi_status = MRAPI_ERR_SEM_INVALID; }
+		else if (mrapi_db->sems[s].type == MRAPI_MUTEX) { *mrapi_status = MRAPI_ERR_MUTEX_INVALID; }
 	}
 	else {
 		/* check that this node has num_locks to unlock */
@@ -827,9 +827,9 @@ mrapi_boolean_t mrapi_impl_release_lock(mrapi_sem_hndl_t sem,
 		if (my_locks < (uint32_t)num_locks) {
 #endif  /* !(__unix__||__MINGW32__) */
 			rc = MRAPI_FALSE;
-			if (mrapi_db->sems[s].type == RWL) { *mrapi_status = MRAPI_ERR_RWL_NOTLOCKED; }
-			else if (mrapi_db->sems[s].type == SEM) { *mrapi_status = MRAPI_ERR_SEM_NOTLOCKED; }
-			else if (mrapi_db->sems[s].type == MUTEX) {
+			if (mrapi_db->sems[s].type == MRAPI_RWL) { *mrapi_status = MRAPI_ERR_RWL_NOTLOCKED; }
+			else if (mrapi_db->sems[s].type == MRAPI_SEM) { *mrapi_status = MRAPI_ERR_SEM_NOTLOCKED; }
+			else if (mrapi_db->sems[s].type == MRAPI_MUTEX) {
 				*mrapi_status = MRAPI_ERR_MUTEX_NOTLOCKED;
 			}
 		}
@@ -947,9 +947,9 @@ mrapi_boolean_t mrapi_impl_signal_lock(mrapi_sem_hndl_t sem,
 
 	if (mrapi_db->sems[s].valid == MRAPI_FALSE) {
 		rc = MRAPI_FALSE;
-		if (mrapi_db->sems[s].type == RWL) { *mrapi_status = MRAPI_ERR_RWL_INVALID; }
-		else if (mrapi_db->sems[s].type == SEM) { *mrapi_status = MRAPI_ERR_SEM_INVALID; }
-		else if (mrapi_db->sems[s].type == MUTEX) { *mrapi_status = MRAPI_ERR_MUTEX_INVALID; }
+		if (mrapi_db->sems[s].type == MRAPI_RWL) { *mrapi_status = MRAPI_ERR_RWL_INVALID; }
+		else if (mrapi_db->sems[s].type == MRAPI_SEM) { *mrapi_status = MRAPI_ERR_SEM_INVALID; }
+		else if (mrapi_db->sems[s].type == MRAPI_MUTEX) { *mrapi_status = MRAPI_ERR_MUTEX_INVALID; }
 	}
 	else {
 		/* check that this semaphore has num_locks to unlock */
@@ -965,9 +965,9 @@ mrapi_boolean_t mrapi_impl_signal_lock(mrapi_sem_hndl_t sem,
 		if (my_locks < (uint32_t)num_locks) {
 #endif  /* !(__unix__||__MINGW32__) */
 			rc = MRAPI_FALSE;
-			if (mrapi_db->sems[s].type == RWL) { *mrapi_status = MRAPI_ERR_RWL_NOTLOCKED; }
-			else if (mrapi_db->sems[s].type == SEM) { *mrapi_status = MRAPI_ERR_SEM_NOTLOCKED; }
-			else if (mrapi_db->sems[s].type == MUTEX) {
+			if (mrapi_db->sems[s].type == MRAPI_RWL) { *mrapi_status = MRAPI_ERR_RWL_NOTLOCKED; }
+			else if (mrapi_db->sems[s].type == MRAPI_SEM) { *mrapi_status = MRAPI_ERR_SEM_NOTLOCKED; }
+			else if (mrapi_db->sems[s].type == MRAPI_MUTEX) {
 				*mrapi_status = MRAPI_ERR_MUTEX_NOTLOCKED;
 			}
 		}
