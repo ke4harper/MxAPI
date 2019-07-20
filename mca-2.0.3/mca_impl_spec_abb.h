@@ -101,7 +101,6 @@ struct sigaction
   int sa_flags;
   void (*sa_restorer)(void);
 };
-sigset_t* siggetblocked();
 int sigprocmask (int how, const sigset_t *set, sigset_t *oset);
 #endif  /* !(__unix__) */
 
