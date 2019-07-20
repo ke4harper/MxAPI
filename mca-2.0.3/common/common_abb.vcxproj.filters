@@ -38,13 +38,13 @@
     <None Include="Fragments\mca_utils_inc_abb.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
-    <None Include="Fragments\mca_utils_proto.h">
+    <None Include="Fragments\mca_utils_proto_abb.h">
       <Filter>Header Files\Fragments</Filter>
     </None>
     <ClInclude Include="..\Fragments\mca_impl_spec_def_abb.h">
       <Filter>Header Files\Fragments</Filter>
     </ClInclude>
-    <None Include="Fragments\mca_utils_impl.c">
+    <None Include="Fragments\mca_utils_impl_abb.c">
       <Filter>Source Files\Fragments</Filter>
     </None>
   </ItemGroup>
