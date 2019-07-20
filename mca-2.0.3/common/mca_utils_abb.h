@@ -48,7 +48,7 @@ extern "C" {
 #define MCA_MAX_SIGNALS NSIG
 #endif
 
-#include "Fragments/mca_utils_proto.h"
+#include "Fragments/mca_utils_proto_abb.h"
 
 #endif 
 
