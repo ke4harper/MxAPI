@@ -15,14 +15,14 @@
     <ClInclude Include="..\Fragments\mca_impl_spec_inc_abb.h" />
     <ClInclude Include="..\mca_impl_spec_abb.h" />
     <ClInclude Include="Fragments\mca_utils_inc_abb.h" />
-    <None Include="Fragments\mca_utils_proto.h" />
+    <None Include="Fragments\mca_utils_proto_abb.h" />
     <ClInclude Include="mca_utils_abb.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fragments\mca_utils_inc_abb.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Fragments\mca_utils_impl.c" />
+    <None Include="Fragments\mca_utils_impl_abb.c" />
     <ClCompile Include="mca_utils_abb.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
