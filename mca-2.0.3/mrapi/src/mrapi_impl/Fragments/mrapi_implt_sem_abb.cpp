@@ -91,7 +91,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 	shared_lock_limit = 2;
 	// Semaphore with pre-set lock
-	assert(mrapi_impl_create_lock_locked(&sem2, MRAPI_SEM_ID_ANY, 1, shared_lock_limit, SEM, &status));
+	assert(mrapi_impl_create_lock_locked(&sem2, MRAPI_SEM_ID_ANY, 1, shared_lock_limit, MRAPI_SEM, &status));
 	assert(MRAPI_SUCCESS == status);	// status only set if lock_locked returns an error
 	assert(mrapi_impl_decode_hndl(sem2, &s_index2));
 	assert(1 == mrapi_db->sems[s_index2].num_locks);
