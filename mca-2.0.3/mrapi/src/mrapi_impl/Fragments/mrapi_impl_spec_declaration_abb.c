@@ -71,8 +71,6 @@ TLS int rmems_global;
 
 // tell the system whether or not to use the finer-grained locking
 #define use_global_only 0
-  // tell the system whether or not to use spinlocks instead of system semaphores
-#define use_spin_lock 1
 
 /*-------------------------------------------------------------------
   the mrapi_impl private function declarations (not part of the API)

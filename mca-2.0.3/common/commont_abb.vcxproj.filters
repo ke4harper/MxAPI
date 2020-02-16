@@ -24,18 +24,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Fragments\commont_print.cpp">
-      <Filter>Source Files\Fragments</Filter>
-    </ClCompile>
-    <ClCompile Include="Fragments\commont_timestamp.cpp">
-      <Filter>Source Files\Fragments</Filter>
-    </ClCompile>
-    <ClCompile Include="Fragments\commont_cpu.cpp">
-      <Filter>Source Files\Fragments</Filter>
-    </ClCompile>
-    <ClCompile Include="Fragments\commont_inc_abb.cpp">
-      <Filter>Source Files\Fragments</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -50,6 +38,18 @@
       <Filter>Source Files\Fragments</Filter>
     </None>
     <None Include="Fragments\commont_signal.cpp">
+      <Filter>Source Files\Fragments</Filter>
+    </None>
+    <None Include="Fragments\commont_cpu.cpp">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Fragments\commont_timestamp.cpp">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Fragments\commont_inc_abb.cpp">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="Fragments\commont_debug.cpp">
       <Filter>Source Files\Fragments</Filter>
     </None>
   </ItemGroup>

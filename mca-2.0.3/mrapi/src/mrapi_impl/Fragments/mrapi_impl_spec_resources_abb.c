@@ -69,7 +69,7 @@ mrapi_resource_t* mrapi_impl_resources_get(
 	}
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { semid, 0 };
+	mrapi_impl_sem_ref_t ref = { semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_resources_get");
@@ -280,7 +280,7 @@ mrapi_boolean_t mrapi_impl_resource_tree_free(
 	}
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { semid, 0 };
+	mrapi_impl_sem_ref_t ref = { semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_resource_tree_free");
@@ -327,7 +327,7 @@ mrapi_boolean_t mrapi_impl_resource_get_attribute(
 	mrapi_boolean_t rc = MRAPI_TRUE;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { semid, 0 };
+	mrapi_impl_sem_ref_t ref = { semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_resource_get_attribute");
@@ -378,7 +378,7 @@ mrapi_boolean_t mrapi_impl_dynamic_attribute_reset(
 	mrapi_boolean_t rc = MRAPI_TRUE;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { semid, 0 };
+	mrapi_impl_sem_ref_t ref = { semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_dynamic_attribute_reset");
@@ -416,7 +416,7 @@ mrapi_boolean_t mrapi_impl_dynamic_attribute_start(
 	mrapi_boolean_t rc = MRAPI_TRUE;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { semid, 0 };
+	mrapi_impl_sem_ref_t ref = { semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_dynamic_attribute_start");
@@ -457,7 +457,7 @@ mrapi_boolean_t mrapi_impl_dynamic_attribute_stop(
 	mrapi_boolean_t rc = MRAPI_TRUE;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { semid, 0 };
+	mrapi_impl_sem_ref_t ref = { semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_dynamic_attribute_stop");
@@ -511,7 +511,7 @@ mrapi_boolean_t mrapi_impl_resource_register_callback(
 	}
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { semid, 0 };
+	mrapi_impl_sem_ref_t ref = { semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	index = mrapi_db->callback_index;
@@ -583,7 +583,7 @@ void mrapi_impl_cause_event() {
 	mrapi_dprintf(4, "mrapi_impl_cause_event current node %d", node_id);
 
 	/* Lock the database, increment the callback count, and unlock the database */
-	mrapi_impl_sem_ref_t ref = { semid, 0 };
+	mrapi_impl_sem_ref_t ref = { semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 	max_index = mrapi_db->callback_index;
 	/* Find a callback with the same node id */

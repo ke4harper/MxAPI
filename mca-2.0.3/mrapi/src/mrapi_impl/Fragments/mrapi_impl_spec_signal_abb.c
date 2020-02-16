@@ -68,7 +68,7 @@ void mrapi_impl_signal_hndlr(int sig)
 
 	/* restore the old action */
 	if (mrapi_db != NULL && mrapi_pid != (pid_t)-1) {
-		mrapi_impl_sem_ref_t ref = { semid, 0 };
+		mrapi_impl_sem_ref_t ref = { semid, 0, MRAPI_FALSE };
 		mrapi_impl_access_database_pre(ref, MRAPI_FALSE);
 		old_action = mrapi_db->domains[mrapi_dindex].nodes[mrapi_nindex].signals[sig];
 		mrapi_impl_access_database_post(ref);

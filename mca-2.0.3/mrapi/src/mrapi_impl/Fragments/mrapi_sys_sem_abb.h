@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 typedef struct {
 	int set;
 	int member;
+	mrapi_boolean_t spinlock_guard;
 } sem_ref_t;
 
 /* semaphore management */

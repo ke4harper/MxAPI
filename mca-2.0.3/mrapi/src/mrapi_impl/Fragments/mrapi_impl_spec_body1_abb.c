@@ -239,7 +239,9 @@ mrapi_lock_type mrapi_impl_lock_type_get(uint32_t hndl, mrapi_status_t* status)
 		}
 		else {
 			/* lock the database */
-			mrapi_impl_sem_ref_t ref = { sems_semid, s };
+			mrapi_sem_attributes_t attributes;
+			mrapi_impl_sem_get_attribute(hndl, MRAPI_SPINLOCK_GUARD, &attributes, sizeof(attributes.spinlock_guard), status);
+			mrapi_impl_sem_ref_t ref = { sems_semid, s, attributes.spinlock_guard };
 			mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 			/* check to see if it is a deleted sem that had extended error checking set */
@@ -279,9 +281,10 @@ mrapi_boolean_t mrapi_impl_access_database_pre(mrapi_impl_sem_ref_t ref, mrapi_b
 	if (use_global_only) {
 		ref.set = semid;
 		ref.member = 0;
+		ref.spinlock_guard = MRAPI_FALSE;
 	}
 
-	if (!use_spin_lock)
+	if (!ref.spinlock_guard)
 	{
 		if (!sys_sem_lock(ref)) {
 #if (__unix__||__MINGW32__)
@@ -345,11 +348,17 @@ mrapi_boolean_t mrapi_impl_access_database_pre_multiple(mrapi_impl_sem_ref_t* re
 
 	// if we are told to only use the global sem, then ignore the id passed in
 	if (use_global_only) {
-		mrapi_impl_sem_ref_t sref = { semid, 0 };
+		mrapi_impl_sem_ref_t sref = { semid, 0, MRAPI_FALSE };
 		return mrapi_impl_access_database_pre(sref, fail_on_error);
 	}
 
-	if (!use_spin_lock)
+	mrapi_boolean_t spinlock_guard = MRAPI_TRUE;
+	/* all semaphores must have spinlock guard to activate */
+	for (i = 0; i < count; i++) {
+		spinlock_guard &= ref[i].spinlock_guard;
+	}
+
+	if (!spinlock_guard)
 	{
 		if (!sys_sem_lock_multiple(ref, count, TRUE)) {
 #if (__unix__||__MINGW32__)
@@ -426,11 +435,12 @@ mrapi_boolean_t mrapi_impl_access_database_post(mrapi_impl_sem_ref_t ref)
 	if (use_global_only) {
 		ref.set = semid;
 		ref.member = 0;
+		ref.spinlock_guard = MRAPI_FALSE;
 	}
 
 	mrapi_dprintf(4, "mrapi_impl_access_database_post (released the internal mrapi db lock)");
 
-	if (!use_spin_lock)
+	if (!ref.spinlock_guard)
 	{
 		if (!sys_sem_unlock(ref)) {
 #if (__unix__||__MINGW32__)
@@ -476,7 +486,13 @@ mrapi_boolean_t mrapi_impl_access_database_post_multiple(mrapi_impl_sem_ref_t* r
 
 	mrapi_dprintf(4, "mrapi_impl_access_database_post_multiple (released the internal mrapi db lock)");
 
-	if (!use_spin_lock)
+	mrapi_boolean_t spinlock_guard = MRAPI_TRUE;
+	/* all semaphores must have spinlock guard to activate */
+	for (i = 0; i < count; i++) {
+		spinlock_guard &= ref[i].spinlock_guard;
+	}
+
+	if (!spinlock_guard)
 	{
 		if (!sys_sem_unlock_multiple(ref, count)) {
 #if (__unix__||__MINGW32__)
@@ -584,7 +600,7 @@ mrapi_boolean_t mrapi_impl_test(const mrapi_request_t* request,
 	uint16_t r;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { requests_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { requests_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_test r=%08x", *request);
@@ -626,7 +642,7 @@ mrapi_boolean_t mrapi_impl_canceled_request(const mrapi_request_t* request) {
 	uint16_t r;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { requests_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { requests_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_canceled_request");
@@ -659,7 +675,7 @@ unsigned mrapi_impl_setup_request() {
 	mrapi_boolean_t rc;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { requests_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { requests_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	rc = mrapi_impl_whoami(&node, &n, &domain, &d);
@@ -706,7 +722,7 @@ mrapi_boolean_t mrapi_impl_valid_request_hndl(const mrapi_request_t* request)
 	mrapi_boolean_t rc = MRAPI_FALSE;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { requests_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { requests_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_valid_request_handle handle=0x%x", *request);
@@ -797,7 +813,9 @@ mrapi_boolean_t mrapi_impl_valid_lock_hndl(mrapi_sem_hndl_t sem,
 	}
 	else {
 		/* lock the database */
-		mrapi_impl_sem_ref_t ref = { sems_semid, s };
+		mrapi_sem_attributes_t attributes;
+		mrapi_impl_sem_get_attribute(sem, MRAPI_SPINLOCK_GUARD, &attributes, sizeof(attributes.spinlock_guard), status);
+		mrapi_impl_sem_ref_t ref = { sems_semid, s, attributes.spinlock_guard };
 		mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 		/* check to see if it is a deleted sem that had extended error checking set */
@@ -834,7 +852,7 @@ mrapi_boolean_t mrapi_impl_valid_shmem_hndl(mrapi_shmem_hndl_t shmem)
 	mrapi_boolean_t rc = MRAPI_TRUE;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { shmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { shmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 	if (!mrapi_impl_decode_hndl(shmem, &s) || (s >= MRAPI_MAX_SHMEMS)) {
 		rc = MRAPI_FALSE;

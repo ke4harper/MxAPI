@@ -46,7 +46,7 @@ mrapi_boolean_t mrapi_impl_mutex_create(mrapi_mutex_hndl_t* mutex,
 	*mrapi_status = MRAPI_ERR_MUTEX_LIMIT;
 
 	/* lock the database (use global lock for get/create sem|rwl|mutex) */
-	mrapi_impl_sem_ref_t ref = { semid, 0 };
+	mrapi_impl_sem_ref_t ref = { semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	if (mrapi_impl_create_lock_locked(mutex, mutex_id, 0, 1, MRAPI_MUTEX, mrapi_status)) {
@@ -86,6 +86,7 @@ void mrapi_impl_mutex_init_attributes(mrapi_mutex_attributes_t* attributes)
 	attributes->recursive = MRAPI_FALSE;
 	attributes->ext_error_checking = MRAPI_FALSE;
 	attributes->shared_across_domains = MRAPI_TRUE;
+	attributes->spinlock_guard = MRAPI_FALSE;
 }
 
 /***************************************************************************
@@ -132,6 +133,15 @@ void mrapi_impl_mutex_set_attribute(mrapi_mutex_attributes_t* attributes,
 			*status = MRAPI_SUCCESS;
 		}
 		break;
+	case (MRAPI_SPINLOCK_GUARD):
+		if (attr_size != sizeof(attributes->spinlock_guard)) {
+			*status = MRAPI_ERR_ATTR_SIZE;
+		}
+		else {
+			memcpy(&attributes->spinlock_guard, (mrapi_boolean_t*)attribute, attr_size);
+			*status = MRAPI_SUCCESS;
+		}
+		break;
 	default:
 		*status = MRAPI_ERR_ATTR_NUM;
 	};
@@ -156,7 +166,7 @@ void mrapi_impl_mutex_get_attribute(mrapi_mutex_hndl_t mutex,
 	mrapi_assert(mrapi_impl_decode_hndl(mutex, &m));
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { sems_semid, m };
+	mrapi_impl_sem_ref_t ref = { sems_semid, m, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	switch (attribute_num) {
@@ -184,6 +194,15 @@ void mrapi_impl_mutex_get_attribute(mrapi_mutex_hndl_t mutex,
 		}
 		else {
 			memcpy((mrapi_boolean_t*)attribute, &mrapi_db->sems[m].attributes.shared_across_domains, attr_size);
+			*status = MRAPI_SUCCESS;
+		}
+		break;
+	case (MRAPI_SPINLOCK_GUARD):
+		if (attr_size != sizeof(mrapi_db->sems[m].attributes.spinlock_guard)) {
+			*status = MRAPI_ERR_ATTR_SIZE;
+		}
+		else {
+			memcpy((mrapi_boolean_t*)attribute, &mrapi_db->sems[m].attributes.spinlock_guard, attr_size);
 			*status = MRAPI_SUCCESS;
 		}
 		break;
@@ -251,7 +270,9 @@ mrapi_boolean_t mrapi_impl_mutex_lock(mrapi_mutex_hndl_t mutex,
 	mrapi_assert(mrapi_impl_decode_hndl(mutex, &m));
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { sems_semid, m };
+	mrapi_mutex_attributes_t attributes;
+	mrapi_impl_mutex_get_attribute(mutex, MRAPI_SPINLOCK_GUARD, &attributes, sizeof(attributes.spinlock_guard), mrapi_status);
+	mrapi_impl_sem_ref_t ref = { sems_semid, m, attributes.spinlock_guard };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_mutex_lock attempt (0x%x,%d /*lock_key*/,%d /*timeout*/,&status);",
@@ -321,7 +342,9 @@ mrapi_boolean_t mrapi_impl_mutex_unlock(mrapi_mutex_hndl_t mutex,
 	mrapi_assert(mrapi_impl_decode_hndl(mutex, &m));
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { sems_semid, m };
+	mrapi_mutex_attributes_t attributes;
+	mrapi_impl_mutex_get_attribute(mutex, MRAPI_SPINLOCK_GUARD, &attributes, sizeof(attributes.spinlock_guard), mrapi_status);
+	mrapi_impl_sem_ref_t ref = { sems_semid, m, attributes.spinlock_guard };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_mutex_unlock (0x%x,%d /*lock_key*/,&status);", mutex, *lock_key);

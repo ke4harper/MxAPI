@@ -201,7 +201,7 @@ mrapi_boolean_t mrapi_impl_initialize(mrapi_domain_t domain_id,
 	   finalize-1 can occur between initialize-1 and initialize-2 which will cause initilize-2
 	   to fail because the semaphore no longer exists.
 	*/
-	if (!mrapi_impl_create_sys_semaphore(&semid_local, 1/*num_locks*/, key, !use_spin_lock)) {
+	if (!mrapi_impl_create_sys_semaphore(&semid_local, 1/*num_locks*/, key, MRAPI_TRUE)) {
 #if (__unix__||__MINGW32__)
 		fprintf(stderr, "MRAPI ERROR: Unable to get the semaphore key= %x, errno=%s\n",
 			key, strerror(errno));
@@ -255,24 +255,6 @@ mrapi_boolean_t mrapi_impl_initialize(mrapi_domain_t domain_id,
 		mrapi_proc = mrapi_pid;
 		mrapi_tid = pthread_self();
 #endif  /* (__unix__||__MINGW32__) */
-
-		if (use_spin_lock)
-		{
-			/* lock the internal database */
-			int32_t unlocked = 0;
-			int32_t locked = (int32_t)mrapi_tid;
-			int32_t prev;
-			mrapi_status_t status;
-
-			while (1)
-			{
-				if (mrapi_impl_atomic_cas(NULL, &mrapi_db->sems[0].spin, &locked, &unlocked, &prev, sizeof(int32_t), &status))
-				{
-					break;
-				}
-				sys_os_yield();
-			}
-		}
 
 		/* seed random number generator */
 		sys_os_srand((unsigned int)mrapi_tid);

@@ -45,7 +45,7 @@ mrapi_boolean_t mrapi_impl_shmem_attached(mrapi_shmem_hndl_t shmem) {
 	mrapi_domain_t domain_id;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { shmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { shmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	/* make sure we recognize the caller */
@@ -78,7 +78,7 @@ mrapi_boolean_t mrapi_impl_shmem_exists(uint32_t shmemkey)
 	unsigned s;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { shmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { shmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	/* look for a valid shmem w/ the same key */
@@ -116,7 +116,7 @@ mrapi_boolean_t mrapi_impl_shmem_get(mrapi_shmem_hndl_t* shmem_hndl, uint32_t ke
 	mrapi_boolean_t rc = MRAPI_FALSE;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { shmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { shmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	/* now look for the shmemkey */
@@ -202,7 +202,7 @@ void mrapi_impl_shmem_create(mrapi_shmem_hndl_t* shmem,
 	mrapi_boolean_t rc = MRAPI_TRUE;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { shmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { shmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 	mrapi_dprintf(1, "mrapi_impl_shmem_create(&shmem,0x%x,%d,&attrs);", key, size);
 
@@ -309,7 +309,7 @@ void mrapi_impl_shmem_set_attribute(mrapi_shmem_attributes_t* attributes,
 {
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { shmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { shmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE))
 
 		switch (attribute_num) {
@@ -458,7 +458,7 @@ void* mrapi_impl_shmem_attach(mrapi_shmem_hndl_t shmem)
 	mca_domain_t d_id;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { shmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { shmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_assert(mrapi_impl_whoami(&node_id, &n, &d_id, &d));
@@ -487,11 +487,11 @@ void* mrapi_impl_shmem_attach(mrapi_shmem_hndl_t shmem)
 }
 
 /***************************************************************************
-Function: mrapi_delete_sharedMem
+Function: mrapi_impl_shmem_delete
 
 Description:
 
-Parameters: shmem_address - the address of the shared memory segment
+Parameters: shmem - the address of the shared memory segment
 
 Returns:  boolean indicating success or failure
 
@@ -503,7 +503,7 @@ mrapi_boolean_t mrapi_impl_shmem_delete(mrapi_shmem_hndl_t shmem)
 	mrapi_boolean_t rc = MRAPI_TRUE;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { shmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { shmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_shmem_delete(0x%x);", shmem);
@@ -557,7 +557,7 @@ mrapi_boolean_t mrapi_impl_shmem_detach(mrapi_shmem_hndl_t shmem)
 
 	mrapi_boolean_t rc = MRAPI_TRUE;
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { shmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { shmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_assert(mrapi_impl_whoami(&node_id, &n, &domain_id, &d));

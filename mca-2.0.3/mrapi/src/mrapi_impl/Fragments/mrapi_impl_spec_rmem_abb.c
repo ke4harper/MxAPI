@@ -81,7 +81,7 @@ mrapi_boolean_t mrapi_impl_rmem_attached(mrapi_rmem_hndl_t rmem)
 	mrapi_domain_t domain_id;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	/* make sure we recognize the caller */
@@ -115,7 +115,7 @@ mrapi_boolean_t mrapi_impl_rmem_exists(mrapi_rmem_id_t rmem_id)
 	int r;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 	mrapi_dprintf(1, "mrapi_impl_rmem_exists(%d);", rmem_id);
 
@@ -160,7 +160,7 @@ void mrapi_impl_rmem_create(mrapi_rmem_hndl_t* rmem,
 	mca_domain_t domain_id;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 	mrapi_dprintf(1, "mrapi_impl_rmem_create(&rmem,0x%x,%d,&attrs);", rmem_id, size);
 
@@ -300,7 +300,7 @@ void mrapi_impl_rmem_get_attribute(mrapi_rmem_hndl_t rmem,
 
 	mrapi_assert(mrapi_impl_decode_hndl(rmem, &r));
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	switch (attribute_num) {
@@ -345,7 +345,7 @@ mrapi_boolean_t mrapi_impl_rmem_get(mrapi_rmem_hndl_t* rmem_hndl, uint32_t rmem_
 	int r;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 	mrapi_dprintf(1, "mrapi_impl_rmem_get (&rmem,0x%x /*rmem_id*/);", rmem_id);
 
@@ -381,7 +381,7 @@ mrapi_boolean_t mrapi_impl_valid_rmem_hndl(mrapi_rmem_hndl_t rmem)
 	mrapi_boolean_t rc = MRAPI_FALSE;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 	if (mrapi_impl_decode_hndl(rmem, &r) &&
 		(r < MRAPI_MAX_RMEMS) &&
@@ -412,7 +412,7 @@ mrapi_boolean_t mrapi_impl_rmem_attach(mrapi_rmem_hndl_t rmem)
 	mrapi_domain_t d_id;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_assert(mrapi_impl_whoami(&node_id, &n, &d_id, &d));
@@ -450,7 +450,7 @@ mrapi_boolean_t mrapi_impl_rmem_detach(mrapi_rmem_hndl_t rmem)
 	mrapi_node_t node_id;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_assert(mrapi_impl_whoami(&node_id, &n, &domain_id, &d));
@@ -469,11 +469,11 @@ mrapi_boolean_t mrapi_impl_rmem_detach(mrapi_rmem_hndl_t rmem)
 }
 
 /***************************************************************************
-Function: mrapi_delete_sharedMem
+Function: mrapi_impl_rmem_delete
 
 Description:
 
-Parameters: shmem_address - the address of the shared memory segment
+Parameters: rmem - the address of the shared memory segment
 
 Returns:  boolean indicating success or failure
 
@@ -484,7 +484,7 @@ mrapi_boolean_t mrapi_impl_rmem_delete(mrapi_rmem_hndl_t rmem)
 	mrapi_boolean_t rc = MRAPI_TRUE;
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_dprintf(1, "mrapi_impl_rmem_delete(0x%x);", rmem);
@@ -531,7 +531,7 @@ mrapi_boolean_t mrapi_impl_rmem_read_i(mrapi_rmem_hndl_t rmem,
 		rc |= mrapi_impl_rmem_read(rmem, rmem_offset, local_buf, local_offset, bytes_per_access,
 			num_strides, rmem_stride, local_stride, status);
 		/* lock the database */
-		mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+		mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 		mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 		// update the request
 		mrapi_db->requests[r].completed = MRAPI_TRUE;
@@ -586,7 +586,7 @@ mrapi_boolean_t mrapi_impl_rmem_read(mrapi_rmem_hndl_t rmem,
 		rmem, rmem_offset);
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_assert(mrapi_impl_decode_hndl(rmem, &r));
@@ -662,7 +662,7 @@ mrapi_boolean_t mrapi_impl_rmem_write_i(mrapi_rmem_hndl_t rmem,
 		rc |= mrapi_impl_rmem_write(rmem, rmem_offset, local_buf, local_offset, bytes_per_access,
 			num_strides, rmem_stride, local_stride, status);
 		/* lock the database */
-		mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+		mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 		mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 		// update the request
 		mrapi_db->requests[r].completed = MRAPI_TRUE;
@@ -718,7 +718,7 @@ mrapi_boolean_t mrapi_impl_rmem_write(mrapi_rmem_hndl_t rmem,
 
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { rmems_semid, 0 };
+	mrapi_impl_sem_ref_t ref = { rmems_semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	mrapi_assert(mrapi_impl_decode_hndl(rmem, &r));

@@ -51,7 +51,7 @@ mrapi_boolean_t mrapi_impl_create_sys_semaphore(int* id,
 				return MRAPI_TRUE;
 			}
 			else {
-				sem_ref_t ref = { *id, 0 };
+				sem_ref_t ref = { *id, MRAPI_FALSE };
 				while (trycount < max_tries) {
 					if (sys_sem_trylock(ref)) {
 						return MRAPI_TRUE;

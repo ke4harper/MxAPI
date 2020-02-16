@@ -47,7 +47,7 @@ mrapi_boolean_t mrapi_impl_rwl_create(mrapi_rwl_hndl_t* rwl,
 	*mrapi_status = MRAPI_ERR_RWL_LIMIT;
 
 	/* lock the database (use global lock for get/create sem|rwl|mutex) */
-	mrapi_impl_sem_ref_t ref = { semid, 0 };
+	mrapi_impl_sem_ref_t ref = { semid, 0, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	if (mrapi_impl_create_lock_locked(rwl, rwl_id, 0, reader_lock_limit, MRAPI_RWL, mrapi_status)) {
@@ -84,6 +84,7 @@ void mrapi_impl_rwl_init_attributes(mrapi_rwl_attributes_t* attributes)
 {
 	attributes->ext_error_checking = MRAPI_FALSE;
 	attributes->shared_across_domains = MRAPI_TRUE;
+	attributes->spinlock_guard = MRAPI_FALSE;
 }
 
 /***************************************************************************
@@ -120,6 +121,15 @@ void mrapi_impl_rwl_set_attribute(mrapi_rwl_attributes_t* attributes,
 			*status = MRAPI_SUCCESS;
 		}
 		break;
+	case (MRAPI_SPINLOCK_GUARD):
+		if (attr_size != sizeof(attributes->spinlock_guard)) {
+			*status = MRAPI_ERR_ATTR_SIZE;
+		}
+		else {
+			memcpy(&attributes->spinlock_guard, attribute, attr_size);
+			*status = MRAPI_SUCCESS;
+		}
+		break;
 	default:
 		*status = MRAPI_ERR_ATTR_NUM;
 	};
@@ -145,7 +155,7 @@ void mrapi_impl_rwl_get_attribute(mrapi_rwl_hndl_t rwl,
 	mrapi_assert(mrapi_impl_decode_hndl(rwl, &r));
 
 	/* lock the database */
-	mrapi_impl_sem_ref_t ref = { sems_semid, r };
+	mrapi_impl_sem_ref_t ref = { sems_semid, r, MRAPI_FALSE };
 	mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 	switch (attribute_num) {
@@ -164,6 +174,15 @@ void mrapi_impl_rwl_get_attribute(mrapi_rwl_hndl_t rwl,
 		}
 		else {
 			memcpy((mrapi_boolean_t*)attribute, &mrapi_db->sems[r].attributes.shared_across_domains, attr_size);
+			*status = MRAPI_SUCCESS;
+		}
+		break;
+	case (MRAPI_SPINLOCK_GUARD):
+		if (attr_size != sizeof(mrapi_db->sems[r].attributes.spinlock_guard)) {
+			*status = MRAPI_ERR_ATTR_SIZE;
+		}
+		else {
+			memcpy((mrapi_boolean_t*)attribute, &mrapi_db->sems[r].attributes.spinlock_guard, attr_size);
 			*status = MRAPI_SUCCESS;
 		}
 		break;
@@ -237,7 +256,9 @@ mrapi_boolean_t mrapi_impl_rwl_lock(mrapi_rwl_hndl_t rwl,
 		/* a writer (exclusive) lock is being requested...*/
 
 		/* lock the database */
-		mrapi_impl_sem_ref_t ref = { sems_semid, s };
+		mrapi_sem_attributes_t attributes;
+		mrapi_impl_sem_get_attribute(rwl, MRAPI_SPINLOCK_GUARD, &attributes, sizeof(attributes.spinlock_guard), mrapi_status);
+		mrapi_impl_sem_ref_t ref = { sems_semid, s, attributes.spinlock_guard };
 		mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 		n = mrapi_db->sems[s].shared_lock_limit;
@@ -281,7 +302,9 @@ mrapi_boolean_t mrapi_impl_rwl_unlock(mrapi_rwl_hndl_t rwl,
 	else {
 		/* a writer (exclusive) unlock is being requested...*/
 		/* lock the database */
-		mrapi_impl_sem_ref_t ref = { sems_semid, s };
+		mrapi_sem_attributes_t attributes;
+		mrapi_impl_sem_get_attribute(rwl, MRAPI_SPINLOCK_GUARD, &attributes, sizeof(attributes.spinlock_guard), mrapi_status);
+		mrapi_impl_sem_ref_t ref = { sems_semid, s, attributes.spinlock_guard };
 		mrapi_assert(mrapi_impl_access_database_pre(ref, MRAPI_TRUE));
 
 		n = mrapi_db->sems[s].shared_lock_limit;

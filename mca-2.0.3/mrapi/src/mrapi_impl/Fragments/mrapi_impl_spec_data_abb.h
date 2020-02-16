@@ -85,6 +85,7 @@ typedef struct {
   mca_boolean_t ext_error_checking;
   mca_boolean_t shared_across_domains;
   mca_boolean_t recursive; /* only applies to mutexes */
+  mca_boolean_t spinlock_guard;
   void* mem_addr;
   uint32_t mem_size;
   mrapi_resource_t resource;

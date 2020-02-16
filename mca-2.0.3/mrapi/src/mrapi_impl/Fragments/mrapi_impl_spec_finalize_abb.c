@@ -148,7 +148,7 @@ mrapi_boolean_t mrapi_impl_free_resources(mrapi_boolean_t panic)
 	mrapi_boolean_t locked;
 
 	/* try to lock the database */
-	mrapi_impl_sem_ref_t ref = { semid, 0 };
+	mrapi_impl_sem_ref_t ref = { semid, 0, MRAPI_FALSE };
 	locked = mrapi_impl_access_database_pre(ref, MRAPI_FALSE);
 	mrapi_dprintf(1, "mrapi_impl_free_resources (panic=%d): freeing any existing resources in the database mrapi_db=%p semid=%x shmemid=%x\n",
 		panic, mrapi_db, semid, shmemid);
@@ -282,7 +282,7 @@ mrapi_boolean_t mrapi_impl_free_resources(mrapi_boolean_t panic)
 
 		/* if we locked the database and didn't delete it, then we need to unlock it */
 		if (locked) {
-			if (!use_spin_lock || !last_man_standing)
+			if (!last_man_standing)
 			{
 				/* unlock the database */
 				mrapi_impl_sem_ref_t ref = { semid, 0 };

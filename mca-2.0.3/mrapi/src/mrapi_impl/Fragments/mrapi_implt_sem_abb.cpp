@@ -228,11 +228,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	mrapi_impl_sem_init_attributes(&attributes);
 	assert(MRAPI_FALSE == attributes.ext_error_checking);
 	assert(MRAPI_TRUE == attributes.shared_across_domains);
+	assert(MRAPI_FALSE == attributes.spinlock_guard);
 	attribute = MRAPI_TRUE;
 	mrapi_impl_sem_set_attribute(&attributes, MRAPI_ERROR_EXT, &attribute, sizeof(attribute), &status);
 	assert(MRAPI_FALSE == status);	// status only set if sem_set_attribute returns an error
 	attribute = MRAPI_FALSE;
 	mrapi_impl_sem_set_attribute(&attributes, MRAPI_DOMAIN_SHARED, &attribute, sizeof(attribute), &status);
+	attribute = MRAPI_TRUE;
+	mrapi_impl_sem_set_attribute(&attributes, MRAPI_SPINLOCK_GUARD, &attribute, sizeof(attribute), &status);
 
 	// Implementation layer semaphore
 	shared_lock_limit = 1;
@@ -246,6 +249,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 	assert(MRAPI_TRUE == attributes.ext_error_checking);
 	mrapi_impl_sem_get_attribute(sem1, MRAPI_DOMAIN_SHARED, &attributes, sizeof(attributes.shared_across_domains), &status);
 	assert(MRAPI_FALSE == attributes.ext_error_checking);
+	mrapi_impl_sem_get_attribute(sem1, MRAPI_SPINLOCK_GUARD, &attributes, sizeof(attributes.spinlock_guard), &status);
+	assert(MRAPI_TRUE == attributes.ext_error_checking);
 	assert(1 == mrapi_db->sems[s_index1].refs);
 	// Semaphore with pre-set lock
 	shared_lock_limit = 2;
