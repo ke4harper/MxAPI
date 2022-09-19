@@ -26,97 +26,7 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 
-/// Common functions
-
-use std::sync::atomic::{AtomicUsize, Ordering};
-
-// Global debug setting
-static _MCA_DEBUG: AtomicUsize = AtomicUsize::new(0);
-static _MCA_DEBUG_INITIALIZED: AtomicUsize = AtomicUsize::new(0);
-
-/// Get global debug level
-#[macro_export]
-macro_rules! mca_debug {
-    // Accessor
-    () => {{
-	{
-	    use std::env;
-
-	    let initialized = _MCA_DEBUG_INITIALIZED.load(Ordering::Relaxed);
-	    if initialized <= 0 {
-		let key = "MCA_DEBUG";
-		match env::var(key) {
-		    Ok(val) => _MCA_DEBUG.store(val.parse::<usize>().expect("$MCA_DEBUG is not a number"), Ordering::Relaxed),
-		    Err(_) => _MCA_DEBUG.store(0, Ordering::Relaxed),
-		}
-		_MCA_DEBUG_INITIALIZED.store(1, Ordering::Relaxed);
-	    }
-
-	    let level = _MCA_DEBUG.load(Ordering::Relaxed);
-	    
-	    level
-	}
-    }};
-    // Mutator
-    ($level: expr) => {{
-	{
-	    _MCA_DEBUG.store($level, Ordering::Relaxed);
-	    _MCA_DEBUG_INITIALIZED.store(1, Ordering::Relaxed);
-	}
-    }};
-}
-
-/// mca_dformat! - diagnostic formatted message with variable args
-/// Formatting string is template for args
-#[macro_export]
-macro_rules! mca_dformat {
-    // No arguments
-    ($fmt: expr) => {{
-	{
-	    println!($fmt);
-	}
-    }};
-    // Variable number of arguments
-    ($fmt: expr, $($args: tt), *) => {{
-	{
-	    let msg = format!($fmt, $($args), *);
-	    println!("{}", msg);
-	}
-    }};
-}
-
-/// mca_dprintf! - diagnostic print filtered by level
-/// Debug level threshold is set with environment variable MCA_DEBUG
-/// Formatting string is template for args
-#[macro_export]
-macro_rules! mca_dprintf {
-    // No format and variable arguments
-    ($level: expr) => {{
-	{
-	    use std::thread;
-	    use std::process;
-	    
-	    if $level as usize <= mca_debug!() {
-		print!("/* MCA PID:{} {:?} */   //", process::id(), thread::current().id());
-	    }
-	}
-    }};
-    // Additional message
-    ($level: expr, $msg: expr) => {{
-	mca_dprintf! { $level }
-	mca_dformat! { $msg }
-    }};
-    // Variable formatted arguments
-    ($level: expr, $fmt: expr, $($args: tt), *) => {{
-	mca_dprintf! { $level }
-	mca_dformat! { $fmt, $($args), * }
-    }};
-}
-
-/// mca_set_debug_level - programmically control diagnostic reporting verbosity
-fn mca_set_debug_level(level: usize) {
-    mca_debug!(level);
-}
+pub mod logging;
 
 /// crc32_compute_buf - computes the CRC-32 value of a memory buffer
 //
@@ -132,6 +42,7 @@ fn mca_set_debug_level(level: usize) {
 //
 //  Returns: crc32 - computed CRC-32 value
 //
+#[allow(dead_code)]
 fn crc32_compute_buf(_in_crc32: u32, _buf: &u8, _buf_len: usize) -> u32 {
     println!("/// ERROR: replace crc32_compute_buf with native crc [3.0.0]");
 
@@ -139,10 +50,12 @@ fn crc32_compute_buf(_in_crc32: u32, _buf: &u8, _buf_len: usize) -> u32 {
 }
 
 // https://www.jameselford.com/blog/working-with-signals-in-rust-pt1-whats-a-signal/
+#[allow(dead_code)]
 fn mca_block_signals() {
     println!("/// ERROR: replace mca_block_signals functionaliity with native signal_hook");
 }
 
+#[allow(dead_code)]
 fn mca_unblock_signals() {
     println!("/// ERROR: replace mca_unblock_signals functionality with native signal_hook");
 }
@@ -154,6 +67,7 @@ use libc::{clockid_t, timespec, c_long, time_t};
 const _MCA_MAGIC: u32 = 0x1234;
 
 // real time measurement
+#[allow(dead_code)]
 struct McaTimestamp {
   magic: u32,
   split_samples: u64, 
@@ -163,6 +77,7 @@ struct McaTimestamp {
   split_start: timespec,
 }
 
+#[allow(dead_code)]
 impl McaTimestamp {
     fn initialize(&mut self) {
 	self.magic = _MCA_MAGIC;
@@ -200,6 +115,7 @@ impl Default for McaTimestamp {
 }
 
 // Get clock ID and starting timestamp for this process
+#[allow(dead_code)]
 fn mca_begin_ts(ts: &mut McaTimestamp) {
     ts.initialize();
     
@@ -220,6 +136,7 @@ fn mca_begin_ts(ts: &mut McaTimestamp) {
 }
 
 // Get starting split timestamp for this process
+#[allow(dead_code)]
 fn mca_begin_split_ts(ts: &mut McaTimestamp) {
     if _MCA_MAGIC != ts.magic {
 	mca_begin_ts(ts);
@@ -236,6 +153,7 @@ fn mca_begin_split_ts(ts: &mut McaTimestamp) {
 }
 
 // Get elapsed split time in microseconds
+#[allow(dead_code)]
 fn mca_end_split_ts(ts: &mut McaTimestamp) -> f64 {
     let mut elapsed: f64 = 0.0;
     if _MCA_MAGIC == ts.magic {
@@ -272,6 +190,7 @@ fn mca_end_split_ts(ts: &mut McaTimestamp) -> f64 {
 }
 
 // Get elapsed total time in microseconds
+#[allow(dead_code)]
 fn mca_end_ts(ts: &mut McaTimestamp) -> f64 {
     let mut elapsed: f64 = 0.0;
     if _MCA_MAGIC == ts.magic {
@@ -300,33 +219,12 @@ fn mca_end_ts(ts: &mut McaTimestamp) -> f64 {
     elapsed
 }
 
+#[allow(unused_imports)]
 use more_asserts as ma;
 
 #[cfg(test)]
 mod tests { 
     use super::*;
-
-    #[test]
-    fn print_banner() {
-	mca_dprintf!(0);
-    }
-
-    #[test]
-    fn print_msg() {
-	mca_dprintf!(0, "This is a message");
-    }
-
-    #[test]
-    fn print_args() {
-	mca_dprintf!(0, "{} {}", "This is an arg", 2);
-    }
-
-    #[test]
-    fn set_debug_level() {
-	mca_set_debug_level(1);
-	assert_eq!(1, mca_debug!());
-	mca_set_debug_level(0);
-    }
 
     #[test]
     fn mca_timestamp() {
