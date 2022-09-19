@@ -26,10 +26,12 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 
-pub mod logging;
-pub mod profiling;
+use crc::{Crc, CRC_32_ISCSI};
 
-/// crc32_compute_buf - computes the CRC-32 value of a memory buffer
+const CASTAGNOLI: Crc<u32> = Crc::<u32>::new(&CRC_32_ISCSI);
+
+/// crc32_compute_buf - computes the CRC-32 value of a buffer,
+// Digest initialized with the string representation of an integer key
 //
 //       Computes or accumulates the CRC-32 value for a memory buffer.
 //       The in_crc32 gives a previously accumulated CRC-32 value to allow
@@ -39,24 +41,36 @@ pub mod profiling;
 //  Parameters:
 //       in_crc32 - accumulated CRC-32 value, must be 0 on first call
 //       buf     - buffer to compute CRC-32 value for
-//       buf_len  - number of bytes in buffer
 //
 //  Returns: crc32 - computed CRC-32 value
 //
 #[allow(dead_code)]
-fn crc32_compute_buf(_in_crc32: u32, _buf: &u8, _buf_len: usize) -> u32 {
-    println!("/// ERROR: replace crc32_compute_buf with native crc [3.0.0]");
+fn mca_crc32_compute_buf(in_crc32: u32, buf: &str) -> u32 {
+    let mut digest = CASTAGNOLI.digest();
+    // Convert key to string
+    let crc32_str = format!("{}", in_crc32);
+    let crc32_bytes = crc32_str.as_bytes();
+    digest.update(crc32_bytes);
+    // Convert string to bytes
+    let buf_bytes = buf.as_bytes();
+    digest.update(buf_bytes);
 
-    0
+    digest.finalize()
 }
 
-// https://www.jameselford.com/blog/working-with-signals-in-rust-pt1-whats-a-signal/
-#[allow(dead_code)]
-fn mca_block_signals() {
-    println!("/// ERROR: replace mca_block_signals functionaliity with native signal_hook");
-}
+#[allow(unused_imports)]
+use more_asserts as ma;
 
-#[allow(dead_code)]
-fn mca_unblock_signals() {
-    println!("/// ERROR: replace mca_unblock_signals functionality with native signal_hook");
+#[cfg(test)]
+mod tests { 
+
+    use super::*;
+
+    #[test]
+    fn generate_key() {
+	let mut key = 0;
+	let buf = "0123456";
+	key = mca_crc32_compute_buf(key, buf);
+	ma::assert_lt!(0, key);
+    }
 }
