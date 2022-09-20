@@ -26,6 +26,12 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 
+use std::sync::atomic::{AtomicUsize};
+
+// Global debug setting
+static MCA_DEBUG: AtomicUsize = AtomicUsize::new(0);
+static MCA_DEBUG_INITIALIZED: AtomicUsize = AtomicUsize::new(0);
+
 pub mod logging;
 pub mod crc;
 pub mod profiling;
