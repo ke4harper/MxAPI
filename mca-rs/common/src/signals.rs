@@ -26,7 +26,62 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 
-pub mod logging;
-pub mod crc;
-pub mod profiling;
-pub mod signals;
+use std::mem::{zeroed};
+use libc::{
+    sigset_t, sigemptyset, sigaddset, sigprocmask
+	,SIGALRM, SIGINT, SIGHUP, SIGILL
+	,SIGSEGV, SIGTERM, SIGFPE, SIGABRT
+	,SIG_BLOCK, SIG_UNBLOCK
+};
+
+// https://www.jameselford.com/blog/working-with-signals-in-rust-pt1-whats-a-signal/
+#[allow(dead_code)]
+fn mca_block_signals() {
+    unsafe {
+	let mut block_alarm: sigset_t = zeroed();
+	sigemptyset(&mut block_alarm);
+	sigaddset(&mut block_alarm, SIGALRM);
+	sigaddset(&mut block_alarm, SIGINT);
+	sigaddset(&mut block_alarm, SIGHUP);
+	sigaddset(&mut block_alarm, SIGILL);
+	sigaddset(&mut block_alarm, SIGSEGV);
+	sigaddset(&mut block_alarm, SIGTERM);
+	sigaddset(&mut block_alarm, SIGFPE);
+	sigaddset(&mut block_alarm, SIGABRT);
+	let mut prev_alarm: sigset_t = zeroed();
+	sigprocmask(SIG_BLOCK, &mut block_alarm, &mut prev_alarm);
+    }
+}
+
+#[allow(dead_code)]
+fn mca_unblock_signals() {
+    unsafe {
+	let mut block_alarm: sigset_t = zeroed();
+	sigemptyset(&mut block_alarm);
+	sigaddset(&mut block_alarm, SIGALRM);
+	sigaddset(&mut block_alarm, SIGINT);
+	sigaddset(&mut block_alarm, SIGHUP);
+	sigaddset(&mut block_alarm, SIGILL);
+	sigaddset(&mut block_alarm, SIGSEGV);
+	sigaddset(&mut block_alarm, SIGTERM);
+	sigaddset(&mut block_alarm, SIGFPE);
+	sigaddset(&mut block_alarm, SIGABRT);
+	let mut prev_alarm: sigset_t = zeroed();
+	sigprocmask(SIG_UNBLOCK, &mut block_alarm, &mut prev_alarm);
+    }
+}
+
+#[allow(unused_imports)]
+use more_asserts as ma;
+
+#[cfg(test)]
+mod tests { 
+
+    use super::*;
+
+    #[test]
+    fn signals() {
+	mca_block_signals();
+	mca_unblock_signals();
+    }
+}
