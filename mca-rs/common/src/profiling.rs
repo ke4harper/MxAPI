@@ -30,6 +30,8 @@ use nix::unistd::{Pid};
 use nix::time::{ClockId};
 use libc::{clockid_t, timespec, c_long, time_t};
 
+use super::*;
+
 const MCA_MAGIC: u32 = 0x1234;
 
 // time measurement
@@ -77,7 +79,7 @@ fn mca_begin_ts(ts: &mut McaTimestamp) {
     let mut clock = ClockId::from_raw(ts.clock_id);
     match ClockId::pid_cpu_clock_id(Pid::this()) {
 	Ok(val) => clock = val,
-	Err(e) => println!("McaTimestamp pid_cpu_clock_id: {}", e),
+	Err(e) => mca_dprintf!(0, "McaTimestamp pid_cpu_clock_id: {}", e),
     };
     ts.clock_id = clock.as_raw();
 
@@ -86,7 +88,7 @@ fn mca_begin_ts(ts: &mut McaTimestamp) {
 	    ts.start.tv_sec = val.tv_sec();
 	    ts.start.tv_nsec = val.tv_nsec();
 	},
-	Err(e) => println!("McaTimestamp start: {}", e),
+	Err(e) => mca_dprintf!(0, "McaTimestamp start: {}", e),
     };
 }
 
@@ -103,7 +105,7 @@ fn mca_begin_split_ts(ts: &mut McaTimestamp) {
 	    ts.split_start.tv_sec = val.tv_sec();
 	    ts.split_start.tv_nsec = val.tv_nsec();
 	},
-	Err(e) => println!("McaTimestamp split_start: {}", e),
+	Err(e) => mca_dprintf!(0, "McaTimestamp split_start: {}", e),
     };
 }
 
@@ -136,7 +138,7 @@ fn mca_end_split_ts(ts: &mut McaTimestamp) -> f64 {
 			ts.split_sum += elapsed;
 		    }
 		},
-		Err(e) => println!("McaTimestamp split_end: {}", e),
+		Err(e) => mca_dprintf!(0, "McaTimestamp split_end: {}", e),
 	    }
 	}
     }
@@ -166,7 +168,7 @@ fn mca_end_ts(ts: &mut McaTimestamp) -> f64 {
 		    };
 		    elapsed /= 1.0E3; // microseconds
 		},
-		Err(e) => println!("McaTimestamp end: {}", e),
+		Err(e) => mca_dprintf!(0, "McaTimestamp end: {}", e),
 	    }
 	}
     }
