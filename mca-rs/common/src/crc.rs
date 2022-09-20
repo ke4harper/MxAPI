@@ -47,10 +47,9 @@ const CASTAGNOLI: Crc<u32> = Crc::<u32>::new(&CRC_32_ISCSI);
 #[allow(dead_code)]
 fn mca_crc32_compute_buf(in_crc32: u32, buf: &str) -> u32 {
     let mut digest = CASTAGNOLI.digest();
-    // Convert key to string
-    let crc32_str = format!("{}", in_crc32);
-    let crc32_bytes = crc32_str.as_bytes();
-    digest.update(crc32_bytes);
+    // Convert key to bytes
+    let crc32_bytes = (in_crc32 ^ 0xFFFFFFFF).to_be_bytes();
+    digest.update(&crc32_bytes);
     // Convert string to bytes
     let buf_bytes = buf.as_bytes();
     digest.update(buf_bytes);
