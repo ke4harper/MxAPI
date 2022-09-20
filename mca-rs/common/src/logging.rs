@@ -28,11 +28,7 @@
 
 /// Logging functions
 
-use std::sync::atomic::{AtomicUsize};
-
-// Global debug setting
-pub static MCA_DEBUG: AtomicUsize = AtomicUsize::new(0);
-pub static MCA_DEBUG_INITIALIZED: AtomicUsize = AtomicUsize::new(0);
+use super::*;
 
 /// Get global debug level
 #[macro_export]
