@@ -61,10 +61,8 @@ impl Default for SysRandom {
     }
 }
 
-const _RAND_MAX: i64 = 32767;
 static mut _RANDOM: LateStatic::<SysRandom> = LateStatic::new();
 static _RANDOM_MUTEX: Mutex<u64> = Mutex::new(0);
-static mut _RANDOM_INITIALIZED: bool = false;
 
 #[allow(unused_variables)]
 impl SysRandom {
@@ -73,9 +71,8 @@ impl SysRandom {
 	unsafe {
 	    let mut random = SysRandom::default();
 	    random._rng = ChaCha8Rng::seed_from_u64(seed as u64);
-	    if !_RANDOM_INITIALIZED {
+	    if !LateStatic::has_value(&_RANDOM) {
 		LateStatic::assign(&_RANDOM, random);
-		_RANDOM_INITIALIZED = true;
 	    }
 	    else {
 		_RANDOM._rng = random._rng;
@@ -88,10 +85,12 @@ impl SysRandom {
 	SysRandom::_srand(seed);
     }
     fn rand() -> i64 {
+	const _RAND_MAX: i64 = 32767;
+	
 	let mut _result: i64 = 0;
 	let mutex_changer = _RANDOM_MUTEX.lock().unwrap();
 	unsafe {
-	    if !_RANDOM_INITIALIZED {
+	    if !LateStatic::has_value(&_RANDOM) {
 		SysRandom::_srand(1);
 	    }
 
