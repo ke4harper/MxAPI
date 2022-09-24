@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 ///
 /// Copyright(c) 2022, Karl Eric Harper
 /// All rights reserved.
@@ -26,5 +27,30 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 
-pub mod os;
+extern crate common;
+use common::*;
 
+// MRAPI data types
+pub type MrapiDomain = McaDomain;
+pub type MrapiNode = McaNode;
+pub type MrapiStatus = McaStatus; 
+pub type MrapiTimeout = McaTimeout; 
+pub type MrapiInt = McaInt;
+pub type MrapiUint = McaUint;
+pub type MrapiUint8 = McaUint8;
+pub type MrapiUint16 = McaUint16; 
+pub type MrapiUint32 = McaUint32; 
+pub type MrapiUint64 = McaUint64; 
+pub type MrapiBoolean = McaBoolean;
+
+// Constants
+pub const MRAPI_TRUE: MrapiBoolean = MCA_TRUE;
+pub const MRAPI_FALSE: MrapiBoolean = MCA_FALSE;
+pub const MRAPI_NULL: MrapiUint = MCA_NULL;
+
+use mca_dprintf as mrapi_dprintf;
+
+pub mod sysvr4 {
+    pub mod os;
+    pub mod key;
+}
