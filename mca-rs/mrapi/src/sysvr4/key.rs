@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 ///
 /// Copyright(c) 2022, Karl Eric Harper
 /// All rights reserved.
@@ -27,41 +26,60 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 
-use std::sync::atomic::{AtomicUsize};
+// Keys for operating system files
 
-// Global debug setting
-pub static MCA_DEBUG: AtomicUsize = AtomicUsize::new(0);
-pub static MCA_DEBUG_INITIALIZED: AtomicUsize = AtomicUsize::new(0);
+use crate::*;
+use std::ffi::{CString};
+use libc::{ftok};
 
-// MCA type definitions
-pub type McaInt = isize;
-pub type McaInt8 = i8;
-pub type McaInt16 = i16;
-pub type McaInt32 = i32;
-pub type McaInt64 = i64;
+#[allow(unused_imports)]
+use more_asserts as ma;
 
-pub type McaUint = usize;
-pub type McaUint8 = u8;
-pub type McaUint16 = u16;
-pub type McaUint32 = u32;
-pub type McaUint64 = u64;
+fn sys_file_key(pathname: &str, proj_id: i32) -> i32 {
+    static DEF: &str = "/dev/null";
+    let file = if pathname.len() <= 0 {
+	DEF
+    }
+    else {
+	pathname
+    };
 
-pub type McaBoolean = usize;
-pub type McaNode = usize;
-pub type McaStatus = usize;
-pub type McaTimeout = usize;
-pub type McaDomain = usize;
+    let cchar_file = CString::new(file).expect("CString::new failed");
+    let newkey = unsafe { ftok(cchar_file.as_ptr(), proj_id) };
+    if newkey < 0 {
+	mrapi_dprintf!(1, "sys_file_key: pathname: {} proj_id: {} fail", file, proj_id);
+    }
+    else {
+	mrapi_dprintf!(1, "sys_file_key: pathname: '{}' proj_id: {} key: {}", file, proj_id, newkey);
+    }
 
-// Constants
-pub const MCA_TRUE: McaBoolean = 1;
-pub const MCA_FALSE: McaBoolean = 0;
-pub const MCA_NULL: McaUint  = 0; // MCA Zero value
-pub const MCA_INFINITE: McaUint = !0; // Wait forever, no timeout
-pub const MCA_RETURN_VALUE_INVALID: McaUint = !0;
-pub const MCA_NODE_INVALID: McaUint = !0; 
-pub const MCA_DOMAIN_INVALID: McaUint = !0;
+    newkey
+}
 
-pub mod logging;
-pub mod crc;
-pub mod profiling;
-pub mod signals;
+#[cfg(test)]
+mod tests { 
+
+    use super::*;
+
+    #[test]
+    fn file_key() {
+	// Empty file
+	ma::assert_lt!(0, sys_file_key("", 'c' as i32));
+	// Negative proj_id
+	ma::assert_gt!(0, sys_file_key("/dev/null", -1));
+	// Invalid file
+	ma::assert_gt!(0, sys_file_key("/dev/null0", 'c' as i32));
+	// Valid file
+	let key1 = sys_file_key("/dev/null", 'c' as i32);
+	ma::assert_lt!(0, key1);
+	// Repeatable key
+	let mut key2 = sys_file_key("/dev/null", 'c' as i32);
+	assert_eq!(key1, key2);
+	// File variance
+	key2 = sys_file_key("/etc/passwd", 'c' as i32);
+	assert_ne!(key1, key2);
+	// proj_id variance
+	key2 = sys_file_key("/dev/null", 'd' as i32);
+	assert_ne!(key1, key2);
+    }
+}
