@@ -31,12 +31,7 @@
 use crate::*;
 use crate::sysvr4::key::{sys_file_key};
 
-use libc::{semget, strerror, semop, semctl};
-use libc::{IPC_CREAT, IPC_EXCL, IPC_RMID};
-use libc::{sembuf};
-use libc::{c_char};
-use errno::{errno};
-use std::ffi::{CStr};
+use heliograph::{Key};
 
 #[allow(unused_variables)]
 pub fn sys_sem_create(key: i32, num_locks: i32, semid: &mut i32) -> MrapiBoolean {
@@ -108,7 +103,7 @@ mod tests {
 
     #[test]
     fn os_sem() {
-	let mut key = 0;
+	let mut Key = new Key::private();
 	assert_eq!(MRAPI_TRUE, sys_file_key("", 'd' as i32, &mut key));
 	// Empty set
 	let mut id = 0;
