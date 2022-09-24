@@ -21,6 +21,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6c58ec36aac5066d5ca17df51b3e70279f5670a72102f5752cb7e7c856adfc70"
 
 [[package]]
+name = "cc"
+version = "1.0.73"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2fff2a6927b3bb87f9595d67196a70493f627687a71d87a0d692242c33f58c11"
+
+[[package]]
 name = "cfg-if"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -33,7 +39,7 @@ dependencies = [
  "crc",
  "libc",
  "more-asserts",
- "nix",
+ "nix 0.25.0",
  "num_cpus",
  "signal-hook",
  "systemstat",
@@ -63,6 +69,17 @@ dependencies = [
  "cfg-if",
  "libc",
  "wasi",
+]
+
+[[package]]
+name = "heliograph"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1b0cf4c3e9548bebf8029ae53b7a3b45cc5fd692126823ed59876139a2007d2f"
+dependencies = [
+ "bitflags",
+ "libc",
+ "nix 0.19.1",
 ]
 
 [[package]]
@@ -124,11 +141,23 @@ name = "mrapi"
 version = "0.1.0"
 dependencies = [
  "common",
+ "heliograph",
  "late-static",
- "libc",
  "more-asserts",
  "rand",
  "rand_chacha",
+]
+
+[[package]]
+name = "nix"
+version = "0.19.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b2ccba0cfe4fdf15982d1674c69b1fd80bad427d293849982668dfe454bd61f2"
+dependencies = [
+ "bitflags",
+ "cc",
+ "cfg-if",
+ "libc",
 ]
 
 [[package]]

@@ -53,5 +53,5 @@ use mca_dprintf as mrapi_dprintf;
 pub mod sysvr4 {
     pub mod os;
     pub mod key;
-    pub mod sem;
+    //pub mod sem;
 }
