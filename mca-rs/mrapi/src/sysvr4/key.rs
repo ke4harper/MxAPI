@@ -47,7 +47,7 @@ fn sys_file_key(pathname: &str, proj_id: i32) -> i32 {
     let cchar_file = CString::new(file).expect("CString::new failed");
     let newkey = unsafe { ftok(cchar_file.as_ptr(), proj_id) };
     if newkey < 0 {
-	mrapi_dprintf!(1, "sys_file_key: pathname: {} proj_id: {} fail", file, proj_id);
+	mrapi_dprintf!(0, "sys_file_key: pathname: {} proj_id: {} fail", file, proj_id);
     }
     else {
 	mrapi_dprintf!(1, "sys_file_key: pathname: '{}' proj_id: {} key: {}", file, proj_id, newkey);

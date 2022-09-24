@@ -103,12 +103,16 @@ macro_rules! mca_dprintf {
     // Additional message
     ($level: expr, $msg: expr) => {{
 	mca_dprintf! { $level }
-	mca_dformat! { $msg }
+	if $level as usize <= mca_debug!() {
+	    mca_dformat! { $msg }
+	}
     }};
     // Variable formatted arguments
     ($level: expr, $fmt: expr, $($args: tt), *) => {{
 	mca_dprintf! { $level }
-	mca_dformat! { $fmt, $($args), * }
+	if $level as usize <= mca_debug!() {
+	    mca_dformat! { $fmt, $($args), * }
+	}
     }};
 }
 
@@ -136,6 +140,11 @@ mod tests {
 	mca_dprintf!(0, "{} {}", "This is an arg", 2);
     }
 
+
+    #[test]
+    fn print_multiple_args() {
+	mca_dprintf!(0, "{} {} {}", "These are args", 2, 3);
+    }
     #[test]
     fn set_debug_level() {
 	mca_set_debug_level(1);
