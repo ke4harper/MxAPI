@@ -28,18 +28,67 @@
 
 // Semaphores
 
-use libc::{seminfo};
 use crate::*;
 use crate::sysvr4::key::{sys_file_key};
 
+use libc::{semget, strerror, semop, semctl};
+use libc::{IPC_CREAT, IPC_EXCL, IPC_RMID};
+use libc::{sembuf};
+use libc::{c_char};
+use errno::{errno};
+use std::ffi::{CStr};
+
 #[allow(unused_variables)]
 pub fn sys_sem_create(key: i32, num_locks: i32, semid: &mut i32) -> MrapiBoolean {
-    const SEM_INFO: seminfo = seminfo::default();
-    const MAX_SEMAPHORES_PER_ARRAY: i32 = SEM_INFO.semmsl;
-    
-    let mut rc = MRAPI_FALSE;
+    const MAX_SEMAPHORES_PER_ARRAY: i32 = 65536;
+    if num_locks > MAX_SEMAPHORES_PER_ARRAY {
+	mrapi_dprintf!(0, "sys_sem_create failed: num_locks requested is greater then the OS supports (SEMMSL)");
+	return MRAPI_FALSE;
+    }
 
-    rc
+    // 1. create the semaphore
+    
+    mrapi_dprintf!(1, "sys_sem_create (create)");
+    
+    unsafe {
+	*semid = semget(key, num_locks, IPC_CREAT | IPC_EXCL | 0666);
+	if *semid == -1 {
+	    let str_slice: &str = CStr::from_ptr(strerror(errno().0)).to_str().unwrap();
+	    mrapi_dprintf!(1, "sys_sem_create failed: errno={}", str_slice);
+	    return MRAPI_FALSE;
+	}
+    }
+    
+    // 2. initialize all members (Note: create and initialize are NOT atomic!
+    //   This is why semget must poll to make sure the sem is done with
+    //   initialization
+    
+    mrapi_dprintf!(1, "sys_sem_create (initialize)");
+
+    let sb: sembuf = sembuf::new();
+    sb.sem_op = 1;
+    sb.sem_flg = 0;
+
+    for i in 0..num_locks {
+	sb.sem_num = i;
+	// do a semop() to "free" the semaphores.
+	// this sets the sem_otime field, as needed below.
+	unsafe {
+	    let rc = semop(*semid, &sb, 1);
+	    if rc == -1 {
+		let e = errno;
+		// clean up
+		semctl(*semid, 0, IPC_RMID);
+		errno = e;
+		// error, check errno
+		return MRAPI_FALSE;
+	    }
+	}
+
+	sb.sem_num += 1;
+    }
+
+    MRAPI_TRUE
 }
 
 #[allow(unused_variables)]

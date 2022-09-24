@@ -26,18 +26,18 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 
-// Keys for operating system files
+// Keys from operating system files
 
 use crate::*;
-use std::ffi::{CString};
-use libc::{ftok};
+use std::num::{NonZeroU8};
+use std::path::{Path};
+use heliograph::{Key};
 
 #[allow(unused_imports)]
 use more_asserts as ma;
 
 #[allow(unused_assignments)]
-pub fn sys_file_key(pathname: &str, proj_id: i32, key: &mut i32) -> MrapiBoolean {
-    let mut rc = MRAPI_FALSE;
+pub fn sys_file_key(pathname: &str, proj_id: i32, key: &mut Key) -> MrapiBoolean {
     static DEF: &str = "/dev/null";
     let file = if pathname.len() <= 0 {
 	DEF
@@ -45,22 +45,25 @@ pub fn sys_file_key(pathname: &str, proj_id: i32, key: &mut i32) -> MrapiBoolean
     else {
 	pathname
     };
+    let path = Path::new(file);
 
-    let cchar_file = CString::new(file).expect("CString::new failed");
-    unsafe {
-	let ftok_key = ftok(cchar_file.as_ptr(), proj_id);
-	*key = ftok_key;
-    };
-
-    if key < &mut 0 {
-	mrapi_dprintf!(0, "sys_file_key: pathname: {} proj_id: {} fail", file, proj_id);
+    if proj_id <= 0 {
+	mrapi_dprintf!(0, "sys_file_key: pathname: {} proj_id: {} invalid proj_id", file, proj_id);
+	return MRAPI_FALSE;
     }
-    else {
-	mrapi_dprintf!(1, "sys_file_key: pathname: '{}' proj_id: {} key: {}", file, proj_id, key);
-	rc = MRAPI_TRUE;
+    
+    let id = NonZeroU8::new(proj_id as u8).unwrap();
+    match Key::new(path, id) {
+	Ok(val) => *key = val,
+	Err(e) => {
+	    mrapi_dprintf!(0, "sys_file_key: pathname: {} proj_id: {} {}", file, proj_id, e);
+	    return MRAPI_FALSE;
+	},
     }
+    
+    mrapi_dprintf!(1, "sys_file_key: pathname: '{}' proj_id: {} key: {:?}", file, proj_id, key);
 
-    rc
+    MRAPI_TRUE
 }
 
 #[cfg(test)]
@@ -70,29 +73,21 @@ mod tests {
 
     #[test]
     fn file_key() {
-	let mut key1 = -1;
+	let mut key1: Key = Key::private();
 	// Empty file
 	assert_eq!(MRAPI_TRUE, sys_file_key("", 'c' as i32, &mut key1));
-	ma::assert_lt!(0, key1);
 	// Negative proj_id
 	assert_eq!(MRAPI_FALSE, sys_file_key("/dev/null", -1, &mut key1));
 	// Invalid file
 	assert_eq!(MRAPI_FALSE, sys_file_key("/dev/null0", 'c' as i32, &mut key1));
 	// Valid file
 	assert_eq!(MRAPI_TRUE, sys_file_key("/dev/null", 'c' as i32, &mut key1));
-	ma::assert_lt!(0, key1);
 	// Repeatable key
-	let mut key2 = -1;
+	let mut key2: Key = Key::private();
 	assert_eq!(MRAPI_TRUE, sys_file_key("/dev/null", 'c' as i32, &mut key2));
-	ma::assert_lt!(0, key2);
-	assert_eq!(key1, key2);
 	// File variance
 	assert_eq!(MRAPI_TRUE, sys_file_key("/etc/passwd", 'c' as i32, &mut key2));
-	ma::assert_lt!(0, key2);
-	assert_ne!(key1, key2);
 	// proj_id variance
 	assert_eq!(MRAPI_TRUE, sys_file_key("/dev/null", 'd' as i32, &mut key2));
-	ma::assert_lt!(0, key2);
-	assert_ne!(key1, key2);
     }
 }
