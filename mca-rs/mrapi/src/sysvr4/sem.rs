@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 ///
 /// Copyright(c) 2022, Karl Eric Harper
 /// All rights reserved.
@@ -27,31 +26,50 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 
-extern crate common;
-use common::*;
+// Semaphores
 
-// MRAPI data types
-pub type MrapiDomain = McaDomain;
-pub type MrapiNode = McaNode;
-pub type MrapiStatus = McaStatus; 
-pub type MrapiTimeout = McaTimeout; 
-pub type MrapiInt = McaInt;
-pub type MrapiUint = McaUint;
-pub type MrapiUint8 = McaUint8;
-pub type MrapiUint16 = McaUint16; 
-pub type MrapiUint32 = McaUint32; 
-pub type MrapiUint64 = McaUint64; 
-pub type MrapiBoolean = McaBoolean;
+use libc::{seminfo};
+use crate::*;
+use crate::sysvr4::key::{sys_file_key};
 
-// Constants
-pub const MRAPI_TRUE: MrapiBoolean = MCA_TRUE;
-pub const MRAPI_FALSE: MrapiBoolean = MCA_FALSE;
-pub const MRAPI_NULL: MrapiUint = MCA_NULL;
+#[allow(unused_variables)]
+pub fn sys_sem_create(key: i32, num_locks: i32, semid: &mut i32) -> MrapiBoolean {
+    const SEM_INFO: seminfo = seminfo::default();
+    const MAX_SEMAPHORES_PER_ARRAY: i32 = SEM_INFO.semmsl;
+    
+    let mut rc = MRAPI_FALSE;
 
-use mca_dprintf as mrapi_dprintf;
+    rc
+}
 
-pub mod sysvr4 {
-    pub mod os;
-    pub mod key;
-    pub mod sem;
+#[allow(unused_variables)]
+pub fn sys_sem_get(key: i32, num_locks: i32, semid: &mut i32) -> MrapiBoolean {
+    let mut rc = MRAPI_FALSE;
+
+    rc
+}
+
+#[allow(unused_imports)]
+use more_asserts as ma;
+
+#[cfg(test)]
+mod tests { 
+
+    use super::*;
+
+    #[test]
+    fn os_sem() {
+	let mut key = 0;
+	assert_eq!(MRAPI_TRUE, sys_file_key("", 'd' as i32, &mut key));
+	// Empty set
+	let mut id = 0;
+	assert_eq!(MRAPI_FALSE, sys_sem_create(key, 0, &mut id));
+	// Single semaphore
+	let mut created = 0;
+	if MRAPI_FALSE == sys_sem_get(key, 1, &mut id) {
+	    created = 1;
+	    assert_eq!(MRAPI_TRUE, sys_sem_create(key, 1, &mut id));
+	}
+	assert_ne!(0, id);
+    }
 }
