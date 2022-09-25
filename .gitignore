@@ -272,3 +272,6 @@ __pycache__/
 *.o
 *.so
 *.so.*
+
+# Rust
+Cargo.lock
