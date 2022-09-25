@@ -49,11 +49,11 @@ pub fn sys_sem_create(key: Key, num_locks: usize) -> io::Result<Semaphore> {
 	    for i in 0..num_locks {
 		val.op(&[val.at(i as u16).add(1)]).unwrap();
 	    };
-	    sysvr4::sem::ma::__core::result::Result::Ok(val)
+	    return sysvr4::sem::ma::__core::result::Result::Ok(val);
 	},
 	Err(e) => {
 	    mrapi_dprintf!(0, "sys_sem_create: key: {:?} num_locks: {} {}", key, num_locks, e);
-	    sysvr4::sem::ma::__core::result::Result::Err(e)
+	    return sysvr4::sem::ma::__core::result::Result::Err(e);
 	},
     }
 }
@@ -173,8 +173,7 @@ mod tests {
     #[test]
     #[allow(unused_assignments)]
     fn os_sem() {
-	let mut key1 = Key::private();
-	assert_eq!(MRAPI_TRUE, sys_file_key("", 'd' as i32, &mut key1));
+	let key1 = sys_file_key("", 'd' as i32).unwrap();
 	// Invalid set
 	match sys_sem_create(key1, usize::MAX) {
 	    Ok(_) => assert!(false),
@@ -205,8 +204,7 @@ mod tests {
 	    sys_sem_delete(sem1);
 	}
 	// Semaphore set
-	let mut key2 = Key::private();
-	assert_eq!(MRAPI_TRUE, sys_file_key("", 'e' as i32, &mut key2));
+	let key2 = sys_file_key("", 'e' as i32).unwrap();
 	let sem2 = match sys_sem_get(key2, 2) { // race with other process?
 	    Ok(val) => {
 		created = false;
@@ -231,8 +229,7 @@ mod tests {
 	    sys_sem_delete(sem2);
 	}
 	// Duplicate semaphore
-	let mut key3 = Key::private();
-	assert_eq!(MRAPI_TRUE, sys_file_key("", 'f' as i32, &mut key3));
+	let key3 = sys_file_key("", 'f' as i32).unwrap();
 	let sem3 = match sys_sem_get(key3, 2) { // race with other process?
 	    Ok(val) => {
 		created = false;
@@ -255,8 +252,7 @@ mod tests {
 	    sys_sem_delete(sem3);
 	}
 	// Lock and unlock semaphore
-	let mut key4 = Key::private();
-	assert_eq!(MRAPI_TRUE, sys_file_key("", 'g' as i32, &mut key4));
+	let key4 = sys_file_key("", 'g' as i32).unwrap();
 	let sem4 = match sys_sem_get(key4, 1) { // race with other process?
 	    Ok(val) => {
 		created = false;
