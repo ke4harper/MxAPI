@@ -28,69 +28,138 @@
 
 // Semaphores
 
+const MAX_SEMAPHORES_PER_ARRAY: usize = 65536;
+
 use crate::*;
+#[allow(unused_imports)]
 use crate::sysvr4::key::{sys_file_key};
 
-use heliograph::{Key};
+use std::{io};
+use heliograph::{Key, Semaphore, Exclusive, Mode};
 
 #[allow(unused_variables)]
-pub fn sys_sem_create(key: i32, num_locks: i32, semid: &mut i32) -> MrapiBoolean {
-    const MAX_SEMAPHORES_PER_ARRAY: i32 = 65536;
-    if num_locks > MAX_SEMAPHORES_PER_ARRAY {
-	mrapi_dprintf!(0, "sys_sem_create failed: num_locks requested is greater then the OS supports (SEMMSL)");
-	return MRAPI_FALSE;
-    }
-
+pub fn sys_sem_create(key: Key, num_locks: usize) -> io::Result<Semaphore> {
     // 1. create the semaphore
-    
-    mrapi_dprintf!(1, "sys_sem_create (create)");
-    
-    unsafe {
-	*semid = semget(key, num_locks, IPC_CREAT | IPC_EXCL | 0666);
-	if *semid == -1 {
-	    let str_slice: &str = CStr::from_ptr(strerror(errno().0)).to_str().unwrap();
-	    mrapi_dprintf!(1, "sys_sem_create failed: errno={}", str_slice);
-	    return MRAPI_FALSE;
-	}
+    match Semaphore::create(key, num_locks, Exclusive::Yes, Mode::from_bits(0o666).unwrap()) {
+	Ok(val) => {
+	    mrapi_dprintf!(1, "sys_sem_create: key: {:?} num_locks: {} {:?}", key, num_locks, val);
+	    // 2. initialize all members (Note: create and initialize are NOT atomic!
+	    //    This is why sys_sem_get must poll to make sure the sem is done with
+	    //    initialization
+	    for i in 0..num_locks {
+		val.op(&[val.at(i as u16).add(1)]).unwrap();
+	    };
+	    sysvr4::sem::ma::__core::result::Result::Ok(val)
+	},
+	Err(e) => {
+	    mrapi_dprintf!(0, "sys_sem_create: key: {:?} num_locks: {} {}", key, num_locks, e);
+	    sysvr4::sem::ma::__core::result::Result::Err(e)
+	},
     }
-    
-    // 2. initialize all members (Note: create and initialize are NOT atomic!
-    //   This is why semget must poll to make sure the sem is done with
-    //   initialization
-    
-    mrapi_dprintf!(1, "sys_sem_create (initialize)");
-
-    let sb: sembuf = sembuf::new();
-    sb.sem_op = 1;
-    sb.sem_flg = 0;
-
-    for i in 0..num_locks {
-	sb.sem_num = i;
-	// do a semop() to "free" the semaphores.
-	// this sets the sem_otime field, as needed below.
-	unsafe {
-	    let rc = semop(*semid, &sb, 1);
-	    if rc == -1 {
-		let e = errno;
-		// clean up
-		semctl(*semid, 0, IPC_RMID);
-		errno = e;
-		// error, check errno
-		return MRAPI_FALSE;
-	    }
-	}
-
-	sb.sem_num += 1;
-    }
-
-    MRAPI_TRUE
 }
 
 #[allow(unused_variables)]
-pub fn sys_sem_get(key: i32, num_locks: i32, semid: &mut i32) -> MrapiBoolean {
-    let mut rc = MRAPI_FALSE;
+pub fn sys_sem_get(key: Key, num_locks: usize) -> io::Result<Semaphore> {
+    const _MAX_RETRIES: u32 = 0xffff;
+    let sem = match Semaphore::open(key, num_locks) {
+	Ok(val) => {
+	    mrapi_dprintf!(1, "sys_sem_get: key: {:?} num_locks: {} {:?}", key, num_locks, val);
+	    // At that point, will have to wait until the semaphore is initialized by creating process
+	    let mut ready = false;
+	    for i in 0.._MAX_RETRIES {
+		if ready { break; }
+		match val.get_all() {
+		    Ok(set) => {
+			for lock in set {
+			    if lock <= 0 { break; }
+			}
+			ready = true;
+		    },
+		    Err(e) => {},
+		};
+	    }
+	    sysvr4::sem::ma::__core::result::Result::Ok(val)
+	},
+	Err(e) => {
+	    mrapi_dprintf!(0, "sys_sem_get: key: {:?} num_locks: {} {}", key, num_locks, e);
+	    sysvr4::sem::ma::__core::result::Result::Err(e)
+	},
+    };
 
-    rc
+    sem
+}
+
+#[allow(unused_variables)]
+pub fn sys_sem_duplicate(sem: &Semaphore) -> io::Result<Semaphore> {
+    let sem = match sem.try_clone() {
+	Ok(val) => {
+	    mrapi_dprintf!(1, "sys_sem_duplicate: sem: {:?} {:?}", sem, val);
+	    sysvr4::sem::ma::__core::result::Result::Ok(val)
+	},
+	Err(e) => {
+	    mrapi_dprintf!(0, "sys_sem_duplicate: sem: {:?} {}", sem, e);
+	    sysvr4::sem::ma::__core::result::Result::Err(e)
+	},
+    };
+
+    sem
+}
+
+#[allow(unused_variables)]
+pub fn sys_sem_trylock(sem: &Semaphore) -> io::Result<()> {
+    // Only operates on first in set
+    let result = match sem.op(&[sem.at(0).remove(1).wait(false)]) {
+	Ok(val) => {
+	    mrapi_dprintf!(1, "sys_sem_trylock: sem: {:?}", sem);
+	    return sysvr4::sem::ma::__core::result::Result::Ok(val);
+	},
+	Err(e) => {
+	    mrapi_dprintf!(0, "sys_sem_trylock: sem: {:?} {}", sem, e);
+	    return sysvr4::sem::ma::__core::result::Result::Err(e);
+	},
+    };
+}
+
+#[allow(unused_variables)]
+pub fn sys_sem_lock(sem: &Semaphore) -> io::Result<()> {
+    loop {
+	match sys_sem_trylock(sem) {
+	    Ok(val) => {
+		mrapi_dprintf!(1, "sys_sem_lock: sem: {:?} {:?}", sem, val);
+		return sysvr4::sem::ma::__core::result::Result::Ok(val);
+	    },
+	    Err(e) => {
+		match e.kind() {
+		    other_error => {
+			println!("Error kind: {}", other_error);
+		    }
+		}
+		return sysvr4::sem::ma::__core::result::Result::Err(e);
+	    },
+	}
+    }
+}
+
+#[allow(unused_variables)]
+pub fn sys_sem_unlock(sem: &Semaphore) -> io::Result<()> {
+    // Only operates on first in set
+    let result = match sem.op(&[sem.at(0).add(1)]) {
+	Ok(val) => {
+	    mrapi_dprintf!(1, "sys_sem_unlock: sem: {:?} {:?}", sem, val);
+	    sysvr4::sem::ma::__core::result::Result::Ok(val)
+	},
+	Err(e) => {
+	    mrapi_dprintf!(0, "sys_sem_unlock: sem: {:?} {}", sem, e);
+	    sysvr4::sem::ma::__core::result::Result::Err(e)
+	},
+    };
+
+    result
+}
+
+#[allow(unused_variables)]
+pub fn sys_sem_delete(sem: Semaphore) {
+    drop(sem);
 }
 
 #[allow(unused_imports)]
@@ -102,18 +171,127 @@ mod tests {
     use super::*;
 
     #[test]
+    #[allow(unused_assignments)]
     fn os_sem() {
-	let mut Key = new Key::private();
-	assert_eq!(MRAPI_TRUE, sys_file_key("", 'd' as i32, &mut key));
-	// Empty set
-	let mut id = 0;
-	assert_eq!(MRAPI_FALSE, sys_sem_create(key, 0, &mut id));
-	// Single semaphore
-	let mut created = 0;
-	if MRAPI_FALSE == sys_sem_get(key, 1, &mut id) {
-	    created = 1;
-	    assert_eq!(MRAPI_TRUE, sys_sem_create(key, 1, &mut id));
+	let mut key1 = Key::private();
+	assert_eq!(MRAPI_TRUE, sys_file_key("", 'd' as i32, &mut key1));
+	// Invalid set
+	match sys_sem_create(key1, usize::MAX) {
+	    Ok(_) => assert!(false),
+	    Err(_) => assert!(true),
 	}
-	assert_ne!(0, id);
+	let mut created = false;
+	// Single semaphore
+	let sem1 = match sys_sem_get(key1, 1) { // race with other process?
+	    Ok(val) => {
+		created = false;
+		val
+	    },
+	    Err(_) => {
+		match sys_sem_create(key1, 1) {
+		    Ok(val) => {
+			created = true;
+			val
+		    },
+		    Err(_) => { panic!() },
+		}
+	    },
+	};
+	// Duplicate create fails
+	_ = match sys_sem_create(key1, 1) {
+	    Ok(_) => { assert!(false) } | Err(_) => {},
+	};
+	if created {
+	    sys_sem_delete(sem1);
+	}
+	// Semaphore set
+	let mut key2 = Key::private();
+	assert_eq!(MRAPI_TRUE, sys_file_key("", 'e' as i32, &mut key2));
+	let sem2 = match sys_sem_get(key2, 2) { // race with other process?
+	    Ok(val) => {
+		created = false;
+		val
+	    },
+	    Err(_) => {
+		match sys_sem_create(key2, 2) {
+		    Ok(val) => {
+			created = true;
+			val
+		    },
+		    Err(_) => { panic!() },
+		}
+	    },
+	};
+	// Get semaphore
+	_ = match sys_sem_get(key2, 2) {
+	    Ok(_) => {},
+	    Err(_) => { assert!(false) },
+	};
+	if created {
+	    sys_sem_delete(sem2);
+	}
+	// Duplicate semaphore
+	let mut key3 = Key::private();
+	assert_eq!(MRAPI_TRUE, sys_file_key("", 'f' as i32, &mut key3));
+	let sem3 = match sys_sem_get(key3, 2) { // race with other process?
+	    Ok(val) => {
+		created = false;
+		val
+	    },
+	    Err(_) => {
+		match sys_sem_create(key3, 2) {
+		    Ok(val) => {
+			created = true;
+			val
+		    },
+		    Err(_) => { panic!() },
+		}
+	    },
+	};
+	_ = match sys_sem_duplicate(&sem3) {
+	    Ok(_) => {} | Err(_) => { assert!(false) },
+	};
+	if created {
+	    sys_sem_delete(sem3);
+	}
+	// Lock and unlock semaphore
+	let mut key4 = Key::private();
+	assert_eq!(MRAPI_TRUE, sys_file_key("", 'g' as i32, &mut key4));
+	let sem4 = match sys_sem_get(key4, 1) { // race with other process?
+	    Ok(val) => {
+		created = false;
+		val
+	    },
+	    Err(_) => {
+		match sys_sem_create(key4, 1) {
+		    Ok(val) => {
+			created = true;
+			val
+		    },
+		    Err(_) => { panic!() },
+		}
+	    },
+	};
+	_ = match sys_sem_trylock(&sem4) {
+	    Ok(_) => {} | Err(_) => { assert!(false) },
+	};
+	// Locks exhausted
+	_ = match sys_sem_trylock(&sem4) {
+	    Ok(_) => { assert!(false) } | Err(_) => {},
+	};
+	_ = match sys_sem_unlock(&sem4) {
+	    Ok(_) => {} | Err(_) => { assert!(false) },
+	};
+	_ = match sys_sem_lock(&sem4) {
+	    Ok(_) => {} | Err(_) => { assert!(false) },
+	};
+	_ = match sys_sem_unlock(&sem4) {
+	    Ok(_) => {} | Err(_) => { assert!(false) },
+	};
+	if created {
+	    sys_sem_delete(sem4);
+	}
+	// Lock and unlock multiple semaphores
+	let mut key: Vec<Key> = Vec::with_capacity(2);
     }
 }
