@@ -78,15 +78,13 @@ pub fn sys_sem_get(key: Key, num_locks: usize) -> io::Result<Semaphore> {
 		    Err(e) => {},
 		};
 	    }
-	    sysvr4::sem::ma::__core::result::Result::Ok(val)
+	    return sysvr4::sem::ma::__core::result::Result::Ok(val);
 	},
 	Err(e) => {
 	    mrapi_dprintf!(0, "sys_sem_get: key: {:?} num_locks: {} {}", key, num_locks, e);
-	    sysvr4::sem::ma::__core::result::Result::Err(e)
+	    return sysvr4::sem::ma::__core::result::Result::Err(e);
 	},
     };
-
-    sem
 }
 
 #[allow(unused_variables)]

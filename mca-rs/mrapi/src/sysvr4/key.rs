@@ -50,18 +50,18 @@ pub fn sys_file_key(pathname: &str, proj_id: i32) -> io::Result<Key> {
     let path = Path::new(file);
 
     if proj_id <= 0 {
-	mrapi_dprintf!(0, "sys_file_key: pathname: {} proj_id: {} invalid proj_id", file, proj_id);
+	mrapi_dprintf!(0, "sys_file_key: pathname: '{}' proj_id: {} invalid proj_id", file, proj_id);
 	return Err(io::Error::new(ErrorKind::InvalidInput, "invalid proj_id"));
     }
     
     let id = NonZeroU8::new(proj_id as u8).unwrap();
     match Key::new(path, id) {
 	Ok(val) => {
-	    mrapi_dprintf!(1, "sys_file_key: pathname: {} proj_id: {} {:?}", file, proj_id, val);
+	    mrapi_dprintf!(1, "sys_file_key: pathname: '{}' proj_id: {} {:?}", file, proj_id, val);
 	    return sysvr4::key::ma::__core::result::Result::Ok(val);
 	},
 	Err(e) => {
-	    mrapi_dprintf!(0, "sys_file_key: pathname: {} proj_id: {} {}", file, proj_id, e);
+	    mrapi_dprintf!(0, "sys_file_key: pathname: '{}' proj_id: {} {}", file, proj_id, e);
 	    return sysvr4::key::ma::__core::result::Result::Err(e);
 	},
     }

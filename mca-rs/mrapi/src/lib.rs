@@ -54,4 +54,5 @@ pub mod sysvr4 {
     pub mod os;
     pub mod key;
     pub mod sem;
+    pub mod shmem;
 }
