@@ -30,6 +30,7 @@
 
 use crate::*;
 use std::{io};
+use std::io::{ErrorKind};
 use std::num::{NonZeroU8};
 use std::path::{Path};
 use heliograph::{Key};
@@ -50,6 +51,7 @@ pub fn sys_file_key(pathname: &str, proj_id: i32) -> io::Result<Key> {
 
     if proj_id <= 0 {
 	mrapi_dprintf!(0, "sys_file_key: pathname: {} proj_id: {} invalid proj_id", file, proj_id);
+	return Err(io::Error::new(ErrorKind::InvalidInput, "invalid proj_id"));
     }
     
     let id = NonZeroU8::new(proj_id as u8).unwrap();

@@ -158,7 +158,7 @@ pub fn sys_sem_unlock(sem: &Semaphore) -> io::Result<()> {
 }
 
 #[allow(unused_variables)]
-pub fn sys_sem_delete(sem: Semaphore) {
+pub fn sys_sem_delete(sem: &Semaphore) {
     drop(sem);
 }
 
@@ -201,7 +201,7 @@ mod tests {
 	    Ok(_) => { assert!(false) } | Err(_) => {},
 	};
 	if created {
-	    sys_sem_delete(sem1);
+	    sys_sem_delete(&sem1);
 	}
 	// Semaphore set
 	let key2 = sys_file_key("", 'e' as i32).unwrap();
@@ -226,7 +226,7 @@ mod tests {
 	    Err(_) => { assert!(false) },
 	};
 	if created {
-	    sys_sem_delete(sem2);
+	    sys_sem_delete(&sem2);
 	}
 	// Duplicate semaphore
 	let key3 = sys_file_key("", 'f' as i32).unwrap();
@@ -249,7 +249,7 @@ mod tests {
 	    Ok(_) => {} | Err(_) => { assert!(false) },
 	};
 	if created {
-	    sys_sem_delete(sem3);
+	    sys_sem_delete(&sem3);
 	}
 	// Lock and unlock semaphore
 	let key4 = sys_file_key("", 'g' as i32).unwrap();
@@ -285,9 +285,49 @@ mod tests {
 	    Ok(_) => {} | Err(_) => { assert!(false) },
 	};
 	if created {
-	    sys_sem_delete(sem4);
+	    sys_sem_delete(&sem4);
 	}
-	// Lock and unlock multiple semaphores
+	// Lock and unlock multiple semaphores (TBD)
 	let mut key: Vec<Key> = Vec::with_capacity(2);
+	key.push(sys_file_key("", 'p' as i32).unwrap());
+	key.push(sys_file_key("", 'o' as i32).unwrap());
+	let mut _created: Vec<bool> = Vec::with_capacity(2);
+	_created.push(false);
+	_created.push(false);
+	let mut sem: Vec<Semaphore> = Vec::with_capacity(2);
+	sem.push(match sys_sem_get(key[1], 1) { // race with other process?
+	    Ok(val) => {
+		val
+	    },
+	    Err(_) => {
+		match sys_sem_create(key[1], 1) {
+		    Ok(val) => {
+			_created[1] = true;
+			val
+		    },
+		    Err(_) => { panic!() },
+		}
+	    },
+	});
+	sem.push(match sys_sem_get(key[0], 1) { // race with other process?
+	    Ok(val) => {
+		val
+	    },
+	    Err(_) => {
+		match sys_sem_create(key[0], 1) {
+		    Ok(val) => {
+			_created[0] = true;
+			val
+		    },
+		    Err(_) => { panic!() },
+		}
+	    },
+	});
+	if _created[0] {
+	    sys_sem_delete(&sem[0]);
+	}
+	if _created[1] {
+	    sys_sem_delete(&sem[1]);
+	}
     }
 }
