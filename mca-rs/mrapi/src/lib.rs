@@ -29,6 +29,7 @@
 
 extern crate common;
 use common::*;
+use std::cell::{RefCell};
 
 // MRAPI data types
 pub type MrapiDomain = McaDomain;
@@ -47,6 +48,79 @@ pub type MrapiBoolean = McaBoolean;
 pub const MRAPI_TRUE: MrapiBoolean = MCA_TRUE;
 pub const MRAPI_FALSE: MrapiBoolean = MCA_FALSE;
 pub const MRAPI_NULL: MrapiUint = MCA_NULL;
+
+enum LockType {
+    MrapiRwl,
+    MrapiSem,
+    MrapiMutex,
+}
+
+/// Metadata resource related structs
+enum MrapiResourceType {
+    MrapiCpu,
+    MrapiCache,
+    MrapiMem,
+    MrapiCoreComplex,
+    MrapiCrossbar,
+    MrapiSystem,
+}
+
+enum MrapiAttributeStatic {
+    MrapiAttrStatic,
+    MrapiAttrDynamic,
+}
+
+enum MrapiEvent {
+    MrapiEventPowerManagement,
+    MrapiEventCrossbarBufferUnder20percent,
+    MrapiEventCrossbarBufferOver80percent,
+}
+
+enum MrapiAtomic {
+    MrapiAtomNoop,
+    MrapiAtomOpenproc,
+    MrapiAtomCloseproc,
+    MrapiAtomShmdup,
+}
+
+enum RsrcType {
+    RsrcUint16,
+    RsrcUint32,
+}
+
+#[repr(C)]
+union RsrcValue {
+    word: MrapiUint16,
+    long: MrapiUint32,
+}
+
+struct MrapiResource<'a> {
+    name: &'a str,
+    resource_type: MrapiResourceType,
+    number_of_children: MrapiUint32,
+    children: Vec<MrapiResource<'a>>,
+    number_of_attributes: MrapiUint32,
+    attribute_types: Vec<RsrcType>,                        
+    attribute_values: Vec<RsrcValue>,                        
+    attribute_static: Vec<MrapiAttributeStatic>,
+    attribute_started: MrapiBoolean,               
+}
+
+union AttribValue {
+    byte: MrapiUint8,
+    word: MrapiUint16,
+    long: MrapiUint32,
+}
+
+struct MrapiImplAttributes<'a> {
+  ext_error_checking: MrapiBoolean,
+  shared_across_domains: MrapiBoolean,
+  recursive: MrapiBoolean,  // only applies to mutexes
+  spinlock_guard: MrapiBoolean,
+  mem_addr: RefCell<AttribValue>,
+  mem_size: usize,
+  resource: MrapiResource<'a>,
+}
 
 use mca_dprintf as mrapi_dprintf;
 
