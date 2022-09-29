@@ -39,12 +39,14 @@ pub type McaInt8 = i8;
 pub type McaInt16 = i16;
 pub type McaInt32 = i32;
 pub type McaInt64 = i64;
+pub type McaInt128 = i128;
 
 pub type McaUint = usize;
 pub type McaUint8 = u8;
 pub type McaUint16 = u16;
 pub type McaUint32 = u32;
 pub type McaUint64 = u64;
+pub type McaUint128 = u128;
 
 pub type McaBoolean = usize;
 pub type McaNode = usize;
@@ -60,6 +62,14 @@ pub const MCA_INFINITE: McaUint = !0; // Wait forever, no timeout
 pub const MCA_RETURN_VALUE_INVALID: McaUint = !0;
 pub const MCA_NODE_INVALID: McaUint = !0; 
 pub const MCA_DOMAIN_INVALID: McaUint = !0;
+
+pub const MCA_HANDLE_MASK: McaUint128 = 0xC0000000; // not conflict with Windows, Linux or VxWorks handles
+pub const MCA_MAX_DOMAINS: McaUint = 2;
+pub const MCA_MAX_NODES: McaUint = 16;
+pub const MCA_MAX_PROCESSES: McaUint = 16;
+
+pub const MCA_MAX_REQUESTS: McaUint = 1024;
+pub const MCA_MAX_CPUS: McaUint = 16;
 
 pub mod logging;
 pub mod crc;
