@@ -26,11 +26,56 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 
+use std::mem::{zeroed};
+use libc::{
+    sigset_t, sigemptyset, sigaddset, sigprocmask
+	,SIGALRM, SIGINT, SIGHUP, SIGILL
+	,SIGSEGV, SIGTERM, SIGFPE, SIGABRT
+	,SIG_BLOCK, SIG_UNBLOCK
+};
+
 use nix::unistd::{Pid};
 use nix::time::{ClockId};
 use libc::{clockid_t, timespec, c_long, time_t};
 
 use super::*;
+
+// https://www.jameselford.com/blog/working-with-signals-in-rust-pt1-whats-a-signal/
+#[allow(dead_code)]
+fn block_signals() {
+    unsafe {
+	let mut block_alarm: sigset_t = zeroed();
+	sigemptyset(&mut block_alarm);
+	sigaddset(&mut block_alarm, SIGALRM);
+	sigaddset(&mut block_alarm, SIGINT);
+	sigaddset(&mut block_alarm, SIGHUP);
+	sigaddset(&mut block_alarm, SIGILL);
+	sigaddset(&mut block_alarm, SIGSEGV);
+	sigaddset(&mut block_alarm, SIGTERM);
+	sigaddset(&mut block_alarm, SIGFPE);
+	sigaddset(&mut block_alarm, SIGABRT);
+	let mut prev_alarm: sigset_t = zeroed();
+	sigprocmask(SIG_BLOCK, &mut block_alarm, &mut prev_alarm);
+    }
+}
+
+#[allow(dead_code)]
+fn unblock_signals() {
+    unsafe {
+	let mut block_alarm: sigset_t = zeroed();
+	sigemptyset(&mut block_alarm);
+	sigaddset(&mut block_alarm, SIGALRM);
+	sigaddset(&mut block_alarm, SIGINT);
+	sigaddset(&mut block_alarm, SIGHUP);
+	sigaddset(&mut block_alarm, SIGILL);
+	sigaddset(&mut block_alarm, SIGSEGV);
+	sigaddset(&mut block_alarm, SIGTERM);
+	sigaddset(&mut block_alarm, SIGFPE);
+	sigaddset(&mut block_alarm, SIGABRT);
+	let mut prev_alarm: sigset_t = zeroed();
+	sigprocmask(SIG_UNBLOCK, &mut block_alarm, &mut prev_alarm);
+    }
+}
 
 const MCA_MAGIC: u32 = 0x1234;
 
@@ -223,6 +268,12 @@ mod tests {
     }
 
     use super::*;
+
+    #[test]
+    fn signals() {
+	block_signals();
+	unblock_signals();
+    }
 
     #[test]
     fn timestamp() {

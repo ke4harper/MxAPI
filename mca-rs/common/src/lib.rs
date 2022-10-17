@@ -27,6 +27,21 @@
 /// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ///
 
+use cfg_if::cfg_if;
+
+//Load up the proper OS implementation
+cfg_if! {
+    if #[cfg(target_os="windows")] {
+        mod windows;
+        use windows as os_impl;
+    } else if #[cfg(any(target_os="freebsd", target_os="linux", target_os="macos"))] {
+        mod unix;
+        use crate::unix as os_impl;
+    } else {
+        compile_error!("shared_memory isnt implemented for this platform...");
+    }
+}
+
 use std::sync::atomic::{AtomicUsize};
 
 // Global debug setting
@@ -63,5 +78,180 @@ pub const MCA_DOMAIN_INVALID: McaUint = !0;
 
 pub mod logging;
 pub mod crc;
-pub mod profiling;
-pub mod signals;
+
+fn block_signals() {
+    os_impl::block_signals();
+}
+
+fn unblock_signals() {
+    os_impl::unblock_signals();
+}
+
+// time measurement
+#[derive(Debug)]
+pub struct McaTimestamp {
+    split_samples: u64, 
+    split_sum: f64,
+    perf: os_impl::McaPerf,
+}
+
+impl Default for McaTimestamp {
+    fn default() -> Self {
+	Self {
+	    split_samples: 0,
+	    split_sum: 0.0,
+	    perf: os_impl::McaPerf::default(),
+	}
+    }
+}
+
+impl McaTimestamp {
+    pub fn initialized(&self) -> bool {
+	self.perf.initialized()
+    }
+}
+
+// Get clock ID and starting timestamp for this process
+fn begin_ts(ts: &mut McaTimestamp) {
+    os_impl::begin_ts(ts);
+}
+
+// Get starting split timestamp for this process
+fn begin_split_ts(ts: &mut McaTimestamp) {
+    os_impl::begin_split_ts(ts);
+}
+
+// Get elapsed split time in microseconds
+fn end_split_ts(ts: &mut McaTimestamp) -> f64 {
+    os_impl::end_split_ts(ts)
+}
+
+// Get elapsed total time in microseconds
+fn end_ts(ts: &mut McaTimestamp) -> f64 {
+    os_impl::end_ts(ts)
+}
+
+#[allow(unused_imports)]
+use more_asserts as ma;
+#[allow(unused_imports)]
+use std::{thread, time};
+
+#[cfg(test)]
+mod tests { 
+    use super::*;
+
+    #[test]
+    fn signals() {
+	block_signals();
+	unblock_signals();
+    }
+
+    #[test]
+    fn timestamp() {
+	let mut ts: McaTimestamp = McaTimestamp::default();
+	assert!(!ts.initialized());
+	assert_eq!(0, ts.split_samples);
+	assert_eq!(0.0, ts.split_sum);
+	
+	begin_ts(&mut ts);
+	
+	assert!(ts.initialized());
+	assert_eq!(0, ts.split_samples);
+	assert_eq!(0.0, ts.split_sum);
+
+	let elapsed: f64 = end_ts(&mut ts);
+	ma::assert_le!(0.0, elapsed);
+    }
+
+    #[test]
+    fn split_timestamp() {
+	
+	let mut ts: McaTimestamp = McaTimestamp::default();
+	assert!(!ts.initialized());
+	assert_eq!(0, ts.split_samples);
+	assert_eq!(0.0, ts.split_sum);
+	
+	begin_split_ts(&mut ts);
+	
+	assert!(ts.initialized());
+	assert_eq!(0, ts.split_samples);
+	assert_eq!(0.0, ts.split_sum);
+
+	let elapsed: f64 = end_split_ts(&mut ts);
+	
+	ma::assert_le!(0.0, elapsed);
+	assert_eq!(1, ts.split_samples);
+	assert_eq!(elapsed, ts.split_sum);
+    }
+
+    #[test]
+    fn latency() {
+	let mut ts: McaTimestamp = McaTimestamp::default();
+	begin_ts(&mut ts);
+	begin_split_ts(&mut ts);
+
+	let ten_millis = time::Duration::from_millis(10);
+	thread::sleep(ten_millis);
+	let interval = end_split_ts(&mut ts);
+
+	thread::sleep(ten_millis);
+	let total = end_ts(&mut ts);
+
+	ma::assert_ge!(total, interval);
+    }
+
+    // https://www.geeksforgeeks.org/sieve-of-eratosthenes/
+    #[allow(dead_code)]
+    fn sieve_of_eratosthenes(n: usize) {
+	// Create a boolean array "prime[0..n]" and initialize 
+	// all entries in it as true. A value in prime[i] will 
+	// finally be false if i is Not a prime, else true.
+	let mut prime = vec![true; n+1];
+	let mut p: usize = 2;
+	while p * p <= n {
+	    // If prime[p] is not changed, then it is a prime
+	    if prime[p] == true {
+		// Update all multiples of p greater than or equal to the square of it 
+		// numbers which are multiple of p and are less than p^2 are already been marked.
+		let mut i = p * p;
+		while i <= n {
+		    prime[i] = false;
+		    i += p;
+		}
+	    }
+	    p += 1;
+	}
+
+	// Print all prime numbers
+	let mut buffer: String = "".to_owned();
+	p = 2;
+	while p <= n {
+	    if prime[p] {
+		if p > 2 {
+		    let space: &str = " ";
+		    buffer.push_str(space);
+		}
+		let prime_number = format!("{}", p);
+		buffer.push_str(&prime_number);
+	    }
+	    p += 1;
+	}
+	println!("sieve: {}", buffer);
+    }
+
+    #[test]
+    fn sieve() {
+	sieve_of_eratosthenes(20);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
