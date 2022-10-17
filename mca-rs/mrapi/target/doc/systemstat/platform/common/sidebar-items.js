@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"trait":[["Platform","The Platform trait declares all the functions for getting system information."]]};

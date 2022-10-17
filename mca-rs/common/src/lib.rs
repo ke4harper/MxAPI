@@ -63,15 +63,15 @@ pub type McaUint32 = u32;
 pub type McaUint64 = u64;
 pub type McaUint128 = u128;
 
-pub type McaBoolean = usize;
+pub type McaBoolean = bool;
 pub type McaNode = usize;
 pub type McaStatus = usize;
 pub type McaTimeout = usize;
 pub type McaDomain = usize;
 
 // Constants
-pub const MCA_TRUE: McaBoolean = 1;
-pub const MCA_FALSE: McaBoolean = 0;
+pub const MCA_TRUE: McaBoolean = true;
+pub const MCA_FALSE: McaBoolean = false;
 pub const MCA_NULL: McaUint  = 0; // MCA Zero value
 pub const MCA_INFINITE: McaUint = !0; // Wait forever, no timeout
 pub const MCA_RETURN_VALUE_INVALID: McaUint = !0;

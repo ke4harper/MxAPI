@@ -37,12 +37,18 @@ use crate::sysvr4::key::{sys_file_key};
 use std::{io};
 use heliograph::{Key, Semaphore, Exclusive, Mode};
 
+pub struct SemRef<'a> {
+    pub set: &'a Semaphore,
+    pub member: MrapiUint,
+    pub spinlock_guard: MrapiBoolean,
+}
+
 #[allow(unused_variables)]
 pub fn sys_sem_create(key: Key, num_locks: usize) -> io::Result<Semaphore> {
     // 1. create the semaphore
     match Semaphore::create(key, num_locks, Exclusive::Yes, Mode::from_bits(0o666).unwrap()) {
 	Ok(val) => {
-	    mrapi_dprintf!(1, "sys_sem_create: key: {:?} num_locks: {} {:?}", key, num_locks, val);
+	    mrapi_dprintf!(1, "sys_sem_create: {:?} num_locks: {} {:?}", key, num_locks, val);
 	    // 2. initialize all members (Note: create and initialize are NOT atomic!
 	    //    This is why sys_sem_get must poll to make sure the sem is done with
 	    //    initialization
@@ -52,7 +58,7 @@ pub fn sys_sem_create(key: Key, num_locks: usize) -> io::Result<Semaphore> {
 	    return sysvr4::sem::ma::__core::result::Result::Ok(val);
 	},
 	Err(e) => {
-	    mrapi_dprintf!(0, "sys_sem_create: key: {:?} num_locks: {} {}", key, num_locks, e);
+	    mrapi_dprintf!(0, "sys_sem_create: {:?} num_locks: {} {}", key, num_locks, e);
 	    return sysvr4::sem::ma::__core::result::Result::Err(e);
 	},
     }
@@ -63,7 +69,7 @@ pub fn sys_sem_get(key: Key, num_locks: usize) -> io::Result<Semaphore> {
     const _MAX_RETRIES: u32 = 0xffff;
     let sem = match Semaphore::open(key, num_locks) {
 	Ok(val) => {
-	    mrapi_dprintf!(1, "sys_sem_get: key: {:?} num_locks: {} {:?}", key, num_locks, val);
+	    mrapi_dprintf!(1, "sys_sem_get: {:?} num_locks: {} {:?}", key, num_locks, val);
 	    // At that point, will have to wait until the semaphore is initialized by creating process
 	    let mut ready = false;
 	    for i in 0.._MAX_RETRIES {
@@ -81,7 +87,7 @@ pub fn sys_sem_get(key: Key, num_locks: usize) -> io::Result<Semaphore> {
 	    return sysvr4::sem::ma::__core::result::Result::Ok(val);
 	},
 	Err(e) => {
-	    mrapi_dprintf!(0, "sys_sem_get: key: {:?} num_locks: {} {}", key, num_locks, e);
+	    mrapi_dprintf!(0, "sys_sem_get: {:?} num_locks: {} {}", key, num_locks, e);
 	    return sysvr4::sem::ma::__core::result::Result::Err(e);
 	},
     };
@@ -91,11 +97,11 @@ pub fn sys_sem_get(key: Key, num_locks: usize) -> io::Result<Semaphore> {
 pub fn sys_sem_duplicate(sem: &Semaphore) -> io::Result<Semaphore> {
     let sem = match sem.try_clone() {
 	Ok(val) => {
-	    mrapi_dprintf!(1, "sys_sem_duplicate: sem: {:?} {:?}", sem, val);
+	    mrapi_dprintf!(1, "sys_sem_duplicate: {:?} {:?}", sem, val);
 	    sysvr4::sem::ma::__core::result::Result::Ok(val)
 	},
 	Err(e) => {
-	    mrapi_dprintf!(0, "sys_sem_duplicate: sem: {:?} {}", sem, e);
+	    mrapi_dprintf!(0, "sys_sem_duplicate: {:?} {}", sem, e);
 	    sysvr4::sem::ma::__core::result::Result::Err(e)
 	},
     };
@@ -108,11 +114,11 @@ pub fn sys_sem_trylock(sem: &Semaphore) -> io::Result<()> {
     // Only operates on first in set
     let result = match sem.op(&[sem.at(0).remove(1).wait(false)]) {
 	Ok(val) => {
-	    mrapi_dprintf!(1, "sys_sem_trylock: sem: {:?}", sem);
+	    mrapi_dprintf!(1, "sys_sem_trylock: {:?}", sem);
 	    return sysvr4::sem::ma::__core::result::Result::Ok(val);
 	},
 	Err(e) => {
-	    mrapi_dprintf!(0, "sys_sem_trylock: sem: {:?} {}", sem, e);
+	    mrapi_dprintf!(0, "sys_sem_trylock: {:?} {}", sem, e);
 	    return sysvr4::sem::ma::__core::result::Result::Err(e);
 	},
     };
@@ -123,7 +129,7 @@ pub fn sys_sem_lock(sem: &Semaphore) -> io::Result<()> {
     loop {
 	match sys_sem_trylock(sem) {
 	    Ok(val) => {
-		mrapi_dprintf!(1, "sys_sem_lock: sem: {:?} {:?}", sem, val);
+		mrapi_dprintf!(1, "sys_sem_lock: {:?} {:?}", sem, val);
 		return sysvr4::sem::ma::__core::result::Result::Ok(val);
 	    },
 	    Err(e) => {
@@ -143,11 +149,11 @@ pub fn sys_sem_unlock(sem: &Semaphore) -> io::Result<()> {
     // Only operates on first in set
     let result = match sem.op(&[sem.at(0).add(1)]) {
 	Ok(val) => {
-	    mrapi_dprintf!(1, "sys_sem_unlock: sem: {:?} {:?}", sem, val);
+	    mrapi_dprintf!(1, "sys_sem_unlock: {:?} {:?}", sem, val);
 	    sysvr4::sem::ma::__core::result::Result::Ok(val)
 	},
 	Err(e) => {
-	    mrapi_dprintf!(0, "sys_sem_unlock: sem: {:?} {}", sem, e);
+	    mrapi_dprintf!(0, "sys_sem_unlock: {:?} {}", sem, e);
 	    sysvr4::sem::ma::__core::result::Result::Err(e)
 	},
     };

@@ -34,15 +34,15 @@ use shared_memory::{ShmemConf, Shmem, ShmemError};
 #[allow(unused_variables)]
 pub fn sys_shmem_create(mapping: &str, size: usize) -> Result<Shmem, ShmemError> {
     match if mapping.len() <= 0 { ShmemConf::new().size(size).create() }
-    else { ShmemConf::new().size(size).flink(mapping).create() } {
+    else { ShmemConf::new().size(size).flink(mapping).force_create_flink().create() } {
 	Ok(val) => {
 	    mrapi_dprintf!(1, "sys_shmem_create: mapping: '{}' size: {}", mapping, size);
 	    return sysvr4::shmem::ma::__core::result::Result::Ok(val);
 	},
 	Err(e) => {
 	    if matches!(e, ShmemError::LinkExists) {
+		mrapi_dprintf!(0, "sys_shmem_create (exists): mapping: '{}' size: {}", mapping, size);
 		let val = ShmemConf::new().size(size).open().unwrap();
-		mrapi_dprintf!(1, "sys_shmem_create (exists): mapping: '{}' size: {}", mapping, size);
 		return sysvr4::shmem::ma::__core::result::Result::Ok(val);
 	    }
 	    else {

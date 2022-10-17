@@ -12,5 +12,8 @@ rand = "0.8.5"
 rand_chacha = "0.3.1"
 late-static = "0.4.0"
 heliograph = "0.1.0"
-shared_memory = "0.12.4"
+shared_memory = { path = "../../../shared_memory", version = "0.12.4", features = ["logging"] }
+fragile = "1.2.1"
+thread-id = "4.0.0"
 bitfield = "0.14.0"
+atomig = { version = "0.4.0", features = ["derive"] }

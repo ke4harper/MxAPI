@@ -33,19 +33,21 @@ use std::time::{Duration};
 
 // Allow other threads to run
 #[allow(dead_code)]
-fn sys_os_yield() {
+pub fn sys_os_yield() {
     thread::yield_now();
 }
 
 // Pause thread until time has elapsed
 #[allow(dead_code)]
-fn sys_os_usleep(microsecs: u64) {
+pub fn sys_os_usleep(microsecs: u64) {
     let period = Duration::from_micros(microsecs);
     thread::sleep(period);
 }
 
-use late_static::{LateStatic};
+use std::thread_local;
 use std::sync::{Mutex};
+
+use late_static::{LateStatic};
 use rand::prelude::*;
 use rand_chacha::{ChaCha8Rng};
 
@@ -61,7 +63,8 @@ impl Default for SysRandom {
     }
 }
 
-static mut _RANDOM: LateStatic::<SysRandom> = LateStatic::new();
+#[thread_local]
+static mut RANDOM: LateStatic::<SysRandom> = LateStatic::new();
 static _RANDOM_MUTEX: Mutex<u64> = Mutex::new(0);
 
 #[allow(unused_variables)]
@@ -71,11 +74,11 @@ impl SysRandom {
 	unsafe {
 	    let mut random = SysRandom::default();
 	    random._rng = ChaCha8Rng::seed_from_u64(seed as u64);
-	    if !LateStatic::has_value(&_RANDOM) {
-		LateStatic::assign(&_RANDOM, random);
+	    if !LateStatic::has_value(&RANDOM) {
+		LateStatic::assign(&RANDOM, random);
 	    }
 	    else {
-		_RANDOM._rng = random._rng;
+		RANDOM._rng = random._rng;
 	    }
 	}
     }
@@ -90,11 +93,11 @@ impl SysRandom {
 	let mut _result: i64 = 0;
 	let mutex_changer = _RANDOM_MUTEX.lock().unwrap();
 	unsafe {
-	    if !LateStatic::has_value(&_RANDOM) {
+	    if !LateStatic::has_value(&RANDOM) {
 		SysRandom::_srand(1);
 	    }
 
-	    _result = _RANDOM._rng.gen_range(0.._RAND_MAX);
+	    _result = RANDOM._rng.gen_range(0.._RAND_MAX);
 	}
 	
 	_result
@@ -102,12 +105,12 @@ impl SysRandom {
 }
 
 #[allow(dead_code)]
-fn sys_os_srand(seed: u32) {
+pub fn sys_os_srand(seed: u32) {
     SysRandom::srand(seed);
 }
 
 #[allow(dead_code)]
-fn sys_os_rand() -> i64 {
+pub fn sys_os_rand() -> i64 {
     SysRandom::rand()
 }
 

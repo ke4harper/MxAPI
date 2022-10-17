@@ -92,11 +92,11 @@ macro_rules! mca_dprintf {
     // No format and variable arguments
     ($level: expr) => {{
 	{
-	    use std::thread;
+	    use thread_id;
 	    use std::process;
 	    
 	    if $level as usize <= mca_debug!() {
-		print!("/* MCA PID:{} {:?} */   //", process::id(), thread::current().id());
+		print!("/* MCA PID:{} TID:{} */   //", process::id(), thread_id::get());
 	    }
 	}
     }};

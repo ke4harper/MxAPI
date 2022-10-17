@@ -1,4 +1,5 @@
 #![allow(dead_code)]
+#![feature(thread_local)]
 ///
 /// Copyright(c) 2022, Karl Eric Harper
 /// All rights reserved.
@@ -28,11 +29,12 @@
 ///
 
 extern crate common;
+use crate::sysvr4::sem::SemRef;
 
 use common::*;
 
 use std::thread;
-use std::cell::{RefCell};
+use std::collections::{LinkedList};
 
 // MRAPI data types
 pub type MrapiDomain = McaDomain;
@@ -56,10 +58,127 @@ pub type MrapiInt32 = McaInt32;
 pub type MrapiInt64 = McaInt64; 
 pub type MrapiInt128 = McaInt128;
 
+pub type MrapiSemRef<'a> = SemRef<'a>;
+
 // Constants
 pub const MRAPI_TRUE: MrapiBoolean = MCA_TRUE;
 pub const MRAPI_FALSE: MrapiBoolean = MCA_FALSE;
 pub const MRAPI_NULL: MrapiUint = MCA_NULL;
+
+// error codes
+pub enum MrapiStatusFlag {
+    MrapiSuccess,
+    MrapiTimeout,
+    MrapiIncomplete,
+    MrapiErrAttrNum,
+    MrapiErrAttrReadonly,
+    MrapiErrAttrSize,
+    MrapiErrDbNotInitialized,
+    MrapiErrProcessNotRegistered,
+    MrapiErrSysSemaphoreFail,
+    MrapiErrDomainInvalid,
+    MrapiErrDomainNotshared,
+    MrapiErrMemLimit,
+    MrapiErrMutexDeleted,
+    MrapiErrMutexExists,
+    MrapiErrMutexIdInvalid,
+    MrapiErrMutexInvalid,
+    MrapiErrMutexKey,
+    MrapiErrMutexLimit,
+    MrapiErrMutexLocked,
+    MrapiErrMutexLockorder,
+    MrapiErrMutexNotlocked,
+    MrapiErrMutexNotvalid,
+    MrapiErrNodeInitfailed,
+    MrapiErrNodeFinalfailed,
+    MrapiErrNodeInitialized,
+    MrapiErrNodeInvalid,
+    MrapiErrNodeNotinit,
+    MrapiErrNotSupported,
+    MrapiErrParameter,
+    MrapiErrRequestCanceled,
+    MrapiErrRequestInvalid,
+    MrapiErrRequestLimit,
+    MrapiErrRmemIdInvalid,
+    MrapiErrRmemAttach,
+    MrapiErrRmemAttached,
+    MrapiErrRmemAtype,
+    MrapiErrRmemAtypeNotvalid,
+    MrapiErrRmemBlocked,
+    MrapiErrRmemBuffOverrun,
+    MrapiErrRmemConflict,
+    MrapiErrRmemExists,
+    MrapiErrRmemInvalid,
+    MrapiErrRmemNotattached,
+    MrapiErrRmemNotowner,
+    MrapiErrRmemStride,
+    MrapiErrRmemTypenotvalid,
+    MrapiErrRsrcCounterInuse,
+    MrapiErrRsrcInvalid,
+    MrapiErrRsrcInvalidCallback,
+    MrapiErrRsrcInvalidEvent,
+    MrapiErrRsrcInvalidSubsystem,
+    MrapiErrRsrcInvalidTree,
+    MrapiErrRsrcNotdynamic,
+    MrapiErrRsrcNotowner,
+    MrapiErrRsrcNotstarted,
+    MrapiErrRsrcStarted,
+    MrapiErrRwlDeleted,
+    MrapiErrRwlExists,
+    MrapiErrRwlIdInvalid,
+    MrapiErrRwlInvalid,
+    MrapiErrRwlLimit,
+    MrapiErrRwlLocked,
+    MrapiErrRwlNotlocked,
+    MrapiErrSemDeleted,
+    MrapiErrSemExists,
+    MrapiErrSemIdInvalid,
+    MrapiErrSemInvalid,
+    MrapiErrSemLimit,
+    MrapiErrSemLocked,
+    MrapiErrSemLocklimit,
+    MrapiErrSemNotlocked,
+    MrapiErrShmAttached,
+    MrapiErrShmAttch,
+    MrapiErrShmExists,
+    MrapiErrShmIdInvalid,
+    MrapiErrShmInvalid,
+    MrapiErrShmNodesIncompat,
+    MrapiErrShmNodeNotshared,
+    MrapiErrShmNotattached,
+    MrapiErrAtomInvalidArg,
+    MrapiErrAtomOpFailed,
+    MrapiErrAtomOpNoforward,
+}
+
+enum Attributes {
+    MrapiMutexRecursive(MrapiBoolean),
+    MrapiErrorExt(MrapiBoolean),
+    MrapiDomainShared(MrapiBoolean),
+    MrapiSpinlockGuard(MrapiBoolean),
+    MrapiShmemResource,
+    MrapiShmemAddress,
+    MrapiShmemSize,
+}
+
+enum MrapiRsrcMemAttrs {
+    MrapiRsrcMemBaseaddr,
+    MrapiRsrcMemNumwords,
+    MrapiRsrcMemWordsize,
+}
+
+enum MrapiRsrcCacheAttrs {
+    MrapiRsrcCacheSize,
+    MrapiRsrcCacheLineSize,
+    MrapiRsrcCacheAssociativity,
+    MrapiRsrcCacheLevel,
+}
+
+enum MrapiRsrcCpuAttrs {
+    MrapiRsrcCpuFrequency,
+    MrapiRsrcCpuType,
+    MrapiRsrcCpuId,
+}
 
 // lock type for semaphores
 enum MrapiLockType {
@@ -84,9 +203,9 @@ enum MrapiRmemAtype {
 
 // atomic operation mode
 enum MrapiAtomicMode {
-  MrapiAtomicWrite = 0,
-  MrapiAtomicRead,
-  MrapiAtomicNone,
+    MrapiAtomicWrite = 0,
+    MrapiAtomicRead,
+    MrapiAtomicNone,
 }
 
 // base message object;
@@ -99,8 +218,8 @@ struct MrapiMsg {
 }
 
 // atomic sync object
-struct MrapiAtomicSync<'a> {
-  pindex: &'a MrapiUint, // buffer index reference
+struct MrapiAtomicSync {
+  pindex: MrapiUint, // buffer index reference
   last_counter: MrapiUint, // non-blocking buffer previous state
   hold: MrapiBoolean, // MRAPI_TRUE if valid msg flag should be retained
                       // across atomic calls; last call must release
@@ -109,7 +228,7 @@ struct MrapiAtomicSync<'a> {
 }
 
 // sync descriptor for non-Windows cross-process atomic operations
-struct MrapiAtomicBarrier<'a> {
+struct MrapiAtomicBarrier {
   mode: MrapiAtomicMode,
   xchg: MrapiBoolean, // read only when valid, write only when invalid;
                       // flip flag state on completion
@@ -118,8 +237,8 @@ struct MrapiAtomicBarrier<'a> {
   dest: MrapiUint32, // remote pid; local proc == remote proc, not sync required
   elems: MrapiUint, // number of buffer elements
   size: usize, // element size
-  sync: MrapiAtomicSync<'a>,
-  buffer: Vec<MrapiMsg>, // messages
+  sync: MrapiAtomicSync,
+  buffer: LinkedList<MrapiMsg>, // messages
 }
 
 type MrapiParameters = MrapiUint;
@@ -169,15 +288,15 @@ union RsrcValue {
     long: MrapiUint32,
 }
 
-struct MrapiResource<'a> {
-    name: &'a str,
+struct MrapiResource {
+    name: String,
     resource_type: MrapiResourceType,
     number_of_children: MrapiUint32,
-    children: Vec<MrapiResource<'a>>,
+    children: LinkedList<MrapiResource>,
     number_of_attributes: MrapiUint32,
-    attribute_types: Vec<RsrcType>,                        
-    attribute_values: Vec<RsrcValue>,                        
-    attribute_static: Vec<MrapiAttributeStatic>,
+    attribute_types: LinkedList<RsrcType>,                        
+    attribute_values: LinkedList<RsrcValue>,                        
+    attribute_static: LinkedList<MrapiAttributeStatic>,
     attribute_started: MrapiBoolean,               
 }
 
@@ -187,21 +306,20 @@ union AttribValue {
     long: MrapiUint32,
 }
 
-struct MrapiImplAttributes<'a> {
-  ext_error_checking: MrapiBoolean,
-  shared_across_domains: MrapiBoolean,
-  recursive: MrapiBoolean,  // only applies to mutexes
-  spinlock_guard: MrapiBoolean,
-  mem_addr: RefCell<AttribValue>,
-  mem_size: usize,
-  resource: MrapiResource<'a>,
+struct MrapiImplAttributes {
+    ext_error_checking: MrapiBoolean,
+    shared_across_domains: MrapiBoolean,
+    recursive: MrapiBoolean,  // only applies to mutexes
+    spinlock_guard: MrapiBoolean,
+    value: Attributes,
+    resource: MrapiResource,
 }
 
-type MrapiMutexAttributes<'a> = MrapiImplAttributes<'a>;
-type MrapiSemAttributes<'a> = MrapiImplAttributes<'a>;
-type MrapiRwlAttributes<'a> = MrapiImplAttributes<'a>;
-type MrapiShmemAttributes<'a> = MrapiImplAttributes<'a>;
-type MrapiRmemAttributes<'a> = MrapiImplAttributes<'a>;
+type MrapiMutexAttributes = MrapiImplAttributes;
+type MrapiSemAttributes = MrapiImplAttributes;
+type MrapiRwlAttributes = MrapiImplAttributes;
+type MrapiShmemAttributes = MrapiImplAttributes;
+type MrapiRmemAttributes = MrapiImplAttributes;
 
 type MrapiMutexHndl = MrapiUint32;
 type MrapiSemHndl = MrapiUint32;
@@ -226,185 +344,27 @@ const MRAPI_MAX_DOMAINS: MrapiUint = MCA_MAX_DOMAINS;
 const MRAPI_MAX_CALLBACKS: MrapiUint = 10;
 const MRAPI_ATOMIC_NULL: MrapiInt = -1;
 
-
-//-------------------------------------------------------------------
-//  the mrapi_impl database structure
-//-------------------------------------------------------------------
-// resource structure
-struct MrapiCallback {
-    callback_func: fn(MrapiEvent),
-    callback_event: MrapiEvent,
-    callback_frequency: MrapiUint,
-    callback_count: MrapiUint,
-    node_id: MrapiNode,
-}
-
-// lock state is atomic
-struct MrapiLock {
-    lock_key: MrapiUint32, 
-    lock_holder_nindex: MrapiUint8,
-    lock_holder_dindex: MrapiUint8,
-    id: MrapiUint8,
-    valid: MrapiBoolean,
-    locked: MrapiBoolean,
-} 
-
-// mutexes, semaphores and reader-writer locks share this data structure
-struct MrapiSem<'a> {
-    handle: MrapiUint32, // used for reverse look-up when ext error checking is enabled
-    num_locks: MrapiInt32,
-    locks: [MrapiLock; MRAPI_MAX_SHARED_LOCKS],
-    key: MrapiInt32, // the shared key passed in on get/create
-    spin: MrapiInt32,
-    shared_lock_limit: MrapiInt32,
-    ltype: LockType,
-    attributes: MrapiSemAttributes<'a>,
-    valid: MrapiBoolean,
-    // only used when ext error checking is enabled.  Basically protects the
-    // entry from ever being overwritten
-    deleted: MrapiBoolean,
-    refs: MrapiUint8, // the number of nodes using the sem (for reference counting)
-}
-
-// shared memory
-struct MrapiShmem<'a> {
-    valid: MrapiBoolean,
-    key: MrapiInt32, // the shared key passed in on get/create
-    id: [MrapiUint32; MRAPI_MAX_PROCESSES], // the handle returned by the os or whoever creates it
-    addr: [*mut u8; MRAPI_MAX_PROCESSES],
-    size: MrapiUint32,
-    attributes: MrapiShmemAttributes<'a>,
-    refs: MrapiUint8, // the number of nodes currently attached (for reference counting)
-    num_procs: MrapiUint8,
-    processes: [MrapiUint8; MRAPI_MAX_PROCESSES], // the list of processes currently attached
-}
-
-// remote memory
-struct MrapiRmem<'a> {
-    valid: MrapiBoolean,
-    access_type: MrapiRmemAtype,
-    key: MrapiUint32, // the shared key passed in on get/create
-    addr: *mut u8,
-    size: usize,
-    attributes: MrapiRmemAttributes<'a>,
-    refs: MrapiUint8, // the number of nodes currently attached (for reference counting)
-    nodes: [MrapiUint8; MRAPI_MAX_NODES], // the list of nodes currently attached
-}
-
-struct MrapiNodeState {
-    node_num: MrapiUint,
-    allocated: MrapiBoolean,
-    valid: MrapiBoolean,
-}
-
-struct MrapiNodeData {
-    //struct sigaction signals[MCA_MAX_SIGNALS];
-    state: MrapiNodeState,
-    tid: thread::ThreadId,
-    proc_num: MrapiUint,
-    sems: [MrapiUint8; MRAPI_MAX_SEMS], // list of sems this node is referencing
-    shmems: [MrapiUint8; MRAPI_MAX_SHMEMS], // list of shmems this node is referencing
-}
-
-struct MrapiDomainState {
-    domain_id: MrapiDomain,
-    allocated: MrapiBoolean,
-    valid: MrapiBoolean,
-}
-
-struct MrapiDomainData {
-    num_nodes: MrapiUint16, // not decremented
-    state: MrapiDomainState,
-    nodes: [MrapiNodeData; MRAPI_MAX_NODES],
-}
-
-struct MrapiRequestData {
-    valid: MrapiBoolean,
-    completed: MrapiBoolean,
-    cancelled: MrapiBoolean,
-    node_num: MrapiUint32,
-    domain_id: MrapiDomain,
-    status: MrapiStatus,
-}
-
-#[derive(Copy, Clone)]
-struct MrapiAtomicOpData {
-    index: MrapiInt, // shared memory index
-    source: MrapiInt, // handle source
-}
-
-union MrapiAtomicOperation {
-    open: MrapiAtomicOpData,
-    close: MrapiAtomicOpData,
-    dup: MrapiAtomicOpData,
-    sync: MrapiAtomicOpData,
-}
-
-// atomic operation
-struct MrapiAtomicOp {
-    atype: MrapiAtomic,
-    spindex: MrapiInt, // source process index
-    valid: MrapiBoolean,
-    shmem: MrapiShmemHndl,
-    dest: MrapiUint32, // offset from base addr
-    operation: MrapiAtomicOperation,
-}
-
-struct MrapiProcessState {
-    pid: MrapiUint32,
-    allocated: MrapiBoolean,
-    valid: MrapiBoolean,
-}
-
-// process address space
-struct MrapiProcessData {
-    state: MrapiProcessState,
-    num_nodes: MrapiUint16,
-    proc: MrapiInt, // process ID for duplicating shared memory
-    link: [MrapiInt; MRAPI_MAX_PROCESSES], /* 1 if can be signaled */
-    // signal SIGUSR1 indicates atomic operation signal */
-    // struct sigaction atomic;
-    op: MrapiAtomicOp,
-}
-
-struct Lock {
-  lock: MrapiUint32,
-}
-
-struct MrapiSysSem {
-  num_locks: MrapiInt32,
-  locks: [Lock; MRAPI_MAX_SHARED_LOCKS],
-  key: MrapiInt32, // the shared key passed in on get/create
-  valid: MrapiBoolean,
-}
-
-struct MrapiDatabase<'a> {
-  global_lock: Lock, // not used
-  num_shmems: MrapiUint8,
-  num_sems: MrapiUint8, // not decremented
-  num_rmems: MrapiUint8, // not decremented
-  num_domains: MrapiUint8, // not used
-  num_processes: MrapiUint8, // not used
-  shmems: [MrapiShmem<'a>; MRAPI_MAX_SHMEMS],
-  sems: [MrapiSem<'a>; MRAPI_MAX_SEMS],
-  sys_sems: [MrapiSysSem; MRAPI_MAX_SEMS],
-  rmems: [MrapiRmem<'a>; MRAPI_MAX_RMEMS],
-  domains: [MrapiDomainData; MRAPI_MAX_DOMAINS],
-  requests: [MrapiRequestData; MRAPI_MAX_REQUESTS],
-  processes: [MrapiProcessData; MRAPI_MAX_PROCESSES],
-  // Rollover variables
-  rollover_callbacks_ptr: [fn(); MRAPI_MAX_CALLBACKS],
-  rollover_index: MrapiUint16,
-  // Callback variables
-  callbacks_array: [MrapiCallback; MRAPI_MAX_CALLBACKS],
-  callback_index: MrapiUint16,
-}
-
 use mca_dprintf as mrapi_dprintf;
+
+/// mrapi_assert! - exit on failure
+macro_rules! mrapi_assert {
+    ($condition: expr) => {{
+	if MRAPI_FALSE == $condition {
+	    eprintln!("INTERNAL ERROR: MRAPI failed assertion ({}:{}) shutting down\n", file!, line!);
+	    //mrapi_impl_free_resources(1/*panic*/);
+	    exit(1);
+	}
+    }};
+}
 
 pub mod sysvr4 {
     pub mod os;
     pub mod key;
     pub mod sem;
     pub mod shmem;
+}
+
+pub mod internal {
+    pub mod db;
+    pub mod lifecycle;
 }
