@@ -275,3 +275,4 @@ __pycache__/
 
 # Rust
 Cargo.lock
+mca-rs/common/target/.rustc_info.json
