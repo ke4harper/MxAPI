@@ -12,23 +12,27 @@ more-asserts = "0.3.0"
 rand = "0.8.5"
 rand_chacha = "0.3.1"
 late-static = "0.4.0"
+thread-id = "4.0.0"
+errno = "0.2.8"
+libc = "0.2"
+nix = "0.25.0"
+serde = { version = "1.0.147", features = ["derive"] }
 
 [target.'cfg(unix)'.dependencies]
-libc = "0.2.135"
-errno = "0.2.8"
-nix = "0.23"
 nc = "0.8"
-thread-id = "4.0.0"
 syscalls = "0.6.7"
 
 [target.'cfg(windows)'.dependencies]
 win-sys = "0.3"
+widestring = "1.0.2"
 
 [dependencies.windows-sys]
 version = "0.42.0"
 features = [
     "Win32_Foundation",
     "Win32_Security",
+    "Win32_System_Environment",
     "Win32_System_Threading",
     "Win32_UI_WindowsAndMessaging",
+    "Win32_Storage_FileSystem",
 ]

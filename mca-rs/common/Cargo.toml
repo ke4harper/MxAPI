@@ -11,12 +11,12 @@ crc = "3.0.0"
 more-asserts = "0.3.0"
 num_cpus = "1.13.1"
 systemstat = "0.2.0"
+thread-id = "4.0.0"
 libc = "0.2.89"
 
 [target.'cfg(unix)'.dependencies]
 nix = "0.23"
 signal-hook = "0.3.14"
-thread-id = "4.0.0"
 
 [target.'cfg(windows)'.dependencies]
 win-sys = "0.3"

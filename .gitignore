@@ -273,6 +273,9 @@ __pycache__/
 *.so
 *.so.*
 
+# Emacs
+**/#*#
+
 # Rust
 Cargo.lock
 **/target/

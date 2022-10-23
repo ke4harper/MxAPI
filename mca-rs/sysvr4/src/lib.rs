@@ -133,33 +133,85 @@ pub fn os_file_key(pathname: &str, proj_id: u32) -> Option<u32>  {
     os_impl::os_file_key(pathname, proj_id)
 }
 
+/// OS opaque semaphore
+#[derive(Debug)]
+#[derive(Eq, PartialEq)]
+pub struct Semaphore {
+    set: os_impl::SemSet,
+}
+
+impl Default for Semaphore {
+    fn default() -> Self {
+	Semaphore {
+	    set: os_impl::SemSet::default(),
+	}
+    }
+}
+
+#[allow(dead_code)]
+impl Semaphore {
+    /// Create new semaphore set instance
+    fn new(set: os_impl::SemSet) -> Self {
+	Semaphore {
+	    set: set,
+	}
+    }
+}
+
 /// Reference specific member of semaphore set
 #[allow(dead_code)]
-#[derive(Copy, Clone)]
 pub struct SemRef {
-    set: i32,
+    sem: Semaphore,
     member: u16,
     spinlock_guard: bool,
 }
 
+impl Default for SemRef {
+    fn default() -> Self {
+	SemRef {
+	    sem: Semaphore::default(),
+	    member: 0,
+	    spinlock_guard: false,
+	}
+    }
+}
+
+#[allow(dead_code)]
+impl SemRef {
+    /// Create semaphore reference instance
+    fn new(sem: Semaphore, member: u16, spin: bool) -> Self {
+	SemRef {
+	    sem: sem,
+	    member: member,
+	    spinlock_guard: spin,
+	}
+    }
+
+    /// Block until semaphore set member can be locked
+    fn lock(&self) -> Option<bool> {
+	os_impl::sem_lock(self)
+    }
+
+    /// Unlock semaphore set member
+    fn unlock(&self) -> Option<bool> {
+	os_impl::sem_unlock(self)
+    }
+}
+
 /// Create system semaphore
-pub fn sem_create(key: u32, num_locks: usize) -> Option<u32> {
-    os_impl::sem_create(key, num_locks)
+pub fn sem_create(key: u32, num_locks: usize) -> Option<Semaphore> {
+    match os_impl::sem_create(key, num_locks) {
+	Some(ss) => Some(Semaphore::new(ss)),
+	None => None,
+    }
 }
 
 /// Open existing system semaphore
-pub fn sem_get(key: u32, num_locks: usize) -> Option<u32> {
-    os_impl::sem_get(key, num_locks)
-}
-
-/// Release attachment to existing system semaphore
-pub fn sem_release(semid: u32) {
-    os_impl::sem_release(semid)
-}
-
-/// Delete existing system semaphore
-pub fn sem_delete(semid: u32) {
-    os_impl::sem_delete(semid)
+pub fn sem_get(key: u32, num_locks: usize) -> Option<Semaphore> {
+    match os_impl::sem_get(key, num_locks) {
+	Some(ss) => Some(Semaphore::new(ss)),
+	None => None,
+    }
 }
 
 #[allow(unused_imports)]
@@ -208,40 +260,74 @@ mod tests {
 
     #[test]
     fn semaphore() {
-	let key = os_file_key("", 'c' as u32).unwrap();
-        ma::assert_lt!(0, key);
-	// Empty set
-	match sem_create(key, 0) {
-	    Some(_) => { assert!(false) },
-	    None => { assert!(true) },
+	{
+	    let key = os_file_key("", 'c' as u32).unwrap();
+            ma::assert_lt!(0, key);
+	    // Empty set
+	    match sem_create(key, 0) {
+		Some(_) => { assert!(false) },
+		None => { assert!(true) },
+	    }
+	    // Single semaphore
+	    let sem1 = match sem_get(key, 1) {
+		Some(v) => v,
+		None => { // race condition with another process?
+		    match sem_create(key, 1) {
+			Some(v) => v,
+			None => {
+			    assert!(false);
+			    Semaphore::default()
+			},
+		    }
+		},
+	    };
+	    assert_eq!(1, sem1.set.num_locks);
+	    // Duplicate create fails
+	    match sem_create(key, 1) {
+		Some(_) => { assert!(false) },
+		None => { assert!(true); },
+	    };
+	    // Semaphore set
+	    let sem2 = match sem_get(key + 2, 2) {
+		Some(v) => v,
+		None => { // race condition with another process?
+		    match sem_create(key + 2, 2) {
+			Some(v) => v,
+			None => {
+			    assert!(false);
+			    Semaphore::default()
+			},
+		    }
+		},
+	    };
+	    assert_eq!(2, sem2.set.num_locks);
 	}
-	// Single semaphore
-	let mut created = false;
-	let id1 = match sem_get(key, 1) {
-	    Some(v) => v,
-	    None => { // race condition with another process?
-		created = true;
-		match sem_create(key, 1) {
-		    Some(v) => v,
-		    None => {
-			assert!(false);
-			0
-		    },
-		}
-	    },
-	};
-	ma::assert_le!(0, id1);
-	// Duplicate create fails
-	match sem_create(key, 1) {
-	    Some(_) => { assert!(false) },
-	    None => { assert!(true); },
-	};
-	// Clean up semaphore set with single member
-	if created {
-	    sem_delete(id1);
-	}
-	else {
-	    sem_release(id1);
+
+	// Lock and unlock semaphore member
+	{
+	    let key = os_file_key("", 'f' as u32).unwrap();
+            ma::assert_lt!(0, key);
+	    let sem1 = match sem_get(key, 1) {
+		Some(v) => v,
+		None => { // race condition with another process?
+		    match sem_create(key, 1) {
+			Some(v) => v,
+			None => {
+			    assert!(false);
+			    Semaphore::default()
+			},
+		    }
+		},
+	    };
+	    let sr = SemRef::new(sem1, 0, false);
+	    match sr.lock() {
+		Some(_) => { assert!(true) }, // lock succeeds
+		None => { assert!(false) },
+	    }
+	    match sr.unlock() {
+		Some(_) => { assert!(true) }, // unlock succeeds
+		None => { assert!(false) },
+	    }
 	}
     }
 }
