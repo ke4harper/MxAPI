@@ -47,9 +47,6 @@ use libc::{
     EINTR,
 };
 use widestring::U16CString;
-use serde::{
-    Serialize, Deserialize,
-};
 
 use windows_sys::Win32::{
     Foundation::{
@@ -138,7 +135,6 @@ pub fn os_file_key(mut pathname: &str, proj_id: u32) -> Option<u32> {
 
 /// Internal semaphore set representation
 #[derive(Eq)]
-#[derive(Serialize, Deserialize)]
 pub struct SemSet {
     key: u32,
     pub num_locks: usize,
@@ -241,7 +237,7 @@ pub fn sem_create(key: u32, num_locks: usize) -> Option<SemSet> {
 	hsem = unsafe { CreateSemaphoreW(ptr::null(), locked, 1, lockwstr.as_ptr()) };
 	if hsem == 0 {
 	    let err = errno();
-	    mca_dprintf!(1, "sysvr4::sem_create: Create failed, {}", err);
+	    mca_dprintf!(1, "sysvr4::sem_create: key: {}, num_locks: {}; Create failed, {}", key, num_locks, err);
 	    return None;
 	}
 	ss.add(hsem as u32);
@@ -251,7 +247,7 @@ pub fn sem_create(key: u32, num_locks: usize) -> Option<SemSet> {
     let mut prev: i32 = 0;
     let _rc = unsafe { ReleaseSemaphore(ss.id[0] as HANDLE, 1, &mut prev) };
 
-    mca_dprintf!(1, "sysvr4::sem_create: key: {}, num_locks: {}, set: {:?}", key, num_locks, ss);
+    mca_dprintf!(1, "sysvr4::sem_create: {:?}", ss);
 
     Some(ss)
 }
@@ -300,20 +296,21 @@ pub fn sem_get(key: u32, num_locks: usize) -> Option<SemSet> {
 	    _ => {},
 	}
 	if rc >= 0 {
-	    mca_dprintf!(1, "sysvr4::sem_get: key: {}, num_locks: {}, set: {:?}", key, num_locks, ss);
-	    return Some(ss);
+	    break;
 	}
 	else {
 	    let err = errno();
 	    if err.0 != EINTR {
 		mca_dprintf!(3, "sysvr4::sem_get: key: {}, num_locks: {}; {}", key, num_locks, err);
-		break;
+		return None;
 	    }
 	    mca_dprintf!(6, "sysvr4::sem_get: key: {}, num_locks: {}; {}", key, num_locks, err);
 	}
     }
 
-    None
+    mca_dprintf!(1, "sysvr4::sem_get: {:?}", ss);
+
+    Some(ss)
 }
 
 /// Spin waiting to unlock semaphore set member
@@ -327,7 +324,7 @@ fn sem_trylock(semref: &SemRef) -> Result<bool, Errno> {
     mca_dprintf!(4, "sysvr4::sem_trylock: set: {:?}, member: {}, spin: {}", ss, member, spin);
     let mut rc = 0;
     loop {
-	let result = unsafe { WaitForSingleObject(ss.id[0] as HANDLE, 0) };
+	let result = unsafe { WaitForSingleObject(ss.id[member+1] as HANDLE, 0) };
 	match result {
 	    WAIT_TIMEOUT => {
 		rc = -1;
@@ -340,7 +337,7 @@ fn sem_trylock(semref: &SemRef) -> Result<bool, Errno> {
 	    _ => {},
 	}
 	if rc >= 0 {
-	    mca_dprintf!(1, "sysvr4::sem_trylock: set: {:?}, member: {}, spin: {}, set: {:?}", ss, member, spin, ss);
+	    mca_dprintf!(1, "sysvr4::sem_trylock: set: {:?}, member: {}, spin: {}", ss, member, spin);
 	    return Ok(true);
 	}
 	else {
@@ -388,7 +385,7 @@ pub fn sem_unlock(semref: &SemRef) -> Option<bool> {
     let spin = semref.spinlock_guard;
     mca_dprintf!(4, "sysvr4::sem_unlock ss: {:?}, member: {}, spin: {}", ss, member, spin);
     let mut prev: i32 = 0;
-    let rc = unsafe { ReleaseSemaphore(ss.id[0] as HANDLE, 1, &mut prev) };
+    let rc = unsafe { ReleaseSemaphore(ss.id[member+1] as HANDLE, 1, &mut prev) };
     if rc == 0 {
 	let err = errno();
 	mca_dprintf!(1, "sysvr4::sem_unlock: set: {:?}, member: {}, spin: {}; {}", ss, member, spin, err);
@@ -458,7 +455,7 @@ mod tests {
 	{
 	    let key = os_file_key("", 'g' as u32).unwrap();
             ma::assert_lt!(0, key);
-	    let sem1 = match sem_get(key, 1) {
+	    let set1 = match sem_get(key, 1) {
 		Some(v) => v,
 		None => { // race condition with another process?
 		    match sem_create(key, 1) {
@@ -470,7 +467,7 @@ mod tests {
 		    }
 		},
 	    };
-	    let sr = SemRef::new(Semaphore::new(sem1), 0, false);
+	    let sr = SemRef::new(Semaphore::new(set1), 0, false);
 	    match sem_trylock(&sr) {
 		Ok(_) => { assert!(true) }, // lock succeeds
 		Err(_) => { assert!(false) },

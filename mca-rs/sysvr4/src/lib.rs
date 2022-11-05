@@ -287,8 +287,16 @@ mod tests {
 		Some(_) => { assert!(false) },
 		None => { assert!(true); },
 	    };
+	    // Get adds to reference count
+	    let _sem2 = match sem_get(key, 1) {
+		Some(v) => v,
+		None => {
+		    assert!(false);
+		    Semaphore::default()
+		},
+	    };
 	    // Semaphore set
-	    let sem2 = match sem_get(key + 2, 2) {
+	    let sem3 = match sem_get(key + 2, 2) {
 		Some(v) => v,
 		None => { // race condition with another process?
 		    match sem_create(key + 2, 2) {
@@ -300,7 +308,7 @@ mod tests {
 		    }
 		},
 	    };
-	    assert_eq!(2, sem2.set.num_locks);
+	    assert_eq!(2, sem3.set.num_locks);
 	}
 
 	// Lock and unlock semaphore member
