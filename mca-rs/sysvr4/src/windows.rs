@@ -174,26 +174,42 @@ impl fmt::Debug for SemSet {
 
 impl Drop for SemSet {
     fn drop(&mut self) {
-	for i in 0..self.id.len() {
-	    unsafe {
-		CloseHandle(self.id[i] as HANDLE);
-	    }
+	if self.id.len() <= 0 {
+	    return;
 	}
+	
+	let id = self.id[0];
+	
+	let result = unsafe { WaitForSingleObject(id as HANDLE, 0) };
+	match result {
+	    WAIT_TIMEOUT => {
+		mca_dprintf!(2, "sysvr4::SemSet::drop: id: {}; WAIT_TIMEOUT", id);
+		// Reference count is zero
+		for i in 0..self.id.len() {
+		    unsafe {
+			CloseHandle(self.id[i] as HANDLE);
+		    }
+		}
+	    },
+	    WAIT_FAILED | WAIT_ABANDONED => {
+		mca_dprintf!(2, "sysvr4::SemSet::drop: id: {}; WAIT_FAILED / _ABANDONED", id);
+	    },
+	    _ => {
+		mca_dprintf!(2, "sysvr4::SemSet::drop: id: {}; OK", id);
+	    },
+	}
+
+	mca_dprintf!(2, "sysvr4::SemSet::drop: id: {}", id);
     }
 }
 
 impl SemSet {
     /// Allocate empty semaphore set
     fn new(key: u32, num_locks: usize) -> Option<SemSet> {
-	if num_locks == 0 {
-	    mca_dprintf!(1, "sysvr4::SemSet::new: key: {}, num_locks: {}; Number of locks is not supported", key, num_locks);
-	    return None;
-	}
-	
 	let mut ss: SemSet = SemSet::default();
 	ss.key = key;
 	ss.num_locks  = num_locks;
-	// First semaphore is used as a guard during creation
+	// First semaphore is used as reference counter
 	ss.id = Vec::<u32>::with_capacity(num_locks + 1);
 
 	Some(ss)
@@ -208,7 +224,13 @@ impl SemSet {
 /// Create system semaphore
 #[allow(dead_code)]
 pub fn sem_create(key: u32, num_locks: usize) -> Option<SemSet> {
+    if num_locks <= 0 {
+	mca_dprintf!(1, "sysvr4::sem_create: key: {}, num_locks: {}; Number of locks is not supported", key, num_locks);
+	return None;
+    }
+	
     // Check if semaphore is already in use
+    // Named semaphores can be shared between local processes
     let semstr: String = String::from(format!("Local\\mca_{}_{}", key, 0));
     let semwstr: U16CString = U16CString::from_str(semstr).unwrap();
     let mut hsem = unsafe { OpenSemaphoreW(
@@ -232,7 +254,7 @@ pub fn sem_create(key: u32, num_locks: usize) -> Option<SemSet> {
     for i in 0..ss.num_locks + 1 {
 	let lockstr = String::from(format!("Local\\mca_{}_{}", key, i));
 	let lockwstr = U16CString::from_str(lockstr).unwrap();
-	// Create first semaphore in locked state for guard, the rest free
+	// Create first semaphore in locked state (ref count zero) for guard, the rest free
 	let locked = if i == 0 { 0 } else { 1 };
 	hsem = unsafe { CreateSemaphoreW(ptr::null(), locked, 1, lockwstr.as_ptr()) };
 	if hsem == 0 {
@@ -243,7 +265,7 @@ pub fn sem_create(key: u32, num_locks: usize) -> Option<SemSet> {
 	ss.add(hsem as u32);
     }
 
-    // Release the first member so competing sem_get can complete
+    // Increment reference count so competing sem_get can complete
     let mut prev: i32 = 0;
     let _rc = unsafe { ReleaseSemaphore(ss.id[0] as HANDLE, 1, &mut prev) };
 
@@ -254,6 +276,7 @@ pub fn sem_create(key: u32, num_locks: usize) -> Option<SemSet> {
 
 /// Open existing system semaphore
 #[allow(dead_code)]
+#[allow(unused_variables)]
 pub fn sem_get(key: u32, num_locks: usize) -> Option<SemSet> {
     // Allocate the semaphore set
     let mut ss = match SemSet::new(key, num_locks) {
@@ -263,7 +286,7 @@ pub fn sem_get(key: u32, num_locks: usize) -> Option<SemSet> {
 
     // Collect the semaphores in the set
     for i in 0..ss.num_locks + 1 {
-	let semstr: String = String::from(format!("Local\\mca_{}_{}", key, 0));
+	let semstr: String = String::from(format!("Local\\mca_{}_{}", key, i));
 	let semwstr: U16CString = U16CString::from_str(semstr).unwrap();
 	let hsem = unsafe { OpenSemaphoreW(
 	    SYNCHRONIZE | SEMAPHORE_MODIFY_STATE,
@@ -279,8 +302,7 @@ pub fn sem_get(key: u32, num_locks: usize) -> Option<SemSet> {
 
     // At this point, process 2 will have to wait until the semaphore is initialized
     // by process 1. This is accomplished by blocking on the first member in the
-    // semaphore set which is initialized by sem_create and cleared when complete.
-
+    // semaphore set which is initialized by sem_create to zero and incremented when complete.
     let mut rc = 0;
     loop {
 	let result = unsafe { WaitForSingleObject(ss.id[0] as HANDLE, 0) };
@@ -307,6 +329,10 @@ pub fn sem_get(key: u32, num_locks: usize) -> Option<SemSet> {
 	    mca_dprintf!(6, "sysvr4::sem_get: key: {}, num_locks: {}; {}", key, num_locks, err);
 	}
     }
+    
+    // Increment reference count by two to replace what was consumed by wait and account for get
+    let mut prev: i32 = 0;
+    let _rc = unsafe { ReleaseSemaphore(ss.id[0] as HANDLE, 2, &mut prev) };
 
     mca_dprintf!(1, "sysvr4::sem_get: {:?}", ss);
 
@@ -324,7 +350,7 @@ fn sem_trylock(semref: &SemRef) -> Result<bool, Errno> {
     mca_dprintf!(4, "sysvr4::sem_trylock: set: {:?}, member: {}, spin: {}", ss, member, spin);
     let mut rc = 0;
     loop {
-	let result = unsafe { WaitForSingleObject(ss.id[member+1] as HANDLE, 0) };
+	let result = unsafe { WaitForSingleObject(ss.id[member as usize +1] as HANDLE, 0) };
 	match result {
 	    WAIT_TIMEOUT => {
 		rc = -1;
@@ -385,7 +411,7 @@ pub fn sem_unlock(semref: &SemRef) -> Option<bool> {
     let spin = semref.spinlock_guard;
     mca_dprintf!(4, "sysvr4::sem_unlock ss: {:?}, member: {}, spin: {}", ss, member, spin);
     let mut prev: i32 = 0;
-    let rc = unsafe { ReleaseSemaphore(ss.id[member+1] as HANDLE, 1, &mut prev) };
+    let rc = unsafe { ReleaseSemaphore(ss.id[member as usize +1] as HANDLE, 1, &mut prev) };
     if rc == 0 {
 	let err = errno();
 	mca_dprintf!(1, "sysvr4::sem_unlock: set: {:?}, member: {}, spin: {}; {}", ss, member, spin, err);
