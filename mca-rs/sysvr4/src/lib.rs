@@ -151,10 +151,20 @@ impl Default for Semaphore {
 #[allow(dead_code)]
 impl Semaphore {
     /// Create new semaphore set instance
-    fn new(set: os_impl::SemSet) -> Self {
+    pub fn new(set: os_impl::SemSet) -> Self {
 	Semaphore {
 	    set: set,
 	}
+    }
+
+    /// Semaphore unique identifier
+    pub fn key(&self) -> u32 {
+	self.set.key
+    }
+
+    /// Semaphore number of locks
+    pub fn num_locks(&self) -> usize {
+	self.set.num_locks
     }
 }
 
@@ -210,6 +220,51 @@ pub fn sem_create(key: u32, num_locks: usize) -> Option<Semaphore> {
 pub fn sem_get(key: u32, num_locks: usize) -> Option<Semaphore> {
     match os_impl::sem_get(key, num_locks) {
 	Some(ss) => Some(Semaphore::new(ss)),
+	None => None,
+    }
+}
+
+/// OS opaque shared memory partition
+#[derive(Debug)]
+pub struct SharedMem<T> {
+    shmem: os_impl::ShmemObj::<T>,
+}
+
+impl<T: Default> Default for SharedMem<T> {
+    fn default() -> Self {
+	SharedMem {
+	    shmem: os_impl::ShmemObj::default(),
+	}
+    }
+}
+
+#[allow(dead_code)]
+impl<T> SharedMem<T> {
+    /// Create new shared memory partition
+    pub fn new(shmem: os_impl::ShmemObj<T>) -> Self {
+	SharedMem {
+	    shmem: shmem,
+	}
+    }
+
+    /// Shared memory unique identifier
+    pub fn key(&self) -> u32 {
+	self.shmem.key
+    }
+}
+
+/// Create system shared memory
+pub fn shmem_create<T: Default>(key: u32) -> Option<SharedMem<T>> {
+    match os_impl::shmem_create(key) {
+	Some(sm) => Some(SharedMem::new(sm)),
+	None => None,
+    }
+}
+
+/// Attach existing system shared memory
+pub fn shmem_get<T: Default>(key: u32) -> Option<SharedMem<T>> {
+    match os_impl::shmem_get(key) {
+	Some(sm) => Some(SharedMem::new(sm)),
 	None => None,
     }
 }
@@ -281,7 +336,8 @@ mod tests {
 		    }
 		},
 	    };
-	    assert_eq!(1, sem1.set.num_locks);
+	    assert_eq!(key, sem1.key());
+	    assert_eq!(1, sem1.num_locks());
 	    // Duplicate create fails
 	    match sem_create(key, 1) {
 		Some(_) => { assert!(false) },
