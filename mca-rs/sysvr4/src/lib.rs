@@ -226,11 +226,11 @@ pub fn sem_get(key: u32, num_locks: usize) -> Option<Semaphore> {
 
 /// OS opaque shared memory partition
 #[derive(Debug)]
-pub struct SharedMem<T> {
-    shmem: os_impl::ShmemObj::<T>,
+pub struct SharedMem<'a, T: 'static> {
+    shmem: os_impl::ShmemObj::<'a, T>,
 }
 
-impl<T: Default> Default for SharedMem<T> {
+impl<T: Default> Default for SharedMem<'_, T> {
     fn default() -> Self {
 	SharedMem {
 	    shmem: os_impl::ShmemObj::default(),
@@ -239,9 +239,9 @@ impl<T: Default> Default for SharedMem<T> {
 }
 
 #[allow(dead_code)]
-impl<T> SharedMem<T> {
+impl<'a, T> SharedMem<'a, T> {
     /// Create new shared memory partition
-    pub fn new(shmem: os_impl::ShmemObj<T>) -> Self {
+    pub fn new(shmem: os_impl::ShmemObj<'a, T>) -> Self {
 	SharedMem {
 	    shmem: shmem,
 	}
@@ -254,7 +254,7 @@ impl<T> SharedMem<T> {
 }
 
 /// Create system shared memory
-pub fn shmem_create<T: Default>(key: u32) -> Option<SharedMem<T>> {
+pub fn shmem_create<T: Default>(key: u32) -> Option<SharedMem<'static, T>> {
     match os_impl::shmem_create(key) {
 	Some(sm) => Some(SharedMem::new(sm)),
 	None => None,
@@ -262,7 +262,7 @@ pub fn shmem_create<T: Default>(key: u32) -> Option<SharedMem<T>> {
 }
 
 /// Attach existing system shared memory
-pub fn shmem_get<T: Default>(key: u32) -> Option<SharedMem<T>> {
+pub fn shmem_get<T: Default>(key: u32) -> Option<SharedMem<'static, T>> {
     match os_impl::shmem_get(key) {
 	Some(sm) => Some(SharedMem::new(sm)),
 	None => None,
