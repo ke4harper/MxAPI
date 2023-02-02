@@ -32,9 +32,23 @@ use std::{
     ptr,
     fmt,
     mem::{
+	//size_of,
 	MaybeUninit,
     },
+    /*
+    fs::{
+	File,
+	OpenOptions,
+    },
+    io::{
+	ErrorKind,
+    },
+    ffi::{
+	c_void,
+    },
+    */
 };
+
 use errno::{
     Errno,
     errno,
@@ -51,9 +65,9 @@ use widestring::U16CString;
 use windows_sys::Win32::{
     Foundation::{
 	MAX_PATH,
-	HANDLE,
 	INVALID_HANDLE_VALUE,
 	WAIT_TIMEOUT, WAIT_FAILED, WAIT_ABANDONED,
+	HANDLE,
 	CloseHandle,
     },
     System::{
@@ -76,8 +90,6 @@ use windows_sys::Win32::{
 	GetFileInformationByHandle,
     },
 };
-
-use common::*;
 
 /// Generate unique integer key
 #[allow(dead_code)]
@@ -128,7 +140,7 @@ pub fn os_file_key(mut pathname: &str, proj_id: u32) -> Option<u32> {
 	return None;
     }
     
-    mca_dprintf!(1, "sysvr4::file_key: pathname: {}, proj_id: {}, key: {}", pathname, proj_id, newkey);
+    mca_dprintf!(1, "sysvr4::file_key: pathname: {}, proj_id: {}, key: {:#X}", pathname, proj_id, newkey);
 
     Some(newkey)
 }
@@ -136,7 +148,7 @@ pub fn os_file_key(mut pathname: &str, proj_id: u32) -> Option<u32> {
 /// Internal semaphore set representation
 #[derive(Eq)]
 pub struct SemSet {
-    key: u32,
+    pub key: u32,
     pub num_locks: usize,
     id: Vec<u32>,
 }

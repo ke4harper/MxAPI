@@ -355,22 +355,6 @@ pub fn sem_unlock(semref: &SemRef) -> Option<bool> {
     Some(true)
 }
 
-/// OS shared memory image
-#[allow(dead_code)]
-pub struct ShmemImage<T> {
-    refcount: AtomicU32,
-    obj: T,
-}
-
-impl<T: Default> Default for ShmemImage<T> {
-    fn default() -> ShmemImage<T> {
-	ShmemImage {
-	    refcount: AtomicU32::new(0),
-	    obj: T::default(),
-	}
-    }
-}
-
 /// Internal shared memory object
 pub struct ShmemObj<'a, T> {
     pub key: u32,

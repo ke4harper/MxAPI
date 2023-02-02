@@ -1,5 +1,5 @@
 ///
-/// Copyright(c) 2022, Karl Eric Harper
+/// Copyright(c) 2023, Karl Eric Harper
 /// All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
@@ -43,8 +43,34 @@ cfg_if! {
 
 // Operating system functions
 
-use std::{thread};
-use std::time::{Duration};
+use std::{
+    fmt,
+    thread,
+    ptr,
+    mem::{
+	size_of,
+    },
+    time::{
+	Duration,
+    },
+    sync::atomic::{
+	Ordering,
+	AtomicU32,
+    },
+    path::{
+	Path,
+    },
+    ops::{
+	Deref, DerefMut
+    },
+};
+
+use shared_memory::{
+    ShmemConf,
+    Shmem,
+};
+
+use common::*;
 
 /// Allow other threads to run
 #[allow(dead_code)]
@@ -224,49 +250,236 @@ pub fn sem_get(key: u32, num_locks: usize) -> Option<Semaphore> {
     }
 }
 
-/// OS opaque shared memory partition
-#[derive(Debug)]
-pub struct SharedMem<'a, T: 'static> {
-    shmem: os_impl::ShmemObj::<'a, T>,
+/// Shared memory image
+#[allow(dead_code)]
+pub struct SharedImage<T> {
+    refcount: AtomicU32,
+    obj: T,
 }
 
-impl<T: Default> Default for SharedMem<'_, T> {
-    fn default() -> Self {
+/// Shared memory object
+#[allow(dead_code)]
+pub struct SharedMem<T: Default> {
+    pub key: u32,
+    instance: Option<T>,
+    mgr: Option<Shmem>,
+    //image: Option<&'a mut SharedImage::<T>>,
+}
+
+impl<T: Default> Default for SharedMem<T> {
+    fn default() -> SharedMem<T> {
 	SharedMem {
-	    shmem: os_impl::ShmemObj::default(),
+	    key: 0,
+	    instance: None,
+	    mgr: None,
+	    //image: None,
 	}
+    }
+}
+
+impl<T: Default> fmt::Debug for SharedMem<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+	let type_name = std::any::type_name::<T>();
+	write!(f, "SharedMem {{ type: {}, key: {:#X}, refcount: {:?} }}",
+	       type_name, self.key,
+	       match &self.mgr {
+		   None => 0,
+		   Some(mgr) => {
+		       let image = unsafe { &mut *(mgr.as_ptr() as *mut SharedImage::<T>) };
+		       image.refcount.load(Ordering::SeqCst)
+		   },
+	       }
+	)
+    }
+}
+
+impl<T: Default> Drop for SharedMem<T> {
+    fn drop(&mut self) {
+
+	mca_dprintf!(1, "sysvr4::SharedMem::drop: {:?}", self);
+
+	// Decrement the reference count
+	match &self.mgr {
+	    None => {},
+	    Some(mgr) => {
+		let image = unsafe { &mut *(mgr.as_ptr() as *mut SharedImage::<T>) };
+	      	if image.refcount.fetch_sub(1, Ordering::SeqCst) <= 1 {
+		    // Connect to shared memory with ownership to release resources
+		    // Format unique file identifier
+		    let file_id: &str = &format!("mca_{:X}", self.key) as &str;
+		    let flink = Path::new(file_id);
+		    
+		    // Open with file base link
+		    match ShmemConf::new().flink(&flink).open() {
+			Ok(mut dup) => {
+			    // Ownership will be acquired based on reference count when dropped
+			    dup.set_owner(true);
+			    // Resources are released when mgr goes out of scope
+			},
+			Err(err) => {
+			    mca_dprintf!(1, "sysvr4::SharedMem::drop: {:?}; ShmemConf::new failed, {}", self, err);
+			},
+		    }
+		}
+		else {
+		    // Shared memory is unmapped
+		}
+	    },
+	}
+    }
+}
+
+impl<T: Default> Deref for SharedMem<T> {
+    type Target = SharedImage::<T>;
+    fn deref(&self) -> &SharedImage<T> {
+	let image = match &self.mgr {
+	    None => ptr::null_mut(),
+	    Some(mgr) => {
+		unsafe { &mut *(mgr.as_ptr() as *mut SharedImage::<T>)}
+	    },
+	};
+	unsafe { &*image }
+    }
+}
+
+impl<T: Default> DerefMut for SharedMem<T> {
+    fn deref_mut(&mut self) -> &mut SharedImage<T> {
+	let image = match &self.mgr {
+	    None => ptr::null_mut(),
+	    Some(mgr) => {
+		unsafe { &mut *(mgr.as_ptr() as *mut SharedImage::<T>)}
+	    },
+	};
+	unsafe {&mut *image }
     }
 }
 
 #[allow(dead_code)]
-impl<'a, T> SharedMem<'a, T> {
-    /// Create new shared memory partition
-    pub fn new(shmem: os_impl::ShmemObj<'a, T>) -> Self {
-	SharedMem {
-	    shmem: shmem,
-	}
+impl<T: Default + Clone> SharedMem<T> {
+    /// Allocate empty shared memory object
+    /// Size and attached memory include reference counter
+    fn new(key: u32, mgr: Shmem) -> Option<SharedMem<T>> {
+	let sm: SharedMem<T> = SharedMem {
+	    key: key,
+	    instance: None,
+	    mgr: Some(mgr),
+	};
+
+	mca_dprintf!(6, "sysvr4::SharedMem::new: {:?}", sm);
+
+	Some(sm)
     }
 
-    /// Shared memory unique identifier
-    pub fn key(&self) -> u32 {
-	self.shmem.key
+    /// Reference count accessor
+    fn refcount(&self) -> u32 {
+	match &self.mgr {
+	    None => 0,
+	    Some(mgr) => {
+		let image = unsafe { &mut *(mgr.as_ptr() as *mut SharedImage::<T>)};
+		image.refcount.load(Ordering::SeqCst)
+	    }
+	}
     }
 }
 
 /// Create system shared memory
-pub fn shmem_create<T: Default>(key: u32) -> Option<SharedMem<'static, T>> {
-    match os_impl::shmem_create(key) {
-	Some(sm) => Some(SharedMem::new(sm)),
-	None => None,
+pub fn shmem_create<T: Default + Clone>(key: u32) -> Option<SharedMem<T>> {
+    // Make room for atomic reference counter at beginning of partition
+    let raw_size = size_of::<T>() + size_of::<u32>();
+    if raw_size > usize::MAX {
+	let type_name = std::any::type_name::<T>();
+	mca_dprintf!(1, "sysvr4::shmem_create: type: {}, key: {:#X}, raw_size: {}; Size not supported",
+		     type_name, key, raw_size);
+	return None;
     }
+
+    // Format unique file identifier
+    let file_id: &str = &format!("mca_{:X}", key) as &str;
+    let flink = Path::new(file_id);
+
+    // Allocate shared memory
+    let mgr = match ShmemConf::new().flink(flink).size(raw_size).create() {
+	Ok(mut v) => {
+	    // Ownership will be acquired based on reference count when dropped
+	    v.set_owner(false);
+	    v
+	},
+	Err(err) => {
+	    mca_dprintf!(1, "sysvr4::shmem_create: file_id: {}, ShmemConf::new failed, {}", file_id, err);
+	    return None
+	},
+    };
+    
+    // Create the shared memory object
+    let sm: SharedMem<T> = match SharedMem::new(key, mgr) {
+	Some(v) => v,
+	None => {
+	    mca_dprintf!(1, "sysvr4::shmem_create: key: {}, new failed", key);
+	    return None
+	},
+    };
+	    
+    // Increment reference counter
+    match &sm.mgr {
+	None => {},
+	Some(mgr) => {
+	    let image = unsafe { &mut *(mgr.as_ptr() as *mut SharedImage::<T>) };
+	    image.refcount.fetch_add(1, Ordering::SeqCst);
+	}
+    };
+
+    mca_dprintf!(1, "sysvr4::shmem_create: {:?}", sm);
+
+    Some(sm)
 }
 
 /// Attach existing system shared memory
-pub fn shmem_get<T: Default>(key: u32) -> Option<SharedMem<'static, T>> {
-    match os_impl::shmem_get(key) {
-	Some(sm) => Some(SharedMem::new(sm)),
-	None => None,
+pub fn shmem_get<T: Default + Clone>(key: u32) -> Option<SharedMem<T>> {
+    // Make room for atomic reference counter at beginning of partition
+    let raw_size = size_of::<T>() + size_of::<u32>();
+    if raw_size > usize::MAX {
+	let type_name = std::any::type_name::<T>();
+	mca_dprintf!(1, "sysvr4::shmem_get: type: {}, key: {:#X}, raw_size: {}; Size not supported",
+		     type_name, key, raw_size);
+	return None;
     }
+
+    // Format unique file identifier
+    let file_id: &str = &format!("mca_{:X}", key) as &str;
+    let flink = Path::new(file_id);
+
+    // Open with file base link
+    let sm = match ShmemConf::new().flink(&flink).open() {
+	Ok(mut mgr)=> {
+	    // Ownership will be acquired based on reference count when dropped
+	    mgr.set_owner(false);
+
+	    // Create the shared memory object
+	    let obj: SharedMem<T> = match SharedMem::new(key, mgr) {
+		Some(val) => val,
+		None => { return None; },
+	    };
+	    
+	    // Increment reference counter
+	    match &obj.mgr {
+		None => {},
+		Some(mgr) => {
+		    let image = unsafe { &mut *(mgr.as_ptr() as *mut SharedImage::<T>) };
+		    image.refcount.fetch_add(1, Ordering::SeqCst);
+		}
+	    }
+
+	    obj
+	},
+	Err(err) => {
+	    mca_dprintf!(1, "sysvr4::shmem_get: ShmemConf::new failed, {}", err);
+	    return None
+	},
+    };
+
+    mca_dprintf!(1, "sysvr4::shmem_get: {:?}", sm);
+
+    Some(sm)
 }
 
 #[allow(unused_imports)]
@@ -392,6 +605,44 @@ mod tests {
 		Some(_) => { assert!(true) }, // unlock succeeds
 		None => { assert!(false) },
 	    }
+	}
+    }
+
+    #[test]
+    fn sharedmem() {
+	// Create, get shared memory
+	{
+	    let key = os_file_key("", 'h' as u32).unwrap();
+            ma::assert_lt!(0, key);
+	    let mut obj1 = match shmem_get::<u32>(key) {
+		Some(v) => v,
+		None => { // race condition with another process?
+		    let obj = match shmem_create::<u32>(key) {
+			Some(v) => v,
+			None => {
+			    assert!(false);
+			    SharedMem::default()
+			},
+		    };
+		    obj
+		},
+	    };
+	    obj1.deref_mut().obj = 1;
+	    assert_eq!(key, obj1.key);
+	    assert_eq!(1, obj1.refcount());
+	    assert_eq!(1, obj1.deref().obj);
+	    let mut obj2 = match shmem_get::<u32>(key) {
+		Some(v) => v,
+		None => {
+		    assert!(false);
+		    SharedMem::<u32>::default()
+		},
+	    };
+	    assert_eq!(1, obj2.deref().obj);
+	    assert_eq!(key, obj2.key);
+	    assert_eq!(2, obj2.refcount());
+	    obj2.deref_mut().obj = 2;
+	    assert_eq!(2, obj1.deref().obj);
 	}
     }
 }
