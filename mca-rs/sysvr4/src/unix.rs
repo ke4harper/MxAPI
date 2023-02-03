@@ -268,7 +268,7 @@ pub fn sem_trylock(semref: &SemRef) -> Result<bool, Errno> {
 	    Err(e) => {
 		if e != EINTR {
 		    mca_dprintf!(3, "sysvr4::sem_trylock: set: {:?}, member: {}, spin: {}; {}", ss, member, spin, e);
-		    return Err(e);
+		    return Err(Errno(e));
 		}
 		
 		mca_dprintf!(6, "sysvr4::sem_trylock: set: {:?}, member: {}, spin: {}; Attempt failed", ss, member, spin);
@@ -290,7 +290,7 @@ pub fn sem_lock(semref: &SemRef) -> Option<bool> {
 		return Some(v);
 	    },
 	    Err(e) => {
-		if e != EAGAIN {
+		if e != Errno(EAGAIN) {
 		    mca_dprintf!(2, "sysvr4::sem_lock attempt failed: {}", e);
 		    break;
 		}
