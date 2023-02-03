@@ -223,6 +223,11 @@ impl SemRef {
 	}
     }
 
+    /// Spin waiting to unlock semaphore set member
+    fn trylock(&self) -> Result<bool, i32> {
+	os_impl::sem_trylock(self)
+    }
+
     /// Block until semaphore set member can be locked
     fn lock(&self) -> Option<bool> {
 	os_impl::sem_lock(self)
@@ -600,6 +605,19 @@ mod tests {
 	    match sr.lock() {
 		Some(_) => { assert!(true) }, // lock succeeds
 		None => { assert!(false) },
+	    }
+	    match sr.unlock() {
+		Some(_) => { assert!(true) }, // unlock succeeds
+		None => { assert!(false) },
+	    }
+
+	    match sr.trylock() {
+		Ok(_) => { assert!(true) }, // lock succeeds
+		Err(_) => { assert!(false) },
+	    }
+	    match sr.trylock() {
+		Ok(_) => { assert!(false) }, // lock fails
+		Err(_) => { assert!(true) },
 	    }
 	    match sr.unlock() {
 		Some(_) => { assert!(true) }, // unlock succeeds

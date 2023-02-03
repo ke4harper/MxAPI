@@ -252,7 +252,7 @@ pub fn sem_get(key: u32, num_locks: usize) -> Option<SemSet> {
 /// Spin waiting to unlock semaphore set member
 /// Return without retry if semaphore is deleted
 #[allow(dead_code)]
-fn sem_trylock(semref: &SemRef) -> Result<bool, i32> {
+pub fn sem_trylock(semref: &SemRef) -> Result<bool, i32> {
     let ss = &semref.sem.set;
     let member = semref.member;
     let spin = semref.spinlock_guard;
