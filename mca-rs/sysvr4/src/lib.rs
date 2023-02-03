@@ -65,6 +65,10 @@ use std::{
     },
 };
 
+use errno::{
+    Errno,
+};
+
 use shared_memory::{
     ShmemConf,
     Shmem,
@@ -224,7 +228,7 @@ impl SemRef {
     }
 
     /// Spin waiting to unlock semaphore set member
-    fn trylock(&self) -> Result<bool, i32> {
+    fn trylock(&self) -> Result<bool, Errno> {
 	os_impl::sem_trylock(self)
     }
 
