@@ -1,5 +1,5 @@
 ///
-/// Copyright(c) 2022, Karl Eric Harper
+/// Copyright(c) 2023, Karl Eric Harper
 /// All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
@@ -30,21 +30,12 @@ use crate::*;
 
 use std::{
     ffi::{
-	OsStr,
 	CString,
-	c_void,
     },
     mem::{
-	size_of,
 	MaybeUninit,
     },
     fmt,
-    ptr,
-    sync::atomic::{
-	Ordering,
-	AtomicU32,
-    },
-    os::unix::io::RawFd,
 };
 
 use errno::{
@@ -68,23 +59,7 @@ use nix::{
 	IPC_NOWAIT,
 	EINTR, EAGAIN,
     },
-    sys::{
-	mman::{
-	    mmap, munmap,
-	    shm_open, shm_unlink,
-	    MapFlags, ProtFlags,
-	},
-	stat::{
-	    fstat, Mode
-	},
-    },
-    unistd::{
-	close, ftruncate,
-    },
-    fcntl::OFlag,
 };
-
-use common::*;
 
 /// Generate unique integer key
 #[allow(dead_code)]
@@ -277,7 +252,7 @@ pub fn sem_get(key: u32, num_locks: usize) -> Option<SemSet> {
 /// Spin waiting to unlock semaphore set member
 /// Return without retry if semaphore is deleted
 #[allow(dead_code)]
-fn sem_trylock(semref: &SemRef) -> Result<bool, i32> {
+pub fn sem_trylock(semref: &SemRef) -> Result<bool, i32> {
     let ss = &semref.sem.set;
     let member = semref.member;
     let spin = semref.spinlock_guard;
@@ -353,275 +328,6 @@ pub fn sem_unlock(semref: &SemRef) -> Option<bool> {
     mca_dprintf!(1, "sysvr4::sem_unlock: set: {:?}, member: {}, spin: {}", ss, member, spin);
 
     Some(true)
-}
-
-/// Internal shared memory object
-pub struct ShmemObj<'a, T> {
-    pub key: u32,
-    file: String,
-    id: RawFd,
-    raw_size: usize,
-    raw_addr: *mut c_void,
-    image: Option<&'a mut ShmemImage::<T>>,
-}
-
-impl<T: Default> Default for ShmemObj<'_, T> {
-    fn default() -> ShmemObj<'static, T> {
-	ShmemObj {
-	    key: 0,
-	    file: String::from(""),
-	    id: 0,
-	    raw_size: 0,
-	    raw_addr: ptr::null_mut(),
-	    image: None,
-	}
-    }
-}
-
-impl<T> fmt::Debug for ShmemObj<'_, T> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-	let type_name = std::any::type_name::<T>();
-	write!(f, "ShmemObj {{ type: {}, key: {:#X}, file: {}, id: {}, raw_size: {}, raw_addr: {:p}, refcount: {:?} }}",
-	       type_name, self.key, self.file, self.id, self.raw_size, self.raw_addr,
-	       match &self.image {
-	       	     None => 0,
-		     Some(image) => image.refcount.load(Ordering::SeqCst)
-		     }
-	)
-    }
-}
-
-impl<T> Drop for ShmemObj<'_, T> {
-    fn drop(&mut self) {
-
-	mca_dprintf!(1, "sysvr4::ShmemObj::drop: {:?}", self);
-
-	let id = self.id;
-	if id <= 0 {
-	    // Empty object
-	    return;
-	}
-
-	// Decrement the reference count
-	match &mut self.image {
-	    None => {},
-	    Some(image) => {
-	      	if image.refcount.fetch_sub(1, Ordering::SeqCst) <= 1 {
-		    
-		    // Unmap shared memory
-		    if let Err(_) = unsafe { munmap(self.raw_addr, self.raw_size) } {
-			let err = errno();
-			mca_dprintf!(1, "sysvr4::ShmemObj::drop: {:?}; Unmap failed, {}", self, err);
-			return;
-		    }
-
-		    // Unlink shared memory
-		    if let Err(_) = shm_unlink(self.file.as_str()) {
-			let err = errno();
-			mca_dprintf!(1, "sysvr4::ShmemObj::drop: {:?}; Unlink failed, {}", self, err);
-			return;
-		    }
-		    // Close shared memory file descriptor
-		    if let Err(_) = close(self.id) {
-			let err = errno();
-			mca_dprintf!(1, "sysvr4::ShmemObj::drop: {:?}; Close failed, {}", self, err);
-			return;
-		    }
-		} else {
-		    // Unmap shared memory
-		    if let Err(_) = unsafe { munmap(self.raw_addr, self.raw_size) } {
-			let err = errno();
-			mca_dprintf!(1, "sysvr4::ShmemObj::drop: {:?}; Unmap failed, {}", self, err);
-			return;
-		    }
-		}
-	    }
-	}
-    }
-}
-
-impl<T: Default> ShmemObj<'_, T> {
-    /// Allocate empty shared memory object
-    /// Size and attached memory include long reference counter
-    fn new(key: u32, file: &str, id: u32, raw_size: usize, raw_addr: *mut c_void) -> Option<ShmemObj<'static, T>> {
-	let mut sm: ShmemObj<T> = ShmemObj::default();
-	sm.key = key;
-	sm.file = file.to_string();
-	sm.id = id as i32;
-	sm.raw_size = raw_size;
-	sm.raw_addr = raw_addr;
-	unsafe { sm.image = Some(&mut *(raw_addr as *mut ShmemImage::<T>)); }
-
-	mca_dprintf!(6, "sysvr4::ShmemObj::new: {:?}", sm);
-
-	Some(sm)
-    }
-    /// Reference count accessor
-    fn refcount(&self) -> u32 {
-	match &self.image {
-	    None => 0,
-	    Some(image) => {
-		image.refcount.load(Ordering::SeqCst)
-	    }
-	}
-    }
-}
-
-/// Create system shared memory
-#[allow(dead_code)]
-pub fn shmem_create<T: Default>(key: u32) -> Option<ShmemObj<'static, T>> {
-    // Make room for atomic reference counter at beginning of partition
-    let raw_size = size_of::<T>() + size_of::<u32>();
-    if raw_size > usize::MAX {
-	let type_name = std::any::type_name::<T>();
-	mca_dprintf!(1, "sysvr4::shmem_create: type: {}, key: {:#X}, raw_size: {}; Size not supported",
-		     type_name, key, raw_size);
-	return None;
-    }
-    
-    // 1. create the shared memory file
-    let file_id: &str = &format!("/mca_{:X}", key) as &str;
-    let shmem_file = OsStr::new(file_id);
-    let shmemid: i32 = match shm_open(
-	shmem_file,
-	OFlag::O_CREAT | OFlag::O_EXCL | OFlag::O_RDWR,
-	Mode::S_IRUSR | Mode::S_IWUSR) {
-	Ok(v) => { v },
-	Err(nix::Error::EEXIST) => {
-	    let type_name = std::any::type_name::<T>();
-	    mca_dprintf!(1, "sysvr4::shmem_create: type: {}, key: {:#X}, file: {}, raw_size: {}; Mapping ID already exists",
-			 type_name, key, file_id, raw_size);
-	    return None;
-	},
-	Err(_) => {
-	    let err = errno();
-	    let type_name = std::any::type_name::<T>();
-	    mca_dprintf!(1, "sysvr4::shmem_create: type: {}, key: {:#X}, file: {}, raw_size: {}; Open failed, {}",
-			 type_name, key, file_id, raw_size, err);
-	    return None;
-	},
-    };
-
-    // 2. enlarge memory descriptor file to requested size
-    match ftruncate(shmemid, raw_size as _) {
-	Ok(_) => { },
-	Err(_) => {
-	    let err = errno();
-	    let type_name = std::any::type_name::<T>();
-	    mca_dprintf!(1, "sysvr4::shmem_create: type: {}, key: {:#X}, file: {}, raw_size: {}; Truncate failed, {}",
-			 type_name, key, file_id, raw_size, err);
-	    return None;
-	},
-    };
-
-    // 3. Attach to shared memory file
-    let raw_addr: *mut c_void = match unsafe {
-	mmap(ptr::null_mut(), raw_size,
-             ProtFlags::PROT_READ | ProtFlags::PROT_WRITE,
-             MapFlags::MAP_SHARED,
-            shmemid,
-             0,
-	) } {
-	Ok(v) => {
-	    v as *mut _
-	},
-	Err(_) => {
-	    let err = errno();
-	    let type_name = std::any::type_name::<T>();
-	    mca_dprintf!(1, "sysvr4::shmem_create: type: {}, key: {:#X}, file: {}, raw_size: {}; Map failed, {}",
-			 type_name, key, file_id, raw_size, err);
-	    return None;
-	},
-    };
-
-    // Create the shared memory object
-    let sm = match ShmemObj::new(key, file_id, shmemid as u32, raw_size, raw_addr) {
-	Some(val) => val,
-	None => { return None; },
-    };
-
-    // Increment reference counter
-    match &sm.image {
-	None => {},
-	Some(image) => {
-	    image.refcount.fetch_add(1, Ordering::SeqCst);
-	}
-    }
-
-    mca_dprintf!(1, "sysvr4::shmem_create: {:?}", sm);
-
-    Some(sm)
-}
-
-/// Access existing system shared memory
-#[allow(dead_code)]
-pub fn shmem_get<T: Default>(key: u32) -> Option<ShmemObj<'static, T>> {
-    // 1. open shared memory file
-    let file_id: &str = &format!("/mca_{:X}", key) as &str;
-    let shmem_file = OsStr::new(file_id);
-    let shmemid: i32 = match shm_open(
-	shmem_file,
-	OFlag::O_RDWR,
-	Mode::S_IRUSR) {
-	Ok(v) => { v },
-	Err(_) => {
-	    let err = errno();
-	    let type_name = std::any::type_name::<T>();
-	    mca_dprintf!(1, "sysvr4::shmem_get: type: {}, key: {:#X}, file: {}; Open failed, {}",
-			 type_name, key, file_id, err);
-	    return None;
-	},
-    };
-
-    // 2. Get the actual size
-    let raw_size = match fstat(shmemid) {
-	Ok(v) => v.st_size as usize,
-	Err(_) => {
-	    let err = errno();
-	    let type_name = std::any::type_name::<T>();
-	    mca_dprintf!(1, "sysvr4::shmem_get: type: {}, key: {:#X}, file: {}, id: {:X}; Stat failed, {}",
-			 type_name, key, file_id, shmemid, err);
-	    return None;
-	}
-    };
-    
-    // 3. Attach to shared memory file
-    let raw_addr: *mut c_void = match unsafe {
-	mmap(ptr::null_mut(), raw_size,
-             ProtFlags::PROT_READ | ProtFlags::PROT_WRITE,
-             MapFlags::MAP_SHARED,
-            shmemid,
-             0,
-	) } {
-	Ok(v) => {
-	    v as *mut _
-	},
-	Err(_) => {
-	    let err = errno();
-	    let type_name = std::any::type_name::<T>();
-	    mca_dprintf!(1, "sysvr4::shmem_get: type: {}, key: {:#X}, file: {}, raw_size: {}; Map failed, {}",
-			 type_name, key, file_id, raw_size, err);
-	    return None;
-	},
-    };
-
-    // Create the shared memory object
-    let sm = match ShmemObj::new(key, &file_id, shmemid as u32, raw_size, raw_addr) {
-	Some(val) => val,
-	None => { return None; },
-    };
-
-    // Increment reference counter
-    match &sm.image {
-	None => {},
-	Some(image) => {
-	    image.refcount.fetch_add(1, Ordering::SeqCst);
-	}
-    }
-
-    mca_dprintf!(1, "sysvr4::shmem_get: {:?}", sm);
-
-    Some(sm)
 }
 
 #[allow(unused_imports)]
@@ -705,38 +411,6 @@ mod tests {
 		Some(_) => { assert!(true) }, // unlock succeeds
 		None => { assert!(false) },
 	    }
-	}
-    }
-
-    #[test]
-    fn sharedmem() {
-	// Create, get shared memory
-	{
-	    let key = os_file_key("", 'h' as u32).unwrap();
-            ma::assert_lt!(0, key);
-	    let obj1 = match shmem_get::<u32>(key) {
-		Some(v) => v,
-		None => { // race condition with another process?
-		    match shmem_create::<u32>(key) {
-			Some(v) => v,
-			None => {
-			    assert!(false);
-			    ShmemObj::default()
-			},
-		    }
-		},
-	    };
-	    assert_eq!(key, obj1.key);
-	    assert_eq!(1, obj1.refcount());
-	    let obj2 = match shmem_get::<u32>(key) {
-		Some(v) => v,
-		None => {
-		    assert!(false);
-		    ShmemObj::<u32>::default()
-		},
-	    };
-	    assert_eq!(key, obj2.key);
-	    assert_eq!(2, obj2.refcount());
 	}
     }
 }
