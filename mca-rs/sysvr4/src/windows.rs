@@ -1,5 +1,5 @@
 ///
-/// Copyright(c) 2022, Karl Eric Harper
+/// Copyright(c) 2023, Karl Eric Harper
 /// All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
@@ -35,18 +35,6 @@ use std::{
 	//size_of,
 	MaybeUninit,
     },
-    /*
-    fs::{
-	File,
-	OpenOptions,
-    },
-    io::{
-	ErrorKind,
-    },
-    ffi::{
-	c_void,
-    },
-    */
 };
 
 use errno::{
@@ -505,7 +493,7 @@ mod tests {
 		    }
 		},
 	    };
-	    let sr = SemRef::new(Semaphore::new(set1), 0, false);
+	    let sr = SemRef::new(&Semaphore::new(set1), 0, false);
 	    match sem_trylock(&sr) {
 		Ok(_) => { assert!(true) }, // lock succeeds
 		Err(_) => { assert!(false) },

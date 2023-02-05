@@ -349,7 +349,6 @@ pub struct SharedMem<T: Default> {
     pub key: u32,
     instance: Option<T>,
     mgr: Option<Shmem>,
-    //image: Option<&'a mut SharedImage::<T>>,
 }
 
 impl<T: Default> Default for SharedMem<T> {
@@ -358,7 +357,6 @@ impl<T: Default> Default for SharedMem<T> {
 	    key: 0,
 	    instance: None,
 	    mgr: None,
-	    //image: None,
 	}
     }
 }

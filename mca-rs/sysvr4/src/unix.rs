@@ -79,14 +79,11 @@ pub fn os_file_key(mut pathname: &str, proj_id: u32) -> Option<u32>  {
     Some(newkey as u32)
 }
 
-const SEMSET_MAX_LOCKS: usize = 32;
-
 /// Internal semaphore set representation
 pub struct SemSet {
     pub key: u32,
     pub num_locks: usize,
     id: i32,
-    //spin: SharedMem<[Arc<AtomicU32>; SEMSET_MAX_LOCKS]>,
 }
 
 impl Default for SemSet {
@@ -95,7 +92,6 @@ impl Default for SemSet {
 	    key: 0,
 	    num_locks: 0,
 	    id: 0,
-	    //spin: SharedMem::default(),
 	}
     }
 }
@@ -162,24 +158,6 @@ impl SemSet {
 	    None
 	}
 	else {
-/*
-	    // Create shared memory for spin locks
-	    let mgr = match shmem_get::<[Arc<AtomicU32>; 32]>(key) {
-		Some(v) => v,
-		None => { // race condition with another process?
-		    let obj = match shmem_create::<[Arc<AtomicU32>; SEMSET_MAX_LOCKS]>(key) {
-			Some(v) => v,
-			None => {
-			    mca_dprintf!(1, "sysvr4::SemSet::new: {:?}: Cannot create spinlock shared memory", ss);
-			    SharedMem::default()
-			},
-		    };
-		    obj
-		},
-	    };
-	    ss.spin = mgr;
-*/
-
 	    mca_dprintf!(6, "sysvr4::SemSet::new: {:?}", ss);
 
 	    Some(ss)
