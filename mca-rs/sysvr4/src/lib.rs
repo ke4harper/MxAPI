@@ -198,12 +198,16 @@ impl Semaphore {
     }
 }
 
+const SEMREF_MAX_SPINLOCKS: usize = 8;
+type SemRefSpinLocks = [AtomicU32; SEMREF_MAX_SPINLOCKS];
+
 /// Reference specific member of semaphore set
 #[allow(dead_code)]
 pub struct SemRef {
     sem: Semaphore,
     member: u16,
     spinlock_guard: bool,
+    spin: Option<SharedMem<SemRefSpinLocks>>,
 }
 
 impl Default for SemRef {
@@ -212,6 +216,7 @@ impl Default for SemRef {
 	    sem: Semaphore::default(),
 	    member: 0,
 	    spinlock_guard: false,
+	    spin: None,
 	}
     }
 }
@@ -219,27 +224,99 @@ impl Default for SemRef {
 #[allow(dead_code)]
 impl SemRef {
     /// Create semaphore reference instance
-    fn new(sem: Semaphore, member: u16, spin: bool) -> Self {
+    fn new(sem: &Semaphore, member: u16, spinlock: bool) -> Self {
+	let clone = match sem_get(sem.key(), sem.num_locks()) {
+	    Some(v) => v,
+	    None => Semaphore::default(),
+	};
+
+	let mut mgr = None;
+	if spinlock {
+	    if sem.num_locks() > SEMREF_MAX_SPINLOCKS {
+		mca_dprintf!(1, "sysvr4::SemRef::new: {:?}: Maximum number of spinlocks ({}) exceeded", sem, SEMREF_MAX_SPINLOCKS);
+	    }
+	    else {
+		// Map shared memory for spin locks
+		mgr = match shmem_get::<SemRefSpinLocks>(sem.key()) {
+		    Some(v) => Some(v),
+		    None => { // race condition with another process?
+			let obj = match shmem_create::<SemRefSpinLocks>(sem.key()) {
+			    Some(v) => v,
+			    None => {
+				assert!(false);
+				SharedMem::default()
+			    },
+			};
+			Some(obj)
+		    },
+		};
+	    };
+	};
+
 	SemRef {
-	    sem: sem,
+	    sem: clone,
 	    member: member,
-	    spinlock_guard: spin,
+	    spinlock_guard: spinlock,
+	    spin: mgr,
 	}
     }
 
     /// Spin waiting to unlock semaphore set member
-    fn trylock(&self) -> Result<bool, Errno> {
-	os_impl::sem_trylock(self)
+    fn trylock(&mut self) -> Result<bool, Errno> {
+	if !self.spinlock_guard {
+	    os_impl::sem_trylock(self)
+	}
+	else {
+	    let lock = thread_id::get() as u32;
+	    let unlock = 0;
+	    let spin = &self.spin.as_mut().unwrap().deref_mut().obj;
+	    let locked = match &spin[self.member as usize].compare_exchange(unlock, lock, Ordering::Acquire, Ordering::Relaxed) {
+		Ok(_) => Ok(true),
+		Err(_) => Ok(false),
+	    };
+
+	    locked
+	}
     }
 
     /// Block until semaphore set member can be locked
-    fn lock(&self) -> Option<bool> {
-	os_impl::sem_lock(self)
+    fn lock(&mut self) -> Option<bool> {
+	if !self.spinlock_guard {
+	    os_impl::sem_lock(self)
+	}
+	else {
+	    loop {
+		match self.trylock() {
+		    Ok(v) => {
+			if v {
+			    break;
+			}
+		    },
+		    Err(_) => {},
+		};
+		os_yield();
+	    };
+
+	    Some(true)
+	}
     }
 
     /// Unlock semaphore set member
-    fn unlock(&self) -> Option<bool> {
-	os_impl::sem_unlock(self)
+    fn unlock(&mut self) -> Option<bool> {
+	if !self.spinlock_guard {
+	    os_impl::sem_unlock(self)
+	}
+	else {
+	    let lock = thread_id::get() as u32;
+	    let unlock = 0;
+	    let spin = &self.spin.as_mut().unwrap().deref_mut().obj;
+	    let unlocked = match &spin[self.member as usize].compare_exchange(lock, unlock, Ordering::Acquire, Ordering::Relaxed) {
+		Ok(_) => Some(true),
+		Err(_) => Some(false),
+	    };
+
+	    unlocked
+	}
     }
 }
 
@@ -364,7 +441,7 @@ impl<T: Default> DerefMut for SharedMem<T> {
 }
 
 #[allow(dead_code)]
-impl<T: Default + Clone> SharedMem<T> {
+impl<T: Default> SharedMem<T> {
     /// Allocate empty shared memory object
     /// Size and attached memory include reference counter
     fn new(key: u32, mgr: Shmem) -> Option<SharedMem<T>> {
@@ -392,7 +469,7 @@ impl<T: Default + Clone> SharedMem<T> {
 }
 
 /// Create system shared memory
-pub fn shmem_create<T: Default + Clone>(key: u32) -> Option<SharedMem<T>> {
+pub fn shmem_create<T: Default>(key: u32) -> Option<SharedMem<T>> {
     // Make room for atomic reference counter at beginning of partition
     let raw_size = size_of::<T>() + size_of::<u32>();
     if raw_size > usize::MAX {
@@ -443,7 +520,7 @@ pub fn shmem_create<T: Default + Clone>(key: u32) -> Option<SharedMem<T>> {
 }
 
 /// Attach existing system shared memory
-pub fn shmem_get<T: Default + Clone>(key: u32) -> Option<SharedMem<T>> {
+pub fn shmem_get<T: Default>(key: u32) -> Option<SharedMem<T>> {
     // Make room for atomic reference counter at beginning of partition
     let raw_size = size_of::<T>() + size_of::<u32>();
     if raw_size > usize::MAX {
@@ -605,7 +682,9 @@ mod tests {
 		    }
 		},
 	    };
-	    let sr = SemRef::new(sem1, 0, false);
+
+	    // Without spinlock
+	    let mut sr = SemRef::new(&sem1, 0, false);
 	    match sr.lock() {
 		Some(_) => { assert!(true) }, // lock succeeds
 		None => { assert!(false) },
@@ -624,6 +703,30 @@ mod tests {
 		Err(_) => { assert!(true) },
 	    }
 	    match sr.unlock() {
+		Some(_) => { assert!(true) }, // unlock succeeds
+		None => { assert!(false) },
+	    }
+
+	    // With spinlock
+	    let mut sr2 = SemRef::new(&sem1, 0, true);
+	    match sr2.lock() {
+		Some(_) => { assert!(true) }, // lock succeeds
+		None => { assert!(false) },
+	    }
+	    match sr2.unlock() {
+		Some(_) => { assert!(true) }, // unlock succeeds
+		None => { assert!(false) },
+	    }
+
+	    match sr2.trylock() {
+		Ok(_) => { assert!(true) }, // lock succeeds
+		Err(_) => { assert!(false) },
+	    }
+	    match sr2.trylock() {
+		Ok(_) => { assert!(true) }, // lock succeeds, thread already has lock
+		Err(_) => { assert!(false) },
+	    }
+	    match sr2.unlock() {
 		Some(_) => { assert!(true) }, // unlock succeeds
 		None => { assert!(false) },
 	    }

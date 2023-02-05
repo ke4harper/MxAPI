@@ -79,12 +79,14 @@ pub fn os_file_key(mut pathname: &str, proj_id: u32) -> Option<u32>  {
     Some(newkey as u32)
 }
 
+const SEMSET_MAX_LOCKS: usize = 32;
+
 /// Internal semaphore set representation
-#[derive(Eq)]
 pub struct SemSet {
     pub key: u32,
     pub num_locks: usize,
     id: i32,
+    //spin: SharedMem<[Arc<AtomicU32>; SEMSET_MAX_LOCKS]>,
 }
 
 impl Default for SemSet {
@@ -93,6 +95,7 @@ impl Default for SemSet {
 	    key: 0,
 	    num_locks: 0,
 	    id: 0,
+	    //spin: SharedMem::default(),
 	}
     }
 }
@@ -103,6 +106,8 @@ impl PartialEq for SemSet {
 	    && self.num_locks == other.num_locks
     }
 }
+
+impl Eq for SemSet {}
 
 impl fmt::Debug for SemSet {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -120,7 +125,14 @@ impl Drop for SemSet {
 	decrement[0].sem_num = 0;
 	decrement[0].sem_op = -1;
 	decrement[0].sem_flg = IPC_NOWAIT as i16;
-	unsafe { semop(id, &mut decrement).unwrap() };
+	unsafe {
+	    match semop(id, &mut decrement) {
+		Ok(v) => v,
+		Err(err) => {
+		    mca_dprintf!(1, "sysvr4::SemSet::drop: {:?}; decrement failed: {}", self, err);
+		},
+	    }
+	};
 
 	// Get the current reference count, if zero then delete the resource
 	let val = unsafe { semctl(id, 0, GETVAL, 0).unwrap() };
@@ -144,9 +156,34 @@ impl SemSet {
 	ss.num_locks  = num_locks;
 	ss.id = id as i32;
 
-	mca_dprintf!(6, "sysvr4::SemSet::new: {:?}", ss);
+	if num_locks > SEMSET_MAX_LOCKS {
+	    mca_dprintf!(1, "sysvr4::SemSet::new: {:?}: Maximum number of locks ({}) exceeded", ss, SEMSET_MAX_LOCKS);
+	    
+	    None
+	}
+	else {
+/*
+	    // Create shared memory for spin locks
+	    let mgr = match shmem_get::<[Arc<AtomicU32>; 32]>(key) {
+		Some(v) => v,
+		None => { // race condition with another process?
+		    let obj = match shmem_create::<[Arc<AtomicU32>; SEMSET_MAX_LOCKS]>(key) {
+			Some(v) => v,
+			None => {
+			    mca_dprintf!(1, "sysvr4::SemSet::new: {:?}: Cannot create spinlock shared memory", ss);
+			    SharedMem::default()
+			},
+		    };
+		    obj
+		},
+	    };
+	    ss.spin = mgr;
+*/
 
-	Some(ss)
+	    mca_dprintf!(6, "sysvr4::SemSet::new: {:?}", ss);
+
+	    Some(ss)
+	}
     }
 }
 
@@ -398,7 +435,7 @@ mod tests {
 		    }
 		},
 	    };
-	    let sr = SemRef::new(Semaphore::new(set1), 0, false);
+	    let sr = SemRef::new(&Semaphore::new(set1), 0, false);
 	    match sem_trylock(&sr) {
 		Ok(_) => { assert!(true) }, // lock succeeds
 		Err(_) => { assert!(false) },
