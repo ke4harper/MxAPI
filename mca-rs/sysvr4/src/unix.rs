@@ -152,16 +152,9 @@ impl SemSet {
 	ss.num_locks  = num_locks;
 	ss.id = id as i32;
 
-	if num_locks > SEMSET_MAX_LOCKS {
-	    mca_dprintf!(1, "sysvr4::SemSet::new: {:?}: Maximum number of locks ({}) exceeded", ss, SEMSET_MAX_LOCKS);
-	    
-	    None
-	}
-	else {
-	    mca_dprintf!(6, "sysvr4::SemSet::new: {:?}", ss);
+	mca_dprintf!(6, "sysvr4::SemSet::new: {:?}", ss);
 
-	    Some(ss)
-	}
+	Some(ss)
     }
 }
 
