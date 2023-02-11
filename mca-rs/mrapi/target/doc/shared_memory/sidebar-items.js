@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"enum":[["ShmemError",""]],"struct":[["Shmem","Structure used to extract information from an existing shared memory mapping"],["ShmemConf","Struct used to configure different parameters before creating a shared memory mapping"]]};

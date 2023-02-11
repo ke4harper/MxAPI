@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":[["sys_shmem_create",""],["sys_shmem_get",""]]};

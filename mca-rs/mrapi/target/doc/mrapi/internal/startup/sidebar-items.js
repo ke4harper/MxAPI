@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"fn":[["initialize","Initializes the MRAPI internal layer (sets up the database and semaphore)"]]};

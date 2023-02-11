@@ -1,1 +1,0 @@
-window.SIDEBAR_ITEMS = {"mod":[["data","This module provides the data structures that represent system information."],["platform","This module reexports the OS-specific module that actually implements Platform."]]};
