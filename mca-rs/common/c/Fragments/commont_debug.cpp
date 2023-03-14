@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2012, ABB, Inc
+Copyright (c) 2023, ABB, Inc
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -23,18 +23,18 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 */
 
 // Exercise tid print
 	{
-		pthread_t mrapi_tid;
 #if !(__unix__||__MINGW32__)
-		mrapi_tid = (pthread_t)GetCurrentThreadId();
-#else
-		mrapi_tid = pthread_self();
-#endif  /* (__unix__||__MINGW32__) */
+		DWORD mrapi_tid = GetCurrentThreadId();
 		const char* p = mca_print_tid(mrapi_tid);
+#else
+		pthread_t mrapi_tid = pthread_self();
+		const char* p = mca_print_tid(mrapi_tid);
+#endif  /* (__unix__||__MINGW32__) */
+
 		assert((0 < strlen(p)));
 	}
 

@@ -1,17 +1,16 @@
 /*
-Copyright (c) 2012, ABB, Inc
+Copyright (c) 2023, ABB, Inc
 All rights reserved.
 
 Port to Windows: #if !(__unix__||__MINGW32__), etc.
 Added timestamp structure
-
 */
 
 /*
  * MCA implementation specific type definitions.
  */
 #define MCA_MAX_REQUESTS 1024
-#define MCA_MAX_CPUS 16
+#define MCA_MAX_CPUS 64
 typedef unsigned mca_request_t;
 
 /* real time measurement */

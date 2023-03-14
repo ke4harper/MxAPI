@@ -44,7 +44,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 		wchar_t szwName[sizeof(buff)] = L"";
 		size_t returnValue = 0;
 		DWORD lpnSize = sizeof(szwName);
-		GetUserName(szwName, &lpnSize);
+		GetUserNameW(szwName, &lpnSize);
 		wcstombs_s(&returnValue, buff, sizeof(buff), szwName, lpnSize);
 		strcat_s(buff, sizeof(buff), "_mca");
 #endif  /* !(__MINGW32__) */

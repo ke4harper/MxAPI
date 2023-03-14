@@ -37,7 +37,12 @@ Added timestamp measurement
 
   Returns: none
   ***************************************************************************/
+#if (__unix__||__MINGW32__)
 PUBLIC const char *mca_print_tid(pthread_t t) {
+#else
+PUBLIC const char *mca_print_tid(DWORD t) {
+#endif  /* !(__unix__||__MINGW32__) */
+
   static char buffer[100];
   char *p = buffer;
 
@@ -83,7 +88,7 @@ PUBLIC void mca_dprintf(int level,const char *format, ...) {
 #if (__unix__||__MINGW32__)
     pthread_t tid = pthread_self();
 #else
-    pthread_t tid = GetCurrentThread();
+    DWORD tid = GetCurrentThreadId();
     if(!InterlockedCompareExchange((long*)&cs_init,TRUE,FALSE)) {
       InitializeCriticalSectionAndSpinCount(&cs_printf,0x00000400);
     }

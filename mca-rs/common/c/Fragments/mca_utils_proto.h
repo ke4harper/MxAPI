@@ -27,7 +27,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Port to Windows: #if !(__unix__||__MINGW32__), etc.
 Added timestamp measurement
 */
+#if (__unix__)
   PUBLIC const char *mca_print_tid(pthread_t t);
+#else
+  PUBLIC const char *mca_print_tid(DWORD t);
+#endif /* !(__unix__) */
   PUBLIC void mca_dprintf(int level,const char *format, ...);
   PUBLIC unsigned long mca_Crc32_ComputeBuf( unsigned long inCrc32, const void *buf, size_t bufLen );
   PUBLIC void mca_set_debug_level (int d);
