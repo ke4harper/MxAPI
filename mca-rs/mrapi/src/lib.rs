@@ -1,7 +1,6 @@
 #![allow(dead_code)]
-#![feature(thread_local)]
 ///
-/// Copyright(c) 2022, Karl Eric Harper
+/// Copyright(c) 2023, Karl Eric Harper
 /// All rights reserved.
 ///
 /// Redistribution and use in source and binary forms, with or without
@@ -29,12 +28,17 @@
 ///
 
 extern crate common;
-use crate::sysvr4::sem::SemRef;
+extern crate sysvr4;
 
 use common::*;
+use sysvr4::*;
 
-use std::thread;
-use std::collections::{LinkedList};
+use std:: {
+    fmt,
+    collections:: {
+	LinkedList,
+    },
+};
 
 // MRAPI data types
 pub type MrapiDomain = McaDomain;
@@ -58,7 +62,7 @@ pub type MrapiInt32 = McaInt32;
 pub type MrapiInt64 = McaInt64; 
 pub type MrapiInt128 = McaInt128;
 
-pub type MrapiSemRef<'a> = SemRef<'a>;
+pub type MrapiSemRef = SemRef;
 
 // Constants
 pub const MRAPI_TRUE: MrapiBoolean = MCA_TRUE;
@@ -270,11 +274,23 @@ enum MrapiEvent {
     MrapiEventCrossbarBufferOver80percent,
 }
 
+#[derive(Copy, Clone)]
 enum MrapiAtomic {
     MrapiAtomNoop,
     MrapiAtomOpenproc,
     MrapiAtomCloseproc,
     MrapiAtomShmdup,
+}
+
+impl fmt::Debug for MrapiAtomic {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+	write!(f, "{}", match self {
+	    MrapiAtomic::MrapiAtomNoop => "MrapiAtomNoop",
+	    MrapiAtomic::MrapiAtomOpenproc => "MrapiAtomOpenproc",
+	    MrapiAtomic::MrapiAtomCloseproc => "MrapiAtomCloseproc",
+	    MrapiAtomic::MrapiAtomShmdup => "MrapiAtomShmdup",
+	})
+    }
 }
 
 enum RsrcType {
@@ -330,11 +346,11 @@ type MrapiRmemHndl = MrapiUint32;
 // system created key used for locking/unlocking for recursive mutexes
 type MrapiKey = MrapiInt;
 
-const MRAPI_MAX_SEMS: MrapiUint = 4096;  // we don't currently support different values for max mutex/sem/rwl
+const MRAPI_MAX_SEMS: MrapiUint = 32;  // we don't currently support different values for max mutex/sem/rwl
 const MRAPI_MAX_SHMEMS: MrapiUint = 10;
 const MRAPI_MAX_RMEMS: MrapiUint = 10;
 const MRAPI_MAX_REQUESTS: MrapiUint = MCA_MAX_REQUESTS;
-const MRAPI_MAX_SHARED_LOCKS: MrapiUint = 256;
+const MRAPI_MAX_SHARED_LOCKS: MrapiUint = 32;
 
 const MRAPI_RMEM_DEFAULT: MrapiRmemAtype = MrapiRmemAtype::MrapiRmemDummy;
 
@@ -347,6 +363,7 @@ const MRAPI_ATOMIC_NULL: MrapiInt = -1;
 use mca_dprintf as mrapi_dprintf;
 
 /// mrapi_assert! - exit on failure
+#[allow(unused_macros)]
 macro_rules! mrapi_assert {
     ($condition: expr) => {{
 	if MRAPI_FALSE == $condition {
@@ -355,13 +372,6 @@ macro_rules! mrapi_assert {
 	    exit(1);
 	}
     }};
-}
-
-pub mod sysvr4 {
-    pub mod os;
-    pub mod key;
-    pub mod sem;
-    pub mod shmem;
 }
 
 pub mod internal {

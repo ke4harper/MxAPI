@@ -65,7 +65,7 @@ pub type McaUint128 = u128;
 
 pub type McaBoolean = bool;
 pub type McaNode = usize;
-pub type McaStatus = usize;
+pub type McaStatus = bool;
 pub type McaTimeout = usize;
 pub type McaDomain = usize;
 
@@ -79,6 +79,7 @@ pub const MCA_NODE_INVALID: McaUint = !0;
 pub const MCA_DOMAIN_INVALID: McaUint = !0;
 
 pub const MCA_HANDLE_MASK: McaUint128 = 0xC0000000; // not conflict with Windows, Linux or VxWorks handles
+pub const MCA_MAX_SIGNALS: McaUint = 23;
 pub const MCA_MAX_DOMAINS: McaUint = 2;
 pub const MCA_MAX_NODES: McaUint = 16;
 pub const MCA_MAX_PROCESSES: McaUint = 16;
@@ -89,11 +90,11 @@ pub const MCA_MAX_CPUS: McaUint = 16;
 pub mod logging;
 pub mod crc;
 
-fn block_signals() {
+pub fn block_signals() {
     os_impl::block_signals();
 }
 
-fn unblock_signals() {
+pub fn unblock_signals() {
     os_impl::unblock_signals();
 }
 

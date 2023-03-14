@@ -36,6 +36,11 @@ use std::{
 	MaybeUninit,
     },
     fmt,
+    sync::{
+	atomic::{
+	    AtomicU32,
+	},
+    },
 };
 
 use errno::{
@@ -80,11 +85,12 @@ pub fn os_file_key(mut pathname: &str, proj_id: u32) -> Option<u32>  {
 }
 
 /// Internal semaphore set representation
-#[derive(Clone)]
+/// Maximum number of locks is 32
 pub struct SemSet {
     pub key: u32,
     pub num_locks: usize,
     id: i32,
+    spin: SharedMem<[AtomicU32; 32]>,
 }
 
 impl Default for SemSet {
@@ -93,6 +99,7 @@ impl Default for SemSet {
 	    key: 0,
 	    num_locks: 0,
 	    id: 0,
+	    spin: SharedMem::default(),
 	}
     }
 }
@@ -104,11 +111,9 @@ impl PartialEq for SemSet {
     }
 }
 
-impl Eq for SemSet {}
-
 impl fmt::Debug for SemSet {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-	write!(f, "SemSet {{ key: {:#X}, num_locks: {}, id: {} }}", self.key, self.num_locks, self.id)
+	write!(f, "SemSet {{ key: {:#X}, num_locks: {}, id: {:#X} }}", self.key, self.num_locks, self.id)
     }
 }
 
@@ -122,14 +127,7 @@ impl Drop for SemSet {
 	decrement[0].sem_num = 0;
 	decrement[0].sem_op = -1;
 	decrement[0].sem_flg = IPC_NOWAIT as i16;
-	unsafe {
-	    match semop(id, &mut decrement) {
-		Ok(v) => v,
-		Err(err) => {
-		    mca_dprintf!(1, "sysvr4::SemSet::drop: {:?}; decrement failed: {}", self, err);
-		},
-	    }
-	};
+	unsafe { semop(id, &mut decrement).unwrap() };
 
 	// Get the current reference count, if zero then delete the resource
 	let val = unsafe { semctl(id, 0, GETVAL, 0).unwrap() };
@@ -152,10 +150,52 @@ impl SemSet {
 	ss.key = key;
 	ss.num_locks  = num_locks;
 	ss.id = id as i32;
+	
+	if num_locks > 32 {
+	    mca_dprintf!(1, "sysvr4::SemSet::new: {:?}: Maximum number of locks (32) exceeded", ss);
+	    
+	    None
+	}
+	else {
 
-	mca_dprintf!(6, "sysvr4::SemSet::new: {:?}", ss);
+	    // Create shared memory for spin locks
+	    let mgr = match shmem_get::<[AtomicU32; 32]>(key) {
+		Some(v) => v,
+		None => { // race condition with another process?
+		    let obj = match shmem_create::<[AtomicU32; 32]>(key) {
+			Some(v) => v,
+			None => {
+			    assert!(false);
+			    SharedMem::default()
+			},
+		    };
+		    obj
+		},
+	    };
+	    ss.spin = mgr;
 
-	Some(ss)
+	    mca_dprintf!(6, "sysvr4::SemSet::new: {:?}", ss);
+
+	    Some(ss)
+	}
+    }
+
+    /// Check spin lock
+    fn try_spinlock(&mut self, member: usize) -> Result<bool, Errno> {
+	let lock = thread_id::get() as u32;
+	let unlock = 0;
+	let rc: bool;
+	let spin = &self.spin.deref_mut().obj;
+	let locked = match &spin[member].compare_exchange(unlock, lock, Ordering::Acquire, Ordering::Relaxed) {
+	    Ok(_) => {
+		rc = true
+	    },
+	    Err(_) => {
+		rc = false
+	    },
+	};
+
+	return Ok(rc);
     }
 }
 
@@ -261,40 +301,48 @@ pub fn sem_get(key: u32, num_locks: usize) -> Option<SemSet> {
 /// Spin waiting to unlock semaphore set member
 /// Return without retry if semaphore is deleted
 #[allow(dead_code)]
-pub fn sem_trylock(sr: &SemRef) -> Result<bool, Errno> {
-    let ss = &sr.sem.set;
+pub fn sem_trylock(sr: &mut SemRef) -> Result<bool, Errno> {
+    let ss = &mut sr.sem.as_mut().unwrap().set;
     let member = sr.member;
-    let spin = sr.spinlock_guard;
+    let spinlock = sr.spinlock;
+    let rc: bool;
     
-    let mut lock: [sembuf_t; 1] = unsafe { MaybeUninit::zeroed().assume_init() };
-    lock[0].sem_num = member + 1;
-    lock[0].sem_op = -1;
-    lock[0].sem_flg = IPC_NOWAIT as i16;
-
-    loop {
-	match unsafe { semop(ss.id, &mut lock) } {
-	    Ok(_) => { break; },
-	    Err(e) => {
-		if e != EINTR {
-		    mca_dprintf!(3, "sysvr4::sem_trylock: set: {:?}, member: {}, spin: {}; {}", ss, member, spin, e);
-		    return Err(Errno(e));
-		}
-		
-		mca_dprintf!(6, "sysvr4::sem_trylock: set: {:?}, member: {}, spin: {}; Attempt failed", ss, member, spin);
-	    },
-	}
+    if spinlock {
+	rc = ss.try_spinlock(member).unwrap()
     }
-    
-    mca_dprintf!(1, "sysvr4::sem_trylock: set: {:?}, member: {}, spin: {}", ss, member, spin);
+    else {
+	let mut lock: [sembuf_t; 1] = unsafe { MaybeUninit::zeroed().assume_init() };
+	lock[0].sem_num = member as u16 + 1;
+	lock[0].sem_op = -1;
+	lock[0].sem_flg = IPC_NOWAIT as i16;
 
-    Ok(true)
+	loop {
+	    match unsafe { semop(ss.id, &mut lock) } {
+		Ok(_) => {
+		    rc = true;
+		    break; },
+		Err(e) => {
+		    if e != EINTR {
+			mca_dprintf!(3, "sysvr4::sem_trylock: set: {:?}, member: {}, spin: {}; {}", ss, member, spinlock, e);
+			return Err(Errno(e));
+		    }
+		    
+		    mca_dprintf!(6, "sysvr4::sem_trylock: set: {:?}, member: {}, spin: {}; Attempt failed", ss, member, spinlock);
+		},
+	    }
+	}
+    };
+    
+    mca_dprintf!(1, "sysvr4::sem_trylock: set: {:?}, member: {}, spin: {}", ss, member, spinlock);
+
+    Ok(rc)
 }
 
 /// Block until semaphore set member can be locked
 #[allow(dead_code)]
-pub fn sem_lock(semref: &SemRef) -> Option<bool> {
+pub fn sem_lock(sr: &mut SemRef) -> Option<bool> {
     loop {
-	match sem_trylock(semref) {
+	match sem_trylock(sr) {
 	    Ok(v) => {
 		return Some(v);
 	    },
@@ -315,13 +363,13 @@ pub fn sem_lock(semref: &SemRef) -> Option<bool> {
 
 /// Unlock semaphore set member
 #[allow(dead_code)]
-pub fn sem_unlock(semref: &SemRef) -> Option<bool> {
-    let ss = &semref.sem.set;
-    let member = semref.member;
-    let spin = semref.spinlock_guard;
+pub fn sem_unlock(sr: &mut SemRef<'_>) -> Option<bool> {
+    let ss = &sr.sem.as_mut().unwrap().set;
+    let member = sr.member;
+    let spin = sr.spinlock;
 
     let mut unlock: [sembuf_t; 1] = unsafe { MaybeUninit::zeroed().assume_init() };
-    unlock[0].sem_num = member + 1;
+    unlock[0].sem_num = member as u16 + 1;
     unlock[0].sem_op = 1;
     unlock[0].sem_flg = 0;
     
@@ -368,6 +416,22 @@ mod tests {
 	{
 	    let key = os_file_key("", 'e' as u32).unwrap();
             ma::assert_lt!(0, key);
+	    // Maxuimum 32 locks
+	   let _ss0 = match sem_create(key, 32) {
+		Some(v) => v,
+		None => {
+		    assert!(false);
+		    SemSet::default()
+		}
+	    };
+	    match sem_get(key, 33) {
+		Some(_) => {
+		    assert!(false);
+		},
+		None => {
+		    assert!(true);
+		}
+	    };
 	    let ss1 = match sem_get(key, NUM_LOCKS) {
 		Some(v) => v,
 		None => { // race condition with another process?
@@ -407,12 +471,12 @@ mod tests {
 		    }
 		},
 	    };
-	    let sr = SemRef::new(&Semaphore::new(set1), 0, false);
-	    match sem_trylock(&sr) {
+	    let mut sr = SemRef::new(&Semaphore::new(set1), 0, false);
+	    match sem_trylock(&mut sr) {
 		Ok(_) => { assert!(true) }, // lock succeeds
 		Err(_) => { assert!(false) },
 	    }
-	    match sem_trylock(&sr) {
+	    match sem_trylock(&mut sr) {
 		Ok(_) => { assert!(false) }, // lock fails
 		Err(_) => { assert!(true) },
 	    }

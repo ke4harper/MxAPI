@@ -45,7 +45,7 @@ const CASTAGNOLI: Crc<u32> = Crc::<u32>::new(&CRC_32_ISCSI);
 //  Returns: crc32 - computed CRC-32 value
 //
 #[allow(dead_code)]
-fn crc32_compute_buf(in_crc32: u32, buf: &str) -> u32 {
+pub fn crc32_compute_buf(in_crc32: u32, buf: &str) -> u32 {
     let mut digest = CASTAGNOLI.digest();
     // Convert key to bytes
     let crc32_bytes = (in_crc32 ^ 0xFFFFFFFF).to_be_bytes();

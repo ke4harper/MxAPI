@@ -278,4 +278,4 @@ __pycache__/
 
 # Rust
 Cargo.lock
-**/target/
+/target/

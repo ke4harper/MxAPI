@@ -26,53 +26,38 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 
+/*
 /// Runtime initialization
 
 use std::{
     thread_local,
+    env,
     process,
     mem::{
-	size_of,
 	MaybeUninit,
     },
     sync::{
-	Mutex,
 	atomic::Ordering,
     },
     path::{
 	Path,
     },
-    num::{NonZeroU8},
-    fs::{File},
+    ffi::{
+	OsStr,
+    },
 };
 
-use late_static::{LateStatic};
-use heliograph::{
-    Exclusive,
-    Mode,
-    Key,
-    Semaphore,
-};
-use shared_memory::{
-    ShmemConf,
-    Shmem,
-};
-use fragile::{Fragile};
 use thread_id;
 use atomig::{Atom};
 
-use crate::*;
-use crate::MrapiStatusFlag::*;
-use crate::sysvr4::{
-    os::{
-	sys_os_yield,
-	sys_os_srand,
-    },
-    sem::{
-	sys_sem_unlock,
-	sys_sem_delete,
+use once_cell::{
+    sync::{
+	OnceCell,
     },
 };
+
+use crate::*;
+use crate::MrapiStatusFlag::*;
 use crate::internal::db::{
     MrapiDatabase,
     MrapiDomainData,
@@ -80,57 +65,106 @@ use crate::internal::db::{
     MrapiNodeState,
     MrapiProcessData,
     MrapiProcessState,
-    MRAPI_DB,
-    SHMEMID,
-    SEMID,
+    MRAPI_MGR,
+    MRAPI_SEM,
     access_database_pre,
     access_database_post,
 };
 
-static _DB_MUTEX: Mutex<u64> = Mutex::new(0);
-
 //pub static RESOURCE_ROOT: LateStatic<MrapiResource<'static>> = LateStatic::new(); // root of the resource tree
 //threadlocal!(ALARM_STRUCT: struct sigaction); // used for testing resource tree
-#[thread_local]
-pub static MRAPI_PID: LateStatic<MrapiUint32> = LateStatic::new();
-#[thread_local]
-pub static MRAPI_PROC: LateStatic<MrapiUint32> = LateStatic::new();
-#[thread_local]
-pub static MRAPI_TID: LateStatic<MrapiUint32> = LateStatic::new();
-#[thread_local]
-pub static MRAPI_NINDEX: LateStatic<MrapiUint> = LateStatic::new();
-#[thread_local]
-pub static MRAPI_DINDEX: LateStatic<MrapiUint> = LateStatic::new();
-#[thread_local]
-pub static MRAPI_PINDEX: LateStatic<MrapiUint> = LateStatic::new();
-#[thread_local]
-pub static MRAPI_NODE_ID: LateStatic<MrapiNode> = LateStatic::new();
-#[thread_local]
-pub static MRAPI_DOMAIN_ID: LateStatic<MrapiDomain> = LateStatic::new();
-/*
-// finer grained locks for these sections of the database.
-pub static SEMS_SEMID: LateStatic<Semaphore> = LateStatic::new(); // sems array
-pub static SHMEMS_SEMID: LateStatic<Semaphore> = LateStatic::new(); // shmems array
-pub static REQUESTS_SEMID: LateStatic<Semaphore> = LateStatic::new(); // requests array
-pub static RMEMS_SEMID: LateStatic<Semaphore> = LateStatic::new(); // rmems array
-// Keep copies of global handles for comparison
-pub static REQUESTS_GLOBAL: LateStatic<MrapiUint> = LateStatic::new();
-pub static SEMS_GLOBAL: LateStatic<Semaphore> = LateStatic::new();
-pub static SHMEMS_GLOBAL: LateStatic<MrapiUint> = LateStatic::new();
-pub static RMEMS_GLOBAL: LateStatic<MrapiUint> = LateStatic::new();
- */
 
-/// Gets the pid,tid pair for the caller and then looks up the corresponding node and domain info in our database.
+thread_local! {
+    pub static MRAPI_PID: OnceCell<MrapiUint32> = OnceCell::new();
+    pub static MRAPI_PROC: OnceCell<MrapiUint32> = OnceCell::new();
+    pub static MRAPI_TID: OnceCell<MrapiUint32> = OnceCell::new();
+    pub static MRAPI_NINDEX: OnceCell<MrapiUint> = OnceCell::new();
+    pub static MRAPI_DINDEX: OnceCell<MrapiUint> = OnceCell::new();
+    pub static MRAPI_PINDEX: OnceCell<MrapiUint> = OnceCell::new();
+    pub static MRAPI_NODE_ID: OnceCell<MrapiNode> = OnceCell::new();
+    pub static MRAPI_DOMAIN_ID: OnceCell<MrapiDomain> = OnceCell::new();
+}
+
+// finer grained locks for these sections of the database.
+thread_local! {
+    pub static SEMS_SEM: OnceCell<Semaphore> = OnceCell::new(); // sems array
+    pub static SHMEMS_SEM: OnceCell<Semaphore> = OnceCell::new(); // shmems array
+    pub static REQUESTS_SEM: OnceCell<Semaphore> = OnceCell::new(); // requests array
+    pub static RMEMS_SEM: OnceCell<Semaphore> = OnceCell::new(); // rmems array
+}
+
+// Keep copies of global objects for comparison
+thread_local! {
+    pub static REQUESTS_GLOBAL: OnceCell<Semaphore> = OnceCell::new();
+    pub static SEMS_GLOBAL: OnceCell<Semaphore> = OnceCell::new();
+    pub static SHMEMS_GLOBAL: OnceCell<Semaphore> = OnceCell::new();
+    pub static RMEMS_GLOBAL: OnceCell<Semaphore> = OnceCell::new();
+}
+
+// Tell the system whether or not to use the finer-grained locking
+pub const use_global_only: bool = false;
+
+/// Returns the initialized characteristics of this thread
 #[allow(dead_code)]
 fn whoami() -> Result<(MrapiNode, MrapiUint, MrapiDomain, MrapiUint), MrapiStatusFlag> {
-    if unsafe { !LateStatic::has_value(&MRAPI_DB) } {
-	return Err(MrapiErrDbNotInitialized);
-    }
-    if *MRAPI_PID == !1 {
-	return Err(MrapiErrProcessNotRegistered);
+    let mut initialized: bool;
+    let mut result: Result<(MrapiNode, MrapiUint, MrapiDomain, MrapiUint), MrapiStatusFlag>;
+    match MRAPI_MGR.get() {
+	None => {
+	    initialized = false;
+	    result = Err(MrapiErrDbNotInitialized);
+	},
+	Some(_) => {
+	    initialized = true;
+	},
+    };
+
+    if !initialized {
+	return result;
     }
 
-    Ok((*MRAPI_NODE_ID, *MRAPI_NINDEX, *MRAPI_DOMAIN_ID, *MRAPI_DINDEX))
+    MRAPI_PID.with(|pid| {
+	match pid.get() {
+	    None => {
+		initialized = false;
+		result = Err(MrapiErrProcessNotRegistered);
+	    },
+	    Some(_) => {
+		initialized = true;
+	    },
+	}
+    });
+
+    if !initialized {
+	return result;
+    }
+
+    Ok((
+	MRAPI_NODE_ID.with(|id| {
+	    match id.get() {
+		None => 0,
+		Some(v) => *v,
+	    }
+	}),
+	MRAPI_NINDEX.with(|index| {
+	    match index.get() {
+		None => 0,
+		Some(v) => *v,
+	    }
+	}),
+	MRAPI_DOMAIN_ID.with(|id| {
+	    match id.get() {
+		None => 0,
+		Some(v) => *v,
+	    }
+	}),
+	MRAPI_DINDEX.with(|index| {
+	    match index.get() {
+		None => 0,
+		Some(v) => *v,
+	    }
+	}),
+    ))
 }
 
 /// Checks if the given domain_id/node_id is already assoc w/ this pid/tid
@@ -142,59 +176,62 @@ fn initialized() -> bool {
     }
 }
 fn finalize_node_locked(d: MrapiUint, n: MrapiUint) {
-    let dpacked = &MRAPI_DB.domains[d].state.load(Ordering::Relaxed);
+    let mrapi_db = MrapiDatabase::global_db();
+    let dpacked = &mrapi_db.domains[d].state.load(Ordering::Relaxed);
     let dstate: MrapiDomainState = Atom::unpack(*dpacked);
-    let npacked = &MRAPI_DB.domains[d].nodes[n].state.load(Ordering::Relaxed);
+    let npacked = &mrapi_db.domains[d].nodes[n].state.load(Ordering::Relaxed);
     let mut nstate: MrapiNodeState = Atom::unpack(*npacked);
     let domain_id = dstate.domain_id();
     let node_num = nstate.node_num();
+    
     mrapi_dprintf!(2, "mrapi::internal::lifecycle::finalize_node_locked dindex={} nindex={} domain={} node={}", d, n, domain_id, node_num);
+    
     // Mark the node as finalized
     nstate.set_valid(MRAPI_FALSE);
     nstate.set_allocated(MRAPI_FALSE);
-    &MRAPI_DB.domains[d].nodes[n].state.store(Atom::pack(nstate), Ordering::Relaxed);
+    &mrapi_db.domains[d].nodes[n].state.store(Atom::pack(nstate), Ordering::Relaxed);
     // Rundown the node's process association
-    let p = MRAPI_DB.domains[d].nodes[n].proc_num;
-    let ppacked = &MRAPI_DB.processes[p].state.load(Ordering::Relaxed);
+    let p = mrapi_db.domains[d].nodes[n].proc_num;
+    let ppacked = &mrapi_db.processes[p].state.load(Ordering::Relaxed);
     let pstate: MrapiProcessState = Atom::unpack(*ppacked);
     if pstate.valid() {
-	let num_nodes = MRAPI_DB.processes[p].num_nodes.fetch_sub(1, Ordering::Relaxed);
+	let num_nodes = mrapi_db.processes[p].num_nodes.fetch_sub(1, Ordering::Relaxed);
 	if 0 >= num_nodes {
 	    // Last node in this process, remove process references in shared memory
 	    for s in 0..MRAPI_MAX_SHMEMS {
-		if MRAPI_DB.shmems[s].valid {
-		    &MRAPI_DB.shmem(s).set_process(p, 0);
+		if mrapi_db.shmems[s].valid {
+		    &mrapi_db.shmems[s].set_process(p, 0);
 		}
 	    }
-	    unsafe { MRAPI_DB.processes[p] = MaybeUninit::zeroed().assume_init(); };
+	    unsafe { mrapi_db.processes[p] = MaybeUninit::zeroed().assume_init(); };
 	}
     }
-    unsafe { MRAPI_DB.domains[d].nodes[n] = MaybeUninit::zeroed().assume_init(); };
-    &MRAPI_DB.domains[d].num_nodes.fetch_sub(1, Ordering::Relaxed);
+    unsafe { mrapi_db.domains[d].nodes[n] = MaybeUninit::zeroed().assume_init(); };
+    &mrapi_db.domains[d].num_nodes.fetch_sub(1, Ordering::Relaxed);
     
     // Decrement the shmem reference count if necessary
     for shmem in 0..MRAPI_MAX_SHMEMS {
-	if MRAPI_DB.shmems[shmem].valid == MRAPI_TRUE {
-	    if MRAPI_DB.domains[d].nodes[n].shmems[shmem] == 1 {
+	if mrapi_db.shmems[shmem].valid == MRAPI_TRUE {
+	    if mrapi_db.domains[d].nodes[n].shmems[shmem] == 1 {
 		// If this node was a user of this shm, decrement the ref count
-		MRAPI_DB.shmems[shmem].refs -= 1;
+		mrapi_db.shmems[shmem].refs -= 1;
 	    }
 	    // If the reference count is 0, free the shared memory resource
-	    if MRAPI_DB.shmems[shmem].refs == 0 {
-		drop(&MRAPI_DB.shmems[shmem].mem[p]);
+	    if mrapi_db.shmems[shmem].refs == 0 {
+		drop(&mrapi_db.shmems[shmem].mem[p]);
 	    }
 	}
     }
 
     // Decrement the sem reference count if necessary
     for sem in 0..MRAPI_MAX_SEMS {
-	if MRAPI_DB.sems[sem].valid == MRAPI_TRUE {
-	    if MRAPI_DB.domains[d].nodes[n].sems[sem] == 1 {
-		MRAPI_DB.domains[d].nodes[n].sems[sem] = 0;
+	if mrapi_db.sems[sem].valid == MRAPI_TRUE {
+	    if mrapi_db.domains[d].nodes[n].sems[sem] == 1 {
+		mrapi_db.domains[d].nodes[n].sems[sem] = 0;
 		// If this node was a user of this sem, decrement the ref count
-		if MRAPI_DB.sems[sem].refs.fetch_sub(1, Ordering::Relaxed) <= 0 {
+		if mrapi_db.sems[sem].refs.fetch_sub(1, Ordering::Relaxed) <= 0 {
 		    // If the reference count is 0 free the resource
-		    MRAPI_DB.sems[sem].valid = MRAPI_FALSE;
+		    mrapi_db.sems[sem].valid = MRAPI_FALSE;
 		}
 	    }
 	}
@@ -205,47 +242,50 @@ fn free_resources(panic: MrapiBoolean) {
     let mut last_node_standing = MRAPI_TRUE;
     let mut last_node_standing_for_this_process = MRAPI_TRUE;
     let pid = process::id();
-    let semref = MrapiSemRef {
-	set: SEMID.get(),
-	member: 0,
-	spinlock_guard: MRAPI_FALSE,
-    };
+    let semref = MrapiSemRef::new(MrapiDatabase::global_sem(), 0, MRAPI_FALSE);
+
+    // Try to lock the database
     let locked = access_database_pre(&semref, MRAPI_FALSE);
     mrapi_dprintf!(1, "mrapi::internal::lifecycle::free_resources panic: {} freeing any existing resources", panic);
-    if unsafe { LateStatic::has_value(&MRAPI_DB) } {
-	// Finalize this node
-	match whoami() {
-	    Ok((node, n, domain_num, d)) => {
-		finalize_node_locked(d, n);
-	    },
-	    Err(_) => {},
-	}
 
-	// If we are in panic mode, then forcefully finalize all other nodes that belong to this process
-	if panic {
-	    for d in 0..MRAPI_MAX_DOMAINS {
-		for n in 0..MRAPI_MAX_NODES {
-		    let npacked = &MRAPI_DB.domains[d].nodes[n].state.load(Ordering::Relaxed);
-		    let nstate: MrapiNodeState = Atom::unpack(*npacked);
-		    if nstate.valid() == MRAPI_TRUE {
-			let p = *&MRAPI_DB.domains[d].nodes[n].proc_num as usize;
-			let ppacked = &MRAPI_DB.processes[p].state.load(Ordering::Relaxed);
-			let pstate: MrapiProcessState = Atom::unpack(*ppacked);
-			if pstate.pid() == pid {
-			    finalize_node_locked(d, n);
+    match MRAPI_MGR.get() {
+	None => { },
+	Some(_) => {
+	    // Finalize this node
+	    match whoami() {
+		Ok((node, n, domain_num, d)) => {
+		    finalize_node_locked(d, n);
+		},
+		Err(_) => { },
+	    }
+
+	    // If we are in panic mode, then forcefully finalize all other nodes that belong to this process
+	    if panic {
+		let mrapi_db = MrapiDatabase::global_db();
+		for d in 0..MRAPI_MAX_DOMAINS {
+		    for n in 0..MRAPI_MAX_NODES {
+			let npacked = &mrapi_db.domains[d].nodes[n].state.load(Ordering::Relaxed);
+			let nstate: MrapiNodeState = Atom::unpack(*npacked);
+			if nstate.valid() == MRAPI_TRUE {
+			    let p = *&mrapi_db.domains[d].nodes[n].proc_num as usize;
+			    let ppacked = &mrapi_db.processes[p].state.load(Ordering::Relaxed);
+			    let pstate: MrapiProcessState = Atom::unpack(*ppacked);
+			    if pstate.pid() == pid {
+				finalize_node_locked(d, n);
+			    }
 			}
 		    }
 		}
-	    }
-	    for p in 0..MRAPI_MAX_PROCESSES {
-		let ppacked = &MRAPI_DB.processes[p].state.load(Ordering::Relaxed);
-		let pstate: MrapiProcessState = Atom::unpack(*ppacked);
-		if pstate.valid() == MRAPI_TRUE &&
-		    pstate.pid() == pid {
-			let mut process = &mut MRAPI_DB.processes[p];
-			process.clear();
-			break;
-		    }
+		for p in 0..MRAPI_MAX_PROCESSES {
+		    let ppacked = &mrapi_db.processes[p].state.load(Ordering::Relaxed);
+		    let pstate: MrapiProcessState = Atom::unpack(*ppacked);
+		    if pstate.valid() == MRAPI_TRUE &&
+			pstate.pid() == pid {
+			    let mut process = &mut mrapi_db.processes[p];
+			    process.clear();
+			    break;
+			}
+		}
 	    }
 	}
     }
@@ -423,6 +463,43 @@ fn free_resources(panic: MrapiBoolean) {
 }
  */
 
+/// Create or get the semaphore corresponding to the key
+fn create_sys_semaphore(num_locks: usize, key: u32, lock: MrapiBoolean) -> Option<Semaphore>
+{
+    let max_tries: u32 = 0xffffffff;
+    let trycount: u32 = 0;
+
+    while trycount < max_tries {
+	trycount += 1;
+	let sem = match sem_create(key, num_locks) {
+	    Some(v) => v,
+	    None => {
+		match sem_get(key, num_locks) {
+		    Some(v) => v,
+		    None => Semaphore::default(),
+		}
+	    },
+	};
+
+	if sem != Semaphore::default() {
+	    if lock {
+		let sr = MrapiSemRef::new(&sem, 0, false);
+		while trycount < max_tries {
+		    match sr.trylock() {
+			Ok(v) => {
+			    if v { return Some(sem); }
+			},
+			Err(_) => { },
+		    }
+		    sysvr4::os_yield();
+		}
+	    }
+	}
+    }
+    
+    None
+}
+
 /// Initializes the MRAPI internal layer (sets up the database and semaphore)
 ///
 /// # Arguments
@@ -437,6 +514,8 @@ fn free_resources(panic: MrapiBoolean) {
 /// MrapiAtomOpNoforward
 #[allow(unused_variables)]
 pub fn initialize(domain_id: MrapiDomain, node_id: MrapiNode) -> Result<MrapiStatus, MrapiStatusFlag> {
+    static use_uid: MrapiBoolean = MRAPI_TRUE;
+
     // associate this node w/ a pid,tid pair so that we can recognize the caller on later calls
 
     mrapi_dprintf!(1, "mrapi::internal::lifecycle::initialize ({},{});", domain_id, node_id);
@@ -445,18 +524,49 @@ pub fn initialize(domain_id: MrapiDomain, node_id: MrapiNode) -> Result<MrapiSta
 	return Err(MrapiErrNodeInitfailed);
     };
 
+    // Get process name
+    let proc_name = env::args().next()
+	.as_ref()
+	.map(Path::new)
+	.and_then(Path::file_name)
+	.and_then(OsStr::to_str);
+    let buff = proc_name.unwrap().to_owned() + "_mrapi";
+
+    let mut key: u32;
+    let mut db_key: u32;
+    let mut sems_key: u32;
+    let mut shmems_key: u32;
+    let mut rmems_key: u32;
+    let mut requests_key: u32;
+
+    if use_uid {
+	key = common::crc::crc32_compute_buf(0, &buff);
+	db_key = common::crc::crc32_compute_buf(key, &(buff + "_db"));
+	sems_key = common::crc::crc32_compute_buf(key, &(buff + "_sems"));
+	shmems_key = common::crc::crc32_compute_buf(key, &(buff + "_shmems"));
+	rmems_key = common::crc::crc32_compute_buf(key, &(buff + "_rmems"));
+	requests_key = common::crc::crc32_compute_buf(key, &(buff + "_requests"));
+    }
+    else {
+	key = match os_file_key("", 'z' as u32) {
+	    Some(v) => v,
+	    None => {
+		mrapi_dprintf!(1, "MRAPI ERROR: Invalid file key");
+		0
+	    },
+	};
+	
+	db_key = key + 10;
+	sems_key = key + 20;
+	shmems_key = key + 30;
+	rmems_key = key + 40;
+	requests_key = key + 50;
+    }
+
     // 1) setup the global database
     // get/create the shared memory database
-    let flink = Path::new("MRAPI_SHMEM");
-    let shmem_local = match ShmemConf::new().flink(flink).size(size_of::<MrapiDatabase>()).open() {
-	Ok(val) => {
-	    val
-	},
-	Err(e) => {
-	    ShmemConf::new().flink(flink).size(size_of::<MrapiDatabase>()).create().unwrap()
-	},
-    };
-
+    MrapiDatabase::initialize_db(domain_id, node_id, db_key);
+    
     // 2) create or get the semaphore and lock it
     // we loop here and inside of create_sys_semaphore because of the following race condition:
     // initialize                  finalize
@@ -468,80 +578,95 @@ pub fn initialize(domain_id: MrapiDomain, node_id: MrapiNode) -> Result<MrapiSta
     // finalize-1 can occur between initialize-1 and initialize-2 which will cause initialize-2
     // to fail because the semaphore no longer exists.
 
-    let mut slink = Path::new("MRAPI_SEM");
-    if !Path::new(&slink).exists() {
-	File::create(&slink).unwrap();
-    };
-    let key = Key::new(&slink, NonZeroU8::new(b'a').unwrap()).unwrap();
-
-    let mut _sys_sem_acquired = false;
-    let sem_local = loop {
-	unsafe {
-	    let _mutex_changer = _DB_MUTEX.lock().unwrap();
-	    if !LateStatic::has_value(&MRAPI_DB) {
-		let boxed = Box::<&MrapiDatabase>::new(&*shmem_local.as_ptr().cast::<MrapiDatabase>());
-		LateStatic::assign(&MRAPI_DB, boxed);
-	    }
-	}
-
-	let sem = match Semaphore::open(key, 1 /* num sems */) {
-	    Ok(val) => {
-		_sys_sem_acquired = true;
-		val
-	    },
-	    Err(_) => {
-		match Semaphore::create(key, 1 /* num sems */, Exclusive::No, Mode::from_bits(0o666).unwrap()) {
-		    Ok(val) => {
-			_sys_sem_acquired = true;
-			val
-		    },
-		    Err(_) => { continue; },
-		}
-	    }
-	};
-	if _sys_sem_acquired { break sem }
+    let sem_local = match create_sys_semaphore(1, key, MRAPI_TRUE) {
+	None => {
+	    mrapi_dprintf!(1, "MRAPI ERROR: Unable to get the semaphore key: {}", key);
+	    return Err(MrapiErrNodeInitfailed);
+	},
+	Some(v) => v,
     };
 
-    mrapi_dprintf!(1, "mrapi_impl_initialize lock acquired, now attaching to shared memory and adding node to database");
+    mrapi_dprintf!(1, "mrapi_impl_initialize lock acquired, now adding node to database");
 
     // At this point we've managed to acquire and lock the semaphore ...
-    // NOTE: it's important to write to the globals only while
-    // we have the semaphore otherwise we introduce race conditions. This
+    // NOTE: with use_global_only it's important to write to the globals only while
+    // we have the semaphore otherwise we introduce race conditions.  This
     // is why we are using the local variable id until everything is set up.
-    
-    unsafe {
-	LateStatic::<Fragile<Shmem>>::assign(&SHMEMID, Fragile::<Shmem>::new(shmem_local)); // set the global shmem key
-	LateStatic::<Fragile<Semaphore>>::assign(&SEMID, Fragile::<Semaphore>::new(sem_local)); // set the global sem key
 
-	let tid = thread_id::get() as MrapiUint32;
-	sys_os_srand(tid); // Seed random number generator
-	// Get our identity
-	LateStatic::<MrapiUint32>::assign(&MRAPI_PID, process::id());
-	LateStatic::<MrapiUint32>::assign(&MRAPI_PROC, process::id());
-	LateStatic::<MrapiUint32>::assign(&MRAPI_TID, tid);
+    // set the global semaphore reference
+    MrapiDatabase::initialize_sem(sem_local);
+	
+    // get or create our finer grained locks
+    // in addition to a lock on the sems array, every lock (rwl,sem,mutex) has it's own
+    // database semaphore, this allows us to access different locks in parallel
+
+    let sems_sem = create_sys_semaphore(MRAPI_MAX_SEMS + 1, sems_key, MRAPI_FALSE);
+    if use_global_only || sems_sem.is_none() {
+	SEMS_GLOBAL.with(|sem| { sem.set(MrapiDatabase::global_sem().clone()); });
+	SEMS_SEM.with(|sem| { sem.set(MrapiDatabase::global_sem().clone()); });
+    }
+    else {
+	SEMS_SEM.with(|sem| { sem.set(sems_sem.unwrap()); });
+    }
+    
+    let shmems_sem = create_sys_semaphore(1, shmems_key, MRAPI_FALSE);
+    if shmems_sem.is_none() {
+	SHMEMS_GLOBAL.with(|sem| { sem.set(MrapiDatabase::global_sem().clone()); });
+	SHMEMS_SEM.with(|sem| { sem.set(MrapiDatabase::global_sem().clone()); });
+    }
+    else {
+	SHMEMS_SEM.with(|sem| { sem.set(shmems_sem.unwrap()); });
+    }
+    
+    let rmems_sem = create_sys_semaphore(1, rmems_key, MRAPI_FALSE);
+    if rmems_sem.is_none() {
+	RMEMS_GLOBAL.with(|sem| { sem.set(MrapiDatabase::global_sem().clone()); });
+	RMEMS_SEM.with(|sem| { sem.set(MrapiDatabase::global_sem().clone()); });
+    }
+    else {
+	RMEMS_SEM.with(|sem| { sem.set(rmems_sem.unwrap()); });
+    }
+    
+    let requests_sem = create_sys_semaphore(1, requests_key, MRAPI_FALSE);
+    if requests_sem.is_none() {
+	REQUESTS_GLOBAL.with(|sem| { sem.set(MrapiDatabase::global_sem().clone()); });
+	REQUESTS_SEM.with(|sem| { sem.set(MrapiDatabase::global_sem().clone()); });
+    }
+    else {
+	REQUESTS_SEM.with(|sem| { sem.set(rmems_sem.unwrap()); });
     }
 
-    // 3) Add the process/node/domain to the database
+    // Get our identity
+    let pid = process::id();
+    let tid = thread_id::get() as MrapiUint32;
+    MRAPI_PID.with(|id| { id.set(pid); });
+    MRAPI_PROC.with(|id| { id.set(pid); });
+    MRAPI_TID.with(|id| { id.set(tid); });
 
-    let mrapi_db: &MrapiDatabase = &*MRAPI_DB;
+    // Seed random number generator
+    os_srand(tid);
+
+    let mrapi_db = MrapiDatabase::global_db();
+
+    // 3) Add the process/node/domain to the database
     
-    // First see if this domain already exists
     let mut d: usize = 0;
-    let mut active_domain = false;
-    for i in 0..MRAPI_MAX_DOMAINS {
-	let packed = &mrapi_db.domains[i].state.load(Ordering::Relaxed);
+    let mut n: usize = 0;
+    let mut p: usize = 0;
+
+    // First see if this domain already exists
+    for d in 0..MRAPI_MAX_DOMAINS {
+	let packed = &mrapi_db.domains[d].state.load(Ordering::Relaxed);
 	let dstate: MrapiDomainState = Atom::unpack(*packed);
 	if dstate.domain_id() == domain_id as MrapiUint32 {
-	    d = i as usize;
-	    active_domain = true;
 	    break;
 	}
     }
 
-    if !active_domain {
+    if d == MRAPI_MAX_DOMAINS {
 	// Find first available entry
-	for i in 0..MRAPI_MAX_DOMAINS {
-	    let packed = &mrapi_db.domains[i].state.load(Ordering::Relaxed);
+	for d in 0..MRAPI_MAX_DOMAINS {
+	    let packed = &mrapi_db.domains[d].state.load(Ordering::Relaxed);
 	    let mut oldstate: MrapiDomainState = Atom::unpack(*packed);
 	    let mut newstate = oldstate;
 	    oldstate.set_allocated(MRAPI_FALSE);
@@ -550,8 +675,6 @@ pub fn initialize(domain_id: MrapiDomain, node_id: MrapiNode) -> Result<MrapiSta
 	    match &mrapi_db.domains[d].state.compare_exchange(
 		Atom::pack(oldstate), Atom::pack(newstate), Ordering::Acquire, Ordering::Relaxed) {
 		Ok(_) => {
-		    d = i as usize;
-		    active_domain = true;
 		    break;
 		},
 		Err(_) => continue,
@@ -559,119 +682,85 @@ pub fn initialize(domain_id: MrapiDomain, node_id: MrapiNode) -> Result<MrapiSta
 	}
     }
 
-    if !active_domain {
-	mrapi_dprintf!(1, "You have hit MRAPI_MAX_DOMAINS, either use less domains or reconfigure with more domains");
-	let semid = &*SEMID;
-	let shmemid = &*SHMEMID;
-	mrapi_dprintf!(0, "Unlock system semaphore: {:?}", semid);
-	drop(shmemid);
-	sys_sem_unlock(SEMID.get()).unwrap();
-	sys_sem_delete(SEMID.get());
-	return Err(MrapiErrNodeInitfailed);
-    }
-
-    // now find an available node index...
-    for i in 0..MRAPI_MAX_NODES {
- 	let packed = &mrapi_db.domains[d].nodes[i].state.load(Ordering::Relaxed);
-	let state: MrapiNodeState = Atom::unpack(*packed);
-	// Even though initialized() is checked by mrapi, we have to check again here because
-	// initialized() and initalize() are  not atomic at the top layer
-	if state.allocated() && state.node_num() == node_id as MrapiUint32 {
-	    // this node already exists for this domain
-	    mrapi_dprintf!(1, "This node ({}) already exists for this domain ({})", node_id, domain_id);
-	    let semid = &*SEMID;
-	    let shmemid = &*SHMEMID;
-	    mrapi_dprintf!(0, "Unlock system semaphore: {:?}", semid);
-	    drop(shmemid);
-	    sys_sem_unlock(SEMID.get()).unwrap();
-	    sys_sem_delete(SEMID.get());
-	    return Err(MrapiErrNodeInitfailed);
-	}
-    }
-
-    // it didn't exist so find the first available entry
-    let mut n: usize = 0;
-    let mut active_node = false;
-    for i in 0..MRAPI_MAX_NODES {
- 	let packed = &mrapi_db.domains[d].nodes[i].state.load(Ordering::Relaxed);
-	let mut oldstate: MrapiNodeState = Atom::unpack(*packed);
-	let mut newstate = oldstate;
-	oldstate.set_allocated(MRAPI_FALSE);
-	newstate.set_node_num(node_id as MrapiUint32);
-	newstate.set_allocated(MRAPI_TRUE);
-	match &mrapi_db.domains[d].nodes[i].state.compare_exchange(
-	    Atom::pack(oldstate), Atom::pack(newstate), Ordering::Acquire, Ordering::Relaxed) {
-	    Ok(_) => {
-		n = i as usize;
-		active_node = true;
+    if d != MRAPI_MAX_DOMAINS {
+	// now find an available node index...
+	for n in 0..MRAPI_MAX_NODES {
+ 	    let packed = &mrapi_db.domains[d].nodes[n].state.load(Ordering::Relaxed);
+	    let state: MrapiNodeState = Atom::unpack(*packed);
+	    // Even though initialized() is checked by mrapi, we have to check again here because
+	    // initialized() and initalize() are  not atomic at the top layer
+	    if state.allocated() && state.node_num() == node_id as MrapiUint32 {
+		// this node already exists for this domain
+		mrapi_dprintf!(1, "This node ({}) already exists for this domain ({})", node_id, domain_id);
 		break;
-	    },
-	    Err(_) => continue,
+	    }
 	}
-    }
-    
-    if !active_node {
-	mrapi_dprintf!(1, "You have hit MRAPI_MAX_NODES, either use less nodes or reconfigure with more nodes");
-	let semid = &*SEMID;
-	let shmemid = &*SHMEMID;
-	mrapi_dprintf!(0, "Unlock system semaphore: {:?}", semid);
-	drop(shmemid);
-	sys_sem_unlock(SEMID.get()).unwrap();
-	sys_sem_delete(SEMID.get());
-	return Err(MrapiErrNodeInitfailed);
-    }
 
-    // See if this process exists
-    let mut p: usize = 0;
-    let mut active_process = false;
-    for i in 0..MRAPI_MAX_PROCESSES {
- 	let packed = &mrapi_db.processes[i].state.load(Ordering::Relaxed);
-	let pstate: MrapiProcessState = Atom::unpack(*packed);
-	if pstate.pid() == *MRAPI_PID {
-	    p = i as usize;
-	    active_process = true;
-	    break;
-	}
-    }
-    if !active_process {
-	// It didn't exist so find the first available entry
-	for i in 0..MRAPI_MAX_PROCESSES {
- 	    let packed = &mrapi_db.processes[i].state.load(Ordering::Relaxed);
-	    let mut oldstate: MrapiProcessState = Atom::unpack(*packed);
-	    let mut newstate = oldstate;
-	    oldstate.set_allocated(MRAPI_FALSE);
-	    newstate.set_pid(*MRAPI_PID);
-	    newstate.set_allocated(MRAPI_TRUE);
-	    match &mrapi_db.processes[i].state.compare_exchange(
-		Atom::pack(oldstate), Atom::pack(newstate), Ordering::Acquire, Ordering::Relaxed) {
-		Ok(_) => {
-		    p = i as usize;
-		    active_process = true;
-		    break;
-		},
-		Err(_) => continue,
+	if n == MRAPI_MAX_NODES {
+	    // it didn't exist so find the first available entry
+	    for n in 0..MRAPI_MAX_NODES {
+ 		let packed = &mrapi_db.domains[d].nodes[n].state.load(Ordering::Relaxed);
+		let mut oldstate: MrapiNodeState = Atom::unpack(*packed);
+		let mut newstate = oldstate;
+		oldstate.set_allocated(MRAPI_FALSE);
+		newstate.set_node_num(node_id as MrapiUint32);
+		newstate.set_allocated(MRAPI_TRUE);
+		match &mrapi_db.domains[d].nodes[n].state.compare_exchange(
+		    Atom::pack(oldstate), Atom::pack(newstate), Ordering::Acquire, Ordering::Relaxed) {
+		    Ok(_) => {
+			break;
+		    },
+		    Err(_) => continue,
+		}
+	    }
+	    if n != MRAPI_MAX_NODES {
+		// See if this process exists
+		for p in 0..MRAPI_MAX_PROCESSES {
+ 		    let packed = &mrapi_db.processes[p].state.load(Ordering::Relaxed);
+		    let pstate: MrapiProcessState = Atom::unpack(*packed);
+		    if pstate.pid() == pid {
+			break;
+		    }
+		}
+		if p == MRAPI_MAX_PROCESSES {
+		    // It didn't exist so find the first available entry
+		    for p in 0..MRAPI_MAX_PROCESSES {
+ 			let packed = &mrapi_db.processes[p].state.load(Ordering::Relaxed);
+			let mut oldstate: MrapiProcessState = Atom::unpack(*packed);
+			let mut newstate = oldstate;
+			oldstate.set_allocated(MRAPI_FALSE);
+			newstate.set_pid(pid);
+			newstate.set_allocated(MRAPI_TRUE);
+			match &mrapi_db.processes[p].state.compare_exchange(
+			    Atom::pack(oldstate), Atom::pack(newstate), Ordering::Acquire, Ordering::Relaxed) {
+			    Ok(_) => {
+				break;
+			    },
+			    Err(_) => continue,
+			}
+		    }
+		}
 	    }
 	}
     }
-
-    if !active_process {
-	mrapi_dprintf!(1, "You have hit MRAPI_MAX_PROCESSES, either use less processes or reconfigure with more processes");
-	let semid = &*SEMID;
-	let shmemid = &*SHMEMID;
-	mrapi_dprintf!(0, "Unlock system semaphore: {:?}", semid);
-	drop(shmemid);
-	sys_sem_unlock(SEMID.get()).unwrap();
-	sys_sem_delete(SEMID.get());
+    else {
+	// We did not find an available domain index
+	mrapi_dprintf!(1, "You have hit MRAPI_MAX_DOMAINS, either use less domains or reconfigure with more domains");
 	return Err(MrapiErrNodeInitfailed);
     }
-
-    let semid = &*SEMID;
-    let shmemid = &*SHMEMID;
-    mrapi_dprintf!(0, "Detach shared memory");
-    drop(shmemid);
-    mrapi_dprintf!(0, "Unlock system semaphore: {:?}", semid);
-    sys_sem_unlock(SEMID.get()).unwrap();
-    sys_sem_delete(SEMID.get());
+    if n == MRAPI_MAX_NODES {
+	// We did not find an available node index
+	mrapi_dprintf!(1, "You have hit MRAPI_MAX_NODES, either use less nodes or reconfigure with more nodes");
+	return Err(MrapiErrNodeInitfailed);
+    }
+    if p == MRAPI_MAX_PROCESSES {
+	// We did not find an available process index
+	mrapi_dprintf!(1, "You have hit MRAPI_MAX_PROCESSES, either use less processes or reconfigure with more processes");
+	return Err(MrapiErrNodeInitfailed);
+    }
+    else {
+	MRAPI_PINDEX.with(|index| { index.set(p); });
+    }
 
     Err(MrapiErrNodeInitfailed)
 }
@@ -693,3 +782,4 @@ mod tests {
 	};
     }
 }
+*/
